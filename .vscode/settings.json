@@ -4,7 +4,8 @@
   "eslint.enable": true,
   "eslint.alwaysShowStatus": true,
   "eslint.workingDirectories": [
-    "backend"
+    "backend",
+    "frontend"
   ],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
