@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
 /* GET API status. */
-router.get('/status', (req, res) => {
+router.get("/status", (req, res) => {
   res.sendStatus(200);
 });
 
