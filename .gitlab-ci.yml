@@ -7,8 +7,9 @@ build:
                 - echo -e "$PROD_SSH_KEY" > ~/.ssh/id_rsa
                 - chmod 600 ~/.ssh/id_rsa
         #        - '[[ -f /.dockerenv]] && echo -e "Host *\n\tStrictHostKeyChecking on\n\n" > ~/.ssh/config'
+                - ls
                 - echo -e "Host *\n\tStrictHostKeyChecking on\n\n" > ~/.ssh/config
 
         script:
-                - bash .gitlab-deploy-prod.sh
+                - bash gitlab-deploy-prod.sh
 
