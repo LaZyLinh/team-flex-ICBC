@@ -1,5 +1,6 @@
 build:
         script:
+                - cd /home/centos/team-flex
                 - git pull
                 - npm install
 
