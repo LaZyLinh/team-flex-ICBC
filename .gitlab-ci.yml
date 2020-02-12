@@ -1,5 +1,6 @@
 build:
         script:
+                - sudo su
                 - cd /home/centos/team-flex
                 - git pull
                 - cd backend
