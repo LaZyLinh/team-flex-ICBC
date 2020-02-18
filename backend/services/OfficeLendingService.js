@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 const Service = require('./Service');
+const Availabilities = require('../db/availabilities');
 
 class OfficeLendingService {
 
@@ -36,6 +37,7 @@ class OfficeLendingService {
     return new Promise(
       async (resolve) => {
         try {
+          // TODO 
           resolve(Service.successResponse(''));
         } catch (e) {
           resolve(Service.rejectResponse(
@@ -58,7 +60,15 @@ class OfficeLendingService {
     return new Promise(
       async (resolve) => {
         try {
-          resolve(Service.successResponse(''));
+          console.log('id is ' + id);
+          Availabilities.getByStaffId(id).then(obj => {
+            let rsp = obj;
+            console.log(rsp)
+            resolve(rsp);
+          }).catch(err => {
+            throw err;
+          })
+
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
