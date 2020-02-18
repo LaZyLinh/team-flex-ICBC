@@ -1,0 +1,17 @@
+{
+  "name": "flexwork-common",
+  "version": "0.0.4",
+  "description": "Flex Work Common Functions for both Front and Back End",
+  "main": "FlexWorkCommonFunctions.js",
+  "scripts": {
+    "test": "tape test/*.js"
+  },
+  "author": "UBC Team Flex",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "binary-search-bounds": "^2.0.4"
+  },
+  "devDependencies": {
+    "tape": "^4.13.0"
+  }
+}

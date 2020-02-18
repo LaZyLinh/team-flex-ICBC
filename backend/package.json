@@ -12,6 +12,7 @@
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
     "express": "~4.16.1",
+    "flexwork-common": "latest",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "prettier": "^1.19.1"
