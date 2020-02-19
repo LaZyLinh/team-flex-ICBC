@@ -1,4 +1,5 @@
 const { Client } = require('mysql')
+require('dotenv').config();
 
 const localOption = {
   client: 'mysql',
@@ -23,7 +24,7 @@ const remoteOption = {
 }
 
 
-
+// console.log("local? " + process.env.LOCAL);
 
 const knex = process.env.LOCAL ? require('knex')(localOption) : require('knex')(remoteOption);
 
