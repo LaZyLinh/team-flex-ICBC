@@ -7,7 +7,7 @@ class Home extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <React.Fragment>
+      <div className={`${classes.bg}`}>
         <Button
           className={`${classes.btn} ${classes.label} ${classes.btn1} ${classes.label1}`}
           variant="contained"
@@ -15,7 +15,6 @@ class Home extends React.Component {
         >
           Register Office
         </Button>
-
         <Button
           className={`${classes.btn} ${classes.label} ${classes.btn2} ${classes.label2}`}
           variant="contained"
@@ -33,23 +32,33 @@ class Home extends React.Component {
         <Link className={classes.link} href="/admin">
           Admin
         </Link>
-      </React.Fragment>
+      </div>
     );
   }
 }
 
 const muiStyles = {
+  bg: {
+    position: "absolute",
+    backgroundImage: `url(${require("../assets/bg.png")})`,
+    height: "100vh",
+    width: "100vw",
+    top: "0",
+    left: "0"
+  },
   btn: {
     background: "#002D7D",
-    borderRadius: "15px",
-    textAlign: "center"
+    borderRadius: "20px",
+    textAlign: "center",
+    height: "10vh",
+    width: "20vw"
   },
   label: {
     fontFamily: "Inter",
     fontStyle: "normal",
     fontWeight: "bold",
-    fontSize: "30px",
-    lineHeight: "42px",
+    fontSize: "1.7vw",
+    lineHeight: "8vh",
     textDecoration: "none",
     color: "#FFFFFF",
     display: "inline-block",
