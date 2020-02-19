@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 const Service = require('./Service');
+const Availabilities = require('../db/availabilities');
+const Bookings = require('../db/bookings');
 
 class OfficeLendingService {
 
@@ -36,6 +38,7 @@ class OfficeLendingService {
     return new Promise(
       async (resolve) => {
         try {
+          // TODO 
           resolve(Service.successResponse(''));
         } catch (e) {
           resolve(Service.rejectResponse(
@@ -58,7 +61,19 @@ class OfficeLendingService {
     return new Promise(
       async (resolve) => {
         try {
-          resolve(Service.successResponse(''));
+          Availabilities.getByStaffId(id).then(obj => {
+            let promList = [];
+            obj[0].forEach(ele => {
+              promList.push(makeBookingPromise(ele));
+            });
+            Promise.all(promList).then((pres) => {
+              resolve(pres);
+            })
+
+          }).catch(err => {
+            throw err;
+          })
+
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
@@ -69,6 +84,22 @@ class OfficeLendingService {
     );
   }
 
+
+
 }
+
+//helper function
+const makeBookingPromise = function (obj) {
+  return new Promise((resolve, reject) => {
+    Bookings.getByAvailabilityId(obj.AvailabilityId).then(o => {
+      obj["booking"] = o[0];
+      resolve(obj);
+    }).catch(err => {
+      reject(err);
+    })
+  });
+}
+
+
 
 module.exports = OfficeLendingService;
