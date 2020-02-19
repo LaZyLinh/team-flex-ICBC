@@ -1,0 +1,61 @@
+# flexwork-common
+
+Helper JS functions used for both front and back end
+
+The front end and back end's package.json are already updated
+
+"npm i" in /frontend and /backend to get the latest version of this in the respective projects
+or just "npm i flexwork-common" to skip re-checking every other module
+
+
+#### Usage in back end:
+
+- const fw = require("flexwork-common");
+- fw.isAvailabilityHealthy
+
+### Usage in front end:
+
+- import * as fw from "flexwork-common";
+- fw.isAvailabilityHealthy
+
+----------------------------------------------------------------------
+
+## Current contents:
+
+#### canBook(availability, booking)
+  To be used for validation
+  returns true iff the booking can be made in the availability
+  i.e. all the days in the range [booking.startDate, booking.endDate]
+    are in openDates(availability)
+
+#### isAvailabilityHealthy(availability)
+  returns true iff the availability
+ - has both a start date and end date
+ - start date <= end date
+ - has a bookings array
+ - the bookings each have a start and end date
+ - the bookings' start date is <= end date
+ - the bookings are all within bounds
+ - the bookings are chronologically sorted
+ - the bookings do not overlap
+
+#### isDate(obj)
+  returns true iff the obj is a JavaScript Date
+
+#### openDates(availability)
+  returns a list of JavaScript Date objects, one for each day
+  that a booking can be made on an availability.
+  I.e. the set of all days of the availability - the set of days taken by its
+  current bookings
+
+#### openDatesInRange(availability, startDate, endDate)
+  like openDates, but can be restricted to a more limited date range
+
+
+--------------------------------------------------------------
+
+### To push changes to flexwork-common to npm:
+
+- Change version number in package.json
+- "npm login" if needed
+- "npm publish"

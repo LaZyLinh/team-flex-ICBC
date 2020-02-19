@@ -1,0 +1,643 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Flex Work",
+    "description": "This is the REST API Documentation for ICBC Flex Work, by Team Flex",
+    "version": "0.0.2"
+  },
+  "servers": [
+    {
+      "url": "https://flexwork.me/api/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Office Booking",
+      "description": "As an ICBC employee, make a **Booking** on an office in any ICBC location"
+    },
+    {
+      "name": "Office Lending",
+      "description": "As an ICBC office owner, create **Availabilities** for fellow employees"
+    },
+    {
+      "name": "Admin",
+      "description": "Operations for Facility Administrator (TODO)"
+    }
+  ],
+  "paths": {
+    "/availabilities": {
+      "get": {
+        "tags": [
+          "Office Booking"
+        ],
+        "summary": "Finds Availabilities, filtered by various properties",
+        "operationId": "getAvailabilities",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "The first date of the search range",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2020-02-14"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "The last date of the search range",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2020-02-16"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "description": "Office building location",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "North Vancouver"
+          },
+          {
+            "name": "floor",
+            "in": "query",
+            "description": "Floor of building",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "NV4"
+          },
+          {
+            "name": "features",
+            "in": "query",
+            "description": "Features to filter by",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "example": [
+              "TV",
+              "Private"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Availability"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Office Lending"
+        ],
+        "summary": "Create an Availability (mark a workspace as available)",
+        "operationId": "createAvailability",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Availability"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request (Incorrect Request Body)",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden (Conflicting Dates)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/availabilities/owner": {
+      "get": {
+        "tags": [
+          "Office Lending"
+        ],
+        "summary": "Finds Availabilities by the Staff ID of the owner",
+        "description": "The Availabilities of the Workspace(s) associated with the Staff ID will be found.",
+        "operationId": "getAvailabilitiesByOwnerID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "the Staff ID of the office owner",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 8
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Availability"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/availabilities/{id}": {
+      "delete": {
+        "tags": [
+          "Office Lending"
+        ],
+        "summary": "Cancel an Availability",
+        "operationId": "cancelAvailability",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Availability to delete",
+            "required": true,
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 23
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/lockWorkspace": {
+      "post": {
+        "tags": [
+          "Office Booking"
+        ],
+        "summary": "Temporarily lock a Booking as the User enters confirmation page",
+        "operationId": "lockBooking",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/body_1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingSummary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          },
+          "403": {
+            "description": "Locking of booking unsuccessful",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/lockWorkspace/{id}": {
+      "delete": {
+        "tags": [
+          "Office Booking"
+        ],
+        "summary": "Unlocks a Booking before the 20 minute automatic unlock",
+        "operationId": "unlockBooking",
+        "description": "For when the User navigates away from the confirmation page or closes the browser tab.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Booking to delete",
+            "explode": true,
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 15
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/bookings": {
+      "get": {
+        "tags": [
+          "Office Booking"
+        ],
+        "summary": "Finds Bookings by User ID",
+        "operationId": "getBookingsByUserID",
+        "parameters": [
+          {
+            "name": "staffId",
+            "in": "query",
+            "description": "The ID of the User",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1234
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Booking"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Office Booking"
+        ],
+        "summary": "Confirm a temporarily locked Booking",
+        "operationId": "createBooking",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/body_2"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingSummary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/bookings/{id}": {
+      "delete": {
+        "tags": [
+          "Office Booking"
+        ],
+        "summary": "Cancel an upcoming Booking",
+        "operationId": "cancelBooking",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Booking to delete",
+            "explode": true,
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 23
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Workspace": {
+        "type": "object",
+        "properties": {
+          "workspaceId": {
+            "type": "integer",
+            "example": 8
+          },
+          "staff": {
+            "$ref": "#/components/schemas/User"
+          },
+          "floor": {
+            "$ref": "#/components/schemas/Floor"
+          },
+          "features": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "TV"
+            }
+          }
+        }
+      },
+      "Availability": {
+        "type": "object",
+        "properties": {
+          "availabilityId": {
+            "type": "integer",
+            "example": 2
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "workspaceId": {
+            "type": "integer",
+            "example": 24
+          },
+          "workspaceName": {
+            "type": "string",
+            "example": "NV4-24B"
+          },
+          "floorId": {
+            "type": "integer",
+            "example": 2
+          },
+          "location": {
+            "type": "string",
+            "example": "North Vancouver"
+          },
+          "bookings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookingSummary"
+            }
+          }
+        }
+      },
+      "BookingSummary": {
+        "type": "object",
+        "properties": {
+          "bookingId": {
+            "type": "integer",
+            "example": 8
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "Booking": {
+        "type": "object",
+        "properties": {
+          "bookingId": {
+            "type": "integer",
+            "example": 8
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "availabilityId": {
+            "type": "integer",
+            "example": 2
+          },
+          "workspace": {
+            "$ref": "#/components/schemas/Workspace"
+          }
+        }
+      },
+      "Floor": {
+        "type": "object",
+        "properties": {
+          "floorId": {
+            "type": "integer",
+            "example": 24
+          },
+          "floorName": {
+            "type": "string",
+            "example": "NV4"
+          },
+          "location": {
+            "type": "string",
+            "example": "North Vancouver"
+          },
+          "city": {
+            "type": "string",
+            "example": "North Vancouver"
+          },
+          "building": {
+            "type": "string",
+            "example": "ICBC North Vancouver Building 1"
+          },
+          "floorPlanUri": {
+            "type": "string",
+            "example": "nv4.png"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "staffId": {
+            "type": "integer",
+            "example": 8
+          },
+          "email": {
+            "type": "string",
+            "example": "employee@icbc.com"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Kobe"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Bryant"
+          },
+          "department": {
+            "type": "string",
+            "example": "Customer Service"
+          },
+          "valid": {
+            "type": "boolean"
+          }
+        }
+      },
+      "body": {
+        "required": [
+          "endDate",
+          "startDate",
+          "workspaceId"
+        ],
+        "type": "object",
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "workspaceId": {
+            "type": "integer"
+          }
+        }
+      },
+      "body_1": {
+        "required": [
+          "availabilityId",
+          "endDate",
+          "staffId",
+          "startDate"
+        ],
+        "type": "object",
+        "properties": {
+          "availabilityId": {
+            "type": "integer"
+          },
+          "staffId": {
+            "type": "integer"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "body_2": {
+        "required": [
+          "bookingId"
+        ],
+        "type": "object",
+        "properties": {
+          "bookingId": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}

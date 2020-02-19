@@ -16,6 +16,7 @@ CREATE TABLE `workspace` (
 
 CREATE TABLE `floor` (
   `FloorId` int AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  `FloorNo` int NOT NULL,
   `Location` varchar(255) NOT NULL,
   `City` varchar(255) NOT NULL,
   `Building` varchar(255) NOT NULL,
