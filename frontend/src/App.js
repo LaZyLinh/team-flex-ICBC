@@ -1,6 +1,6 @@
 import React from "react";
 import logo from "./logo.svg";
-import "./App.css";
+import "./HomePage.css";
 import { AxiosProvider, Request, Get, Delete, Head, Post, Put, Patch, withAxios } from "react-axios";
 
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
@@ -11,14 +11,16 @@ export default function App() {
       <div>
         <nav>
           <ul>
-            <li>
-              <Link to="/">Home</Link>
+            <li className="Main-button-box" id="Register-box">
+              <Link className="Main-button-text" id="Register-text" to="/register">
+                Register
+              </Link>
             </li>
             <li>
-              <Link to="/about">About</Link>
+              <Link to="/make">Make</Link>
             </li>
             <li>
-              <Link to="/users">Users</Link>
+              <Link to="/manage">Manage</Link>
             </li>
           </ul>
         </nav>
@@ -26,14 +28,14 @@ export default function App() {
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
-          <Route path="/about">
-            <About />
+          <Route path="/register">
+            <Register />
           </Route>
-          <Route path="/users">
-            <Users />
+          <Route path="/make">
+            <Make />
           </Route>
-          <Route path="/">
-            <Home />
+          <Route path="/manage">
+            <Manage />
           </Route>
         </Switch>
       </div>
@@ -41,14 +43,14 @@ export default function App() {
   );
 }
 
-function Home() {
-  return <h2>Home</h2>;
+function Register() {
+  return <h2>Register Office</h2>;
 }
 
-function About() {
-  return <h2>About</h2>;
+function Make() {
+  return <h2>Make Booking</h2>;
 }
 
-function Users() {
-  return <h2>Users</h2>;
+function Manage() {
+  return <h2>Manage Booking</h2>;
 }
