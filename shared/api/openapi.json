@@ -3,11 +3,11 @@
   "info": {
     "title": "Flex Work",
     "description": "This is the REST API Documentation for ICBC Flex Work, by Team Flex",
-    "version": "0.0.2"
+    "version": "0.0.3"
   },
   "servers": [
     {
-      "url": "https://flexwork.me/api/"
+      "url": "34.224.250.122:6000/"
     }
   ],
   "tags": [
@@ -25,12 +25,79 @@
     }
   ],
   "paths": {
+    "/locations": {
+      "get": {
+        "tags": [
+          "Office Booking",
+          "Office Lending"
+        ],
+        "summary": "A list of all the location names",
+        "operationId": "getLocations",
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": [
+                    "North Vancouver, Surrey"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/availabilities/top/{amount}": {
+      "get": {
+        "tags": [
+          "Office Booking"
+        ],
+        "summary": "Finds top availabilities, not filtered",
+        "operationId": "getTopAvailabilities",
+        "parameters": [
+          {
+            "name": "amount",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "example": 50
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Availability"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          }
+        }
+      }
+    },
     "/availabilities": {
       "get": {
         "tags": [
           "Office Booking"
         ],
-        "summary": "Finds Availabilities, filtered by various properties",
+        "summary": "Finds Availabilities, filtered by various properties, of which startDate and endDate are required",
         "operationId": "getAvailabilities",
         "parameters": [
           {

@@ -1,3 +1,12 @@
+Regarding openapi.json
+
+Changes:
+  - Added /locations GET
+  - Added /availabilities/top/{amount} GET
+  - Changed server address
+
+Regarding the Redoc html
+
 https://github.com/Redocly/redoc/blob/master/cli/README.md
 
 tl;dr
