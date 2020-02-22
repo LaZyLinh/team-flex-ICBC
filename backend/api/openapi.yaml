@@ -2,9 +2,9 @@ openapi: 3.0.1
 info:
   description: This is the REST API Documentation for ICBC Flex Work, by Team Flex
   title: Flex Work
-  version: 0.0.2
+  version: 0.0.3
 servers:
-- url: https://flexwork.me/api/
+- url: http://34.224.250.122:6000/
 tags:
 - description: As an ICBC employee, make a **Booking** on an office in any ICBC location
   name: Office Booking
@@ -13,6 +13,55 @@ tags:
 - description: Operations for Facility Administrator (TODO)
   name: Admin
 paths:
+  /locations:
+    get:
+      operationId: getLocations
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                example:
+                - North Vancouver, Surrey
+                items:
+                  type: string
+                type: array
+          description: Successful Operation
+      summary: A list of all the location names
+      tags:
+      - Office Booking
+      - Office Lending
+      x-openapi-router-controller: OfficeBookingController
+      x-openapi-router-service: OfficeBookingService
+  /availabilities/top/{amount}:
+    get:
+      operationId: getTopAvailabilities
+      parameters:
+      - example: 50
+        explode: false
+        in: path
+        name: amount
+        required: true
+        schema:
+          type: number
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Availability'
+                type: array
+          description: Successful Operation
+        "400":
+          content: {}
+          description: Bad Request
+      summary: Finds top availabilities, not filtered
+      tags:
+      - Office Booking
+      x-openapi-router-controller: OfficeBookingController
+      x-openapi-router-service: OfficeBookingService
   /availabilities:
     get:
       operationId: getAvailabilities
@@ -80,7 +129,8 @@ paths:
         "400":
           content: {}
           description: Bad Request
-      summary: Finds Availabilities, filtered by various properties
+      summary: Finds Availabilities, filtered by various properties, of which startDate
+        and endDate are required
       tags:
       - Office Booking
       x-openapi-router-controller: OfficeBookingController

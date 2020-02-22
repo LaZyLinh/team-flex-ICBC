@@ -17,6 +17,10 @@ class OfficeLendingController {
     await Controller.handleRequest(request, response, this.service.getAvailabilitiesByOwnerID);
   }
 
+  async getLocations(request, response) {
+    await Controller.handleRequest(request, response, this.service.getLocations);
+  }
+
 }
 
 module.exports = OfficeLendingController;

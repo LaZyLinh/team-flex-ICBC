@@ -38,7 +38,6 @@ class OfficeLendingService {
     return new Promise(
       async (resolve) => {
         try {
-          // TODO 
           resolve(Service.successResponse(''));
         } catch (e) {
           resolve(Service.rejectResponse(
@@ -49,6 +48,27 @@ class OfficeLendingService {
       },
     );
   }
+
+  /**
+   * A list of all the location names
+   *
+   * returns List
+   **/
+  static getLocations() {
+    return new Promise(
+      async (resolve) => {
+        try {
+          resolve(Service.successResponse(''));
+        } catch (e) {
+          resolve(Service.rejectResponse(
+            e.message || 'Invalid input',
+            e.status || 405,
+          ));
+        }
+      },
+    );
+  }
+
 
   /**
    * Finds Availabilities by the Staff ID of the owner
@@ -99,7 +119,5 @@ const makeBookingPromise = function (obj) {
     })
   });
 }
-
-
 
 module.exports = OfficeLendingService;

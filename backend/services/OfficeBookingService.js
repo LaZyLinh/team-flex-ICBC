@@ -46,7 +46,7 @@ class OfficeBookingService {
   }
 
   /**
-   * Finds Availabilities, filtered by various properties
+   * Finds Availabilities, filtered by various properties, of which startDate and endDate are required
    *
    * startDate date The first date of the search range
    * endDate date The last date of the search range
@@ -77,6 +77,47 @@ class OfficeBookingService {
    * returns List
    **/
   static getBookingsByUserID({ staffId }) {
+    return new Promise(
+      async (resolve) => {
+        try {
+          resolve(Service.successResponse(''));
+        } catch (e) {
+          resolve(Service.rejectResponse(
+            e.message || 'Invalid input',
+            e.status || 405,
+          ));
+        }
+      },
+    );
+  }
+
+  /**
+   * A list of all the location names
+   *
+   * returns List
+   **/
+  static getLocations() {
+    return new Promise(
+      async (resolve) => {
+        try {
+          resolve(Service.successResponse(''));
+        } catch (e) {
+          resolve(Service.rejectResponse(
+            e.message || 'Invalid input',
+            e.status || 405,
+          ));
+        }
+      },
+    );
+  }
+
+  /**
+   * Finds top availabilities, not filtered
+   *
+   * amount BigDecimal 
+   * returns List
+   **/
+  static getTopAvailabilities({ amount }) {
     return new Promise(
       async (resolve) => {
         try {
