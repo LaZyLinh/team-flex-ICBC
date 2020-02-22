@@ -487,8 +487,8 @@
         "type": "object",
         "properties": {
           "workspaceId": {
-            "type": "integer",
-            "example": 8
+            "type": "string",
+            "example": "NV4-24B"
           },
           "staff": {
             "$ref": "#/components/schemas/User"
@@ -521,8 +521,8 @@
             "format": "date"
           },
           "workspaceId": {
-            "type": "integer",
-            "example": 24
+            "type": "string",
+            "example": "NV4-24B"
           },
           "workspaceName": {
             "type": "string",
@@ -665,7 +665,7 @@
             "format": "date"
           },
           "workspaceId": {
-            "type": "integer"
+            "type": "string"
           }
         }
       },
