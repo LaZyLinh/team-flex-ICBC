@@ -6,16 +6,17 @@ const Bookings = require('../db/bookings');
 class OfficeLendingService {
 
   /**
-   * Cancel an Availability
-   *
-   * id Integer ID of the Availability to delete
-   * no response value expected for this operation
-   **/
+     * Cancel an Availability
+     *
+     * id Integer ID of the Availability to delete
+     * no response value expected for this operation
+     **/
   static cancelAvailability({ id }) {
     return new Promise(
       async (resolve) => {
         try {
-          resolve(Service.successResponse(''));
+          await Availabilities.deleteAvailability(id);
+          resolve("OK");
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
@@ -31,7 +32,7 @@ class OfficeLendingService {
    *
    * startDate date 
    * endDate date 
-   * workspaceId Integer 
+   * workspaceId String 
    * returns Availability
    **/
   static createAvailability({ startDate, endDate, workspaceId }) {
@@ -48,6 +49,7 @@ class OfficeLendingService {
       },
     );
   }
+
 
   /**
    * A list of all the location names
