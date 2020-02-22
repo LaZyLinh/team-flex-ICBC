@@ -50,7 +50,7 @@ class Workspace {
             obj = obj || new Workspace();
 
             if (data.hasOwnProperty('workspaceId')) {
-                obj['workspaceId'] = ApiClient.convertToType(data['workspaceId'], 'Number');
+                obj['workspaceId'] = ApiClient.convertToType(data['workspaceId'], 'String');
             }
             if (data.hasOwnProperty('staff')) {
                 obj['staff'] = User.constructFromObject(data['staff']);
@@ -69,7 +69,7 @@ class Workspace {
 }
 
 /**
- * @member {Number} workspaceId
+ * @member {String} workspaceId
  */
 Workspace.prototype['workspaceId'] = undefined;
 

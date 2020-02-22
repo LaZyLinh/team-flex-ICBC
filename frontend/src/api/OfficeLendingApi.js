@@ -87,7 +87,7 @@ export default class OfficeLendingApi {
      * Create an Availability (mark a workspace as available)
      * @param {Date} startDate 
      * @param {Date} endDate 
-     * @param {Number} workspaceId 
+     * @param {String} workspaceId 
      * @param {module:api/OfficeLendingApi~createAvailabilityCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/Availability}
      */

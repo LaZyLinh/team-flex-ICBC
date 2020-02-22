@@ -24,7 +24,7 @@ class Body {
      * @alias module:model/Body
      * @param startDate {Date} 
      * @param endDate {Date} 
-     * @param workspaceId {Number} 
+     * @param workspaceId {String} 
      */
     constructor(startDate, endDate, workspaceId) { 
         
@@ -60,7 +60,7 @@ class Body {
                 obj['endDate'] = ApiClient.convertToType(data['endDate'], 'Date');
             }
             if (data.hasOwnProperty('workspaceId')) {
-                obj['workspaceId'] = ApiClient.convertToType(data['workspaceId'], 'Number');
+                obj['workspaceId'] = ApiClient.convertToType(data['workspaceId'], 'String');
             }
         }
         return obj;
@@ -80,7 +80,7 @@ Body.prototype['startDate'] = undefined;
 Body.prototype['endDate'] = undefined;
 
 /**
- * @member {Number} workspaceId
+ * @member {String} workspaceId
  */
 Body.prototype['workspaceId'] = undefined;
 
