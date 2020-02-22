@@ -59,6 +59,10 @@ class OfficeBookingService {
     return new Promise(
       async (resolve) => {
         try {
+          console.log("startDate: " + startDate);
+          console.log("endDate: " + endDate);
+          console.log("location: " + location);
+
           resolve(Service.successResponse(''));
         } catch (e) {
           resolve(Service.rejectResponse(
