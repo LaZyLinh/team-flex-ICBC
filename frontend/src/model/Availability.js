@@ -58,7 +58,7 @@ class Availability {
                 obj['endDate'] = ApiClient.convertToType(data['endDate'], 'Date');
             }
             if (data.hasOwnProperty('workspaceId')) {
-                obj['workspaceId'] = ApiClient.convertToType(data['workspaceId'], 'Number');
+                obj['workspaceId'] = ApiClient.convertToType(data['workspaceId'], 'String');
             }
             if (data.hasOwnProperty('workspaceName')) {
                 obj['workspaceName'] = ApiClient.convertToType(data['workspaceName'], 'String');
@@ -95,7 +95,7 @@ Availability.prototype['startDate'] = undefined;
 Availability.prototype['endDate'] = undefined;
 
 /**
- * @member {Number} workspaceId
+ * @member {String} workspaceId
  */
 Availability.prototype['workspaceId'] = undefined;
 
