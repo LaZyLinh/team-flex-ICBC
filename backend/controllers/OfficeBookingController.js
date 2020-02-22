@@ -21,6 +21,14 @@ class OfficeBookingController {
     await Controller.handleRequest(request, response, this.service.getBookingsByUserID);
   }
 
+  async getLocations(request, response) {
+    await Controller.handleRequest(request, response, this.service.getLocations);
+  }
+
+  async getTopAvailabilities(request, response) {
+    await Controller.handleRequest(request, response, this.service.getTopAvailabilities);
+  }
+
   async lockBooking(request, response) {
     await Controller.handleRequest(request, response, this.service.lockBooking);
   }
