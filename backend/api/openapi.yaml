@@ -371,11 +371,11 @@ components:
           location: North Vancouver
           floorName: NV4
           building: ICBC North Vancouver Building 1
-        workspaceId: 8
+        workspaceId: "NV4-02B"
       properties:
         workspaceId:
-          example: 8
-          type: integer
+          example: "NV4-02B"
+          type: string
         staff:
           $ref: '#/components/schemas/User'
         floor:
@@ -415,7 +415,7 @@ components:
           bookingId: 8
           startDate: 2000-01-23
         startDate: 2000-01-23
-        workspaceId: 24
+        workspaceId: "NV4-02B"
       properties:
         availabilityId:
           example: 2
@@ -427,8 +427,8 @@ components:
           format: date
           type: string
         workspaceId:
-          example: 24
-          type: integer
+          example: "NV4-02B"
+          type: string
         workspaceName:
           example: NV4-24B
           type: string
@@ -488,7 +488,7 @@ components:
             location: North Vancouver
             floorName: NV4
             building: ICBC North Vancouver Building 1
-          workspaceId: 8
+          workspaceId: "NV4-02B"
         endDate: 2000-01-23
         availabilityId: 2
         user:
@@ -582,7 +582,7 @@ components:
           format: date
           type: string
         workspaceId:
-          type: integer
+          type: string
       required:
       - endDate
       - startDate
