@@ -123,4 +123,4 @@ const makeBookingPromise = function (obj) {
   });
 }
 
-module.exports = OfficeLendingService;
+module.exports = OfficeLendingService, makeBookingPromise;
