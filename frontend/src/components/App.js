@@ -5,15 +5,9 @@ import Availability from "./Availability";
 import Booking from "./Booking";
 import Withdraw from "./Withdraw";
 import Admin from "./Admin";
-import axios from "axios";
 import ConfirmBooking from "./ConfirmBooking";
 
-// CHANGE THIS FOR BACKEND ENDPOINT
-const baseURL = "34.224.250.122:6000/";
-
 function App() {
-  const axiosInstance = axios.create({ baseURL: baseURL });
-
   return (
     <Router>
       <div>
