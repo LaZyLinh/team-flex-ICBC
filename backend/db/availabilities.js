@@ -17,7 +17,7 @@ module.exports = {
 
     if (features !== undefined) {
       features.forEach(element => {
-        query += ' and a.WorkspaceId in (select WorkspaceId from feature f, workspacefeature wf where f.FeatureName = ' + element + ' and wf.FeatureId = f.FeatureId) '
+        query += ' and a.WorkspaceId in (select WorkspaceId from feature f, workspaceFeature wf where f.FeatureName = ' + element + ' and wf.FeatureId = f.FeatureId) '
       });
     }
 
