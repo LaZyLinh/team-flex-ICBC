@@ -100,6 +100,7 @@ class Booking extends React.Component {
             Component={CalendarWithRange}
             // for some reason making "width" a string makes it flexible
             width="flex"
+            // but doesn't work for height, need to specify a pixel size
             height={300}
             minDate={new Date()}
             min={new Date()}
@@ -127,7 +128,8 @@ class Booking extends React.Component {
   }
 }
 
-const leftPercent = 30;
+// Change these to adjust the relative size of the left panel
+const leftPercent = 25;
 const leftMargin = 2;
 const leftPanelColor = "darkblue";
 const rightPanelColor = "white";
