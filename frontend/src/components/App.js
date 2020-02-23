@@ -5,17 +5,19 @@ import Availability from "./Availability";
 import Booking from "./Booking";
 import Withdraw from "./Withdraw";
 import Admin from "./Admin";
-import ConfirmBooking from "./ConfirmBooking";
+import axios from "axios";
+
+// CHANGE THIS FOR BACKEND ENDPOINT
+const baseURL = "34.224.250.122:6000/";
 
 function App() {
+  const axiosInstance = axios.create({ baseURL: baseURL });
+
   return (
     <Router>
       <div>
         <Route exact path="/availabilities">
           <Availability />
-        </Route>
-        <Route exact path="/confirm">
-          <ConfirmBooking />
         </Route>
         <Route exact path="/bookings">
           <Booking />

@@ -8,5 +8,13 @@ module.exports = {
 
   getByStaffId: function (id) {
     return knex.raw('select * from availability a, workspace w, floor f where w.FloorId = f.FloorId and a.WorkspaceId = w.WorkspaceId and w.StaffId = ?;', [id]);
+  },
+
+  insertAvailability: function (startDate, endDate, workspaceId) {
+    return knex.raw('insert into availability(StartDate, EndDate, WorkspaceId) value (?, ?, ?)', [startDate, endDate, workspaceId]);
+  },
+
+  deleteAvailability: function (id) {
+    return knex.raw('delete from availability where AvailabilityId = ?', [id]);
   }
 }

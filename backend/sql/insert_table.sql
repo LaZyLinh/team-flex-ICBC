@@ -78,7 +78,7 @@ ALTER TABLE `workspaceFeature` ADD FOREIGN KEY (`FeatureId`) REFERENCES `feature
 
 ALTER TABLE `booking` ADD FOREIGN KEY (`StaffId`) REFERENCES `user` (`StaffId`);
 
-ALTER TABLE `booking` ADD FOREIGN KEY (`AvailabilityId`) REFERENCES `availability` (`AvailabilityId`);
+ALTER TABLE `booking` ADD FOREIGN KEY (`AvailabilityId`) REFERENCES `availability` (`AvailabilityId`) ON DELETE CASCADE;
 
 ALTER TABLE `booking` ADD FOREIGN KEY (`WorkspaceId`) REFERENCES `workspace` (`WorkspaceId`);
 
