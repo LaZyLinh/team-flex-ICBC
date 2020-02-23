@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 const Service = require('./Service');
 const Availabilities = require('../db/availabilities');
-const LandingService = require('./OfficeLendingService')
+const Booking = require('../db/bookings');
 
 class OfficeBookingService {
 
@@ -94,7 +94,11 @@ class OfficeBookingService {
     return new Promise(
       async (resolve) => {
         try {
-          resolve(Service.successResponse(''));
+          Booking.getByStaffId(staffId).then(obj => {
+            resolve(obj[0]);
+          }).catch(err => {
+            throw err;
+          })
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
