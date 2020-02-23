@@ -110,7 +110,7 @@ class Booking extends React.Component {
   }
 }
 
-const leftPercent = 30;
+const leftPercent = 25;
 const leftMargin = 2;
 const leftPanelColor = "darkblue";
 const rightPanelColor = "white";
