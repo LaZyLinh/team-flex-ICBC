@@ -53,7 +53,7 @@ class Controller {
 
       // Modification: "unwrap" the body directly into requestParams
       for (const key in request.body) {
-        requestParams[key] = body[key];
+        requestParams[key] = request.body[key];
       }
     }
     request.openapi.schema.parameters.forEach((param) => {
