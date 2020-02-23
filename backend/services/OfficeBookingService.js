@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 const Service = require('./Service');
+const Availabilities = require('../db/availabilities');
 
 class OfficeBookingService {
 
