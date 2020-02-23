@@ -37,7 +37,7 @@ class Controller {
           }
         });
       } else if (request.openapi.schema.requestBody.content[contentType] !== undefined
-          && request.files !== undefined) {
+        && request.files !== undefined) {
         [request.body] = request.files;
       }
     }
