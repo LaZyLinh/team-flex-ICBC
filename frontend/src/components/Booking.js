@@ -8,6 +8,7 @@ import { DateRangePicker } from "rsuite";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
+import ConfirmBooking from "./ConfirmBooking";
 
 class Booking extends React.Component {
   constructor(props) {
@@ -15,16 +16,25 @@ class Booking extends React.Component {
     this.state = {
       selectedLocation: "",
       locations: [],
-      features: []
+      features: [],
+      availabilities: []
     };
   }
 
   componentDidMount() {
+    // Replace with API call to /locations and (to be added to API) /features
     this.setState({
       selectedLocation: "",
       locations: ["Hello World", "BBQ"],
-      features: ["TV", "Private", "Conference Phone"]
+      features: ["TV", "Private", "Conference Phone"],
+      availabilities: []
     });
+  }
+
+  availabilityItems() {
+    let availabilities = [];
+
+    return availabilities;
   }
 
   onSelectLocation = event => {

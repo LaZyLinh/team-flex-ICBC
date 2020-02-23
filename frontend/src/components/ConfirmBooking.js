@@ -22,9 +22,9 @@ class ConfirmBooking extends React.Component {
     let seconds = Math.ceil(divisor_for_seconds);
 
     let obj = {
-      "h": hours,
-      "m": minutes,
-      "s": seconds
+      h: hours,
+      m: minutes,
+      s: seconds
     };
     return obj;
   }
@@ -99,7 +99,9 @@ class ConfirmBooking extends React.Component {
             Go Back
           </Button>
         </div>
-        <div className={`${classes.timer}`}>Time Remaining: {this.state.time.m} : {this.state.time.s}</div>
+        <div className={`${classes.timer}`}>
+          Time Remaining: {this.state.time.m} : {this.state.time.s}
+        </div>
       </React.Fragment>
     );
   }
