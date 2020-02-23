@@ -5,6 +5,7 @@ import Availability from "./Availability";
 import Booking from "./Booking";
 import Withdraw from "./Withdraw";
 import Admin from "./Admin";
+import ConfirmBooking from "./ConfirmBooking";
 
 function App() {
   return (
@@ -12,6 +13,9 @@ function App() {
       <div>
         <Route exact path="/availabilities">
           <Availability />
+        </Route>
+        <Route exact path="/confirm">
+          <ConfirmBooking />
         </Route>
         <Route exact path="/bookings">
           <Booking />
