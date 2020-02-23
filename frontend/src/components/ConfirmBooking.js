@@ -122,6 +122,9 @@ class ConfirmBooking extends React.Component {
             Go Back
           </Button>
         </div>
+        <div className={`${classes.timer}`}>
+          Time Remaining: {this.state.time.m} : {this.state.time.s}
+        </div>
       </React.Fragment>
     );
   }
