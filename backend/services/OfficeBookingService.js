@@ -63,8 +63,12 @@ class OfficeBookingService {
           console.log("startDate: " + startDate);
           console.log("endDate: " + endDate);
           console.log("location: " + location);
+          Availabilities.getByDate(startDate, endDate, location, floor, features).then(obj => {
+            console.log(obj[0]);
+            resolve(obj[0]);
 
-          resolve(Service.successResponse(''));
+          })
+
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
