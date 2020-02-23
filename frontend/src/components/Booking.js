@@ -4,11 +4,11 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
-import { DateRangePicker } from "rsuite";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import ConfirmBooking from "./ConfirmBooking";
+import InfiniteCalendar, { Calendar, withRange } from "react-infinite-calendar";
+import "react-infinite-calendar/styles.css"; // only needs to be imported once
 
 class Booking extends React.Component {
   constructor(props) {
@@ -65,8 +65,9 @@ class Booking extends React.Component {
       featureItems.push(
         <FormControlLabel
           className={`${this.props.classes.featureLabel}`}
-          control={<Checkbox checked={feature} onChange={this.onFeatureCheckbox(i)} value={feature} />}
+          control={<Checkbox checked={false} onChange={this.onFeatureCheckbox(i)} value={feature} />}
           label={feature}
+          key={i++}
         />
       );
     }
@@ -75,6 +76,7 @@ class Booking extends React.Component {
 
   render() {
     const { classes } = this.props;
+    const CalendarWithRange = withRange(Calendar);
 
     return (
       <div className={`${classes.container}`}>
@@ -93,11 +95,26 @@ class Booking extends React.Component {
           </FormControl>
 
           {/* Calendar Picker */}
-          <DateRangePicker
-            size="lg"
-            className={`${classes.dateRangePicker}`}
-            placeholder="Select date range"
-          ></DateRangePicker>
+          <InfiniteCalendar
+            className={`${classes.infiniteCalendar}`}
+            Component={CalendarWithRange}
+            // for some reason making "width" a string makes it flexible
+            width="flex"
+            height={300}
+            minDate={new Date()}
+            min={new Date()}
+            selected={{
+              start: new Date(),
+              end: new Date()
+            }}
+            locale={{
+              headerFormat: "MMM Do"
+            }}
+            theme={{
+              headerColor: "darkblue",
+              weekdayColor: "darkblue"
+            }}
+          />
 
           {/*Feature Selection*/}
           <FormControl component="fieldset" className={classes.featureSelection}>
@@ -116,21 +133,27 @@ const leftPanelColor = "darkblue";
 const rightPanelColor = "white";
 
 const muiStyles = {
+  infiniteCalendar: {
+    position: "absolute",
+    top: "17vh",
+    left: `${leftMargin - 0.7}vw`,
+    width: `${leftPercent - leftMargin * 2 + 1.4}vw`
+  },
   featureLabel: {
     position: "relative",
     left: "0.7vw",
     borderRadius: "10px",
-    paddingTop: "2vh",
-    paddingBottom: "2vh",
-    marginTop: "2vh",
-    marginBottom: "2vh",
+    paddingTop: "1vh",
+    paddingBottom: "1vh",
+    marginTop: "1vh",
+    marginBottom: "1vh",
     background: "white",
     color: "darkblue",
     fontSize: "30px"
   },
   featureSelection: {
     position: "absolute",
-    top: "40vh",
+    top: "65vh",
     left: `${leftMargin - 0.7}vw`,
     width: `${leftPercent - leftMargin * 2 + 1.4}vw`
   },
