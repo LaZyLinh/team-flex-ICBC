@@ -37,7 +37,7 @@ class Controller {
           }
         });
       } else if (request.openapi.schema.requestBody.content[contentType] !== undefined
-          && request.files !== undefined) {
+        && request.files !== undefined) {
         [request.body] = request.files;
       }
     }
@@ -47,7 +47,14 @@ class Controller {
     this.collectFiles(request);
     const requestParams = {};
     if (request.openapi.schema.requestBody !== undefined) {
-      requestParams.body = request.body;
+      // Previously, generated POST functions expect the body object as the parameters rather than
+      // an object where body is a key, i.e. { body }. This code creates teh latter:
+      // requestParams.body = request.body;
+
+      // Modification: "unwrap" the body directly into requestParams
+      for (const key in request.body) {
+        requestParams[key] = request.body[key];
+      }
     }
     request.openapi.schema.parameters.forEach((param) => {
       if (param.in === 'path') {

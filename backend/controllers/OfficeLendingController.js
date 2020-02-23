@@ -1,4 +1,5 @@
 const Controller = require('./Controller');
+const OfficeLendingService = require('../services/OfficeLendingService');
 
 class OfficeLendingController {
   constructor(Service) {

@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 const Service = require('./Service');
+const Availabilities = require('../db/availabilities');
+const Booking = require('../db/bookings');
 
 class OfficeBookingService {
 
@@ -54,12 +56,24 @@ class OfficeBookingService {
    * floor String Floor of building (optional)
    * features List Features to filter by (optional)
    * returns List
+   * example: http://localhost:6000/availabilities?startDate=2019-04-01&endDate=2021-04-04&features='private office'&location='4126 Macdonald St,'
    **/
   static getAvailabilities({ startDate, endDate, location, floor, features }) {
     return new Promise(
       async (resolve) => {
         try {
-          resolve(Service.successResponse(''));
+          Availabilities.getByDate(startDate, endDate, location, floor, features).then(obj => {
+            let promList = [];
+            obj[0].forEach(ele => {
+              promList.push(Service.makeBookingPromise(ele));
+            });
+            Promise.all(promList).then((pres) => {
+              resolve(pres);
+            })
+          }).catch(err => {
+            throw err;
+          })
+
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
@@ -80,7 +94,11 @@ class OfficeBookingService {
     return new Promise(
       async (resolve) => {
         try {
-          resolve(Service.successResponse(''));
+          Booking.getByStaffId(staffId).then(obj => {
+            resolve(obj[0]);
+          }).catch(err => {
+            throw err;
+          })
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',

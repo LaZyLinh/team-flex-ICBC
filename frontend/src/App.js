@@ -1,7 +1,5 @@
 import React from "react";
 import logo from "./logo.svg";
-import "./HomePage.css";
-import { AxiosProvider, Request, Get, Delete, Head, Post, Put, Patch, withAxios } from "react-axios";
 
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 

@@ -1,3 +1,5 @@
+const Bookings = require('../db/bookings')
+
 class Service {
   static rejectResponse(error, code = 500) {
     return { error, code };
@@ -5,6 +7,17 @@ class Service {
 
   static successResponse(payload, code = 200) {
     return { payload, code };
+  }
+
+  static makeBookingPromise(obj) {
+    return new Promise((resolve, reject) => {
+      Bookings.getByAvailabilityId(obj.AvailabilityId).then(o => {
+        obj["booking"] = o[0];
+        resolve(obj);
+      }).catch(err => {
+        reject(err);
+      })
+    });
   }
 }
 

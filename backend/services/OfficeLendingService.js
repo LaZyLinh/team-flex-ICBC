@@ -39,6 +39,7 @@ class OfficeLendingService {
     return new Promise(
       async (resolve) => {
         try {
+          console.log("start: " + startDate);
           resolve(Service.successResponse(''));
         } catch (e) {
           resolve(Service.rejectResponse(
@@ -122,4 +123,4 @@ const makeBookingPromise = function (obj) {
   });
 }
 
-module.exports = OfficeLendingService;
+module.exports = OfficeLendingService, makeBookingPromise;
