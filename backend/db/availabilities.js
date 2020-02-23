@@ -11,21 +11,26 @@ module.exports = {
   },
 
   getByDate: function (startDate, endDate, location, floor, features) {
-    let query = 'select * from availability a, workspace w, floor f, feature fea, workspaceFeature wf where w.FloorId = f.FloorId and a.WorkspaceId = w.WorkspaceId '
+    let query = 'select * from availability a, workspace w, floor f, feature fea, workspaceFeature wf'
+      + ' where w.FloorId = f.FloorId and a.WorkspaceId = w.WorkspaceId '
       + 'and fea.FeatureId = wf.FeatureId and wf.workspaceId = w.workspaceId and a.startDate > \"' + startDate + '\" and a.endDate < \"' + endDate + "\"";
+
+    if (features !== undefined) {
+      features.forEach(element => {
+        query += ' and a.WorkspaceId in (select WorkspaceId from feature f, workspacefeature wf where f.FeatureName = ' + element + ' and wf.FeatureId = f.FeatureId) '
+      });
+    }
+
+
+
     if (location !== undefined) {
-      query = query + ' and f.Location = ' + location;
+      query = query + ' and f.Location =' + location;
     }
     if (floor !== undefined) {
       query = query + ' and f.FloorNo = ' + floor;
     }
-    if (features !== undefined) {
-      features.array.forEach(element => {
-        // TODO
-      });
-    }
-    query += ';'
-    console.log(query);
+    query += ' group by AvailabilityId;'
+    // console.log(query);
     return knex.raw(query);
   }
 }

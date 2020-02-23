@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 const Service = require('./Service');
 const Availabilities = require('../db/availabilities');
+const LandingService = require('./OfficeLendingService')
 
 class OfficeBookingService {
 
@@ -55,18 +56,22 @@ class OfficeBookingService {
    * floor String Floor of building (optional)
    * features List Features to filter by (optional)
    * returns List
+   * example: http://localhost:6000/availabilities?startDate=2019-04-01&endDate=2021-04-04&features='private office'&location='4126 Macdonald St,'
    **/
   static getAvailabilities({ startDate, endDate, location, floor, features }) {
     return new Promise(
       async (resolve) => {
         try {
-          console.log("startDate: " + startDate);
-          console.log("endDate: " + endDate);
-          console.log("location: " + location);
           Availabilities.getByDate(startDate, endDate, location, floor, features).then(obj => {
-            console.log(obj[0]);
-            resolve(obj[0]);
-
+            let promList = [];
+            obj[0].forEach(ele => {
+              promList.push(Service.makeBookingPromise(ele));
+            });
+            Promise.all(promList).then((pres) => {
+              resolve(pres);
+            })
+          }).catch(err => {
+            throw err;
           })
 
         } catch (e) {
