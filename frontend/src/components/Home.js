@@ -29,6 +29,13 @@ class Home extends React.Component {
         >
           Manage Booking
         </Button>
+        <Button
+          className={`${classes.btn} ${classes.label} ${classes.btn4} ${classes.label4}`}
+          variant="contained"
+          href="/confirm"
+        >
+          Confirm Booking
+        </Button>
         <Link className={classes.link} href="/admin">
           Admin
         </Link>
@@ -85,6 +92,13 @@ const muiStyles = {
     top: "58.44%",
     bottom: "31.78%"
   },
+  btn4: {
+    position: "absolute",
+    left: "59.17%",
+    right: "12.43%",
+    top: "70.44%",
+    bottom: "78.78%"
+  },
   label1: {
     position: "absolute",
     left: "59.93%",
@@ -105,6 +119,13 @@ const muiStyles = {
     right: "13.19%",
     top: "58.44%",
     bottom: "31.78%"
+  },
+  label4: {
+    position: "absolute",
+    left: "59.93%",
+    right: "13.19%",
+    top: "70.44%",
+    bottom: "78.78%"
   },
   link: {
     position: "absolute",

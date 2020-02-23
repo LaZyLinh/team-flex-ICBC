@@ -6,6 +6,7 @@ import Booking from "./Booking";
 import Withdraw from "./Withdraw";
 import Admin from "./Admin";
 import axios from "axios";
+import ConfirmBooking from "./ConfirmBooking";
 
 // CHANGE THIS FOR BACKEND ENDPOINT
 const baseURL = "34.224.250.122:6000/";
@@ -18,6 +19,9 @@ function App() {
       <div>
         <Route exact path="/availabilities">
           <Availability />
+        </Route>
+        <Route exact path="/confirm">
+          <ConfirmBooking />
         </Route>
         <Route exact path="/bookings">
           <Booking />
