@@ -37,11 +37,11 @@ class OfficeLendingService {
    **/
   static createAvailability({ startDate, endDate, workspaceId }) {
     return new Promise(
-      async (resolve) => {
+      async (resolve, reject) => {
         try {
           Availabilities.getExistingConflictingAvailabilities(startDate, endDate, workspaceId).then(obj => {
             if (obj[0].length !== 0) {
-              resolve('403'); // TODO!!! how to reject with 403 error???
+              reject(new Error(403));
             } else {
               Availabilities.insertAvailability(startDate, endDate, workspaceId).then(() => {
                 Availabilities.getByStartEndDateAndWorkspaceId(startDate, endDate, workspaceId).then(obj => {
