@@ -16,7 +16,7 @@ class OfficeLendingService {
       async (resolve) => {
         try {
           await Availabilities.deleteAvailability(id);
-          resolve("OK");
+          resolve('200');
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',

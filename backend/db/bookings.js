@@ -10,5 +10,9 @@ module.exports = {
       + " w.WorkspaceId as OwnerWorksapceId, w.WorkspaceName as OwnerWorkspaceName, w.StaffId as OwnerStaffId, f.FloorId as FloorId, f.FloorNo as FloorNo, "
       + " f.Location as Location, f.City as City, f.Building as Building, f.FloorPlanUrl as FloorPlanUrl, u.Email as OwnerEmail, u.FirstName as OwnerFirstName, u.LastName as OwnerLastName,"
       + " u.Department as OwnerDepartment, u.Valid as OwnerValid from booking b, workspace w, floor f, user u where b.WorkspaceId = w.WorkspaceId and w.FloorId = f.FloorId and w.StaffId = u.StaffId and b.StaffId = ?;", [staffId]);
-  }
+  },
+
+  deleteBooking: function (id) {
+    return knex.raw('delete from booking where BookingId = ?', [id]);
+  },
 }
