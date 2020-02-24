@@ -39,8 +39,15 @@ class OfficeLendingService {
     return new Promise(
       async (resolve) => {
         try {
-          console.log("start: " + startDate);
-          resolve(Service.successResponse(''));
+          // check for conflicting start/end dates TODO if none: / else resolve with 403
+          console.log(startDate);
+          console.log(endDate);
+          console.log(workspaceId);
+          Availabilities.insertAvailability(startDate, endDate, workspaceId).then(() => {
+            resolve('ok');
+          });
+          // console.log(availability);
+          // resolve(availability);
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',

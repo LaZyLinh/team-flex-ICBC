@@ -34,5 +34,24 @@ module.exports = {
 
   deleteAvailability: function (id) {
     return knex.raw('delete from availability where AvailabilityId = ?', [id]);
+  },
+
+  insertAvailability: function (startDate, endDate, workspaceId) {
+    return knex('availability').insert({ StartDate: startDate, EndDate: endDate, WorkspaceId: workspaceId });
   }
+
+  // getByStartEndDateAndWorkspaceId: function (startDate, endDate, workspaceId) {
+  //   console.log('in tgetByStartEndDateAndWorkspaceIdlalalala');
+  //   let query = 'select * from availability a where a.StartDate = ';
+  //   query += startDate;
+  //   query += ' and a.EndDate = ';
+  //   query += endDate;
+  //   query += ' and a.WorkspaceId = ';
+  //   query += workspaceId;
+  //   query += ';';
+
+  //   console.log(query);
+  //   return knex.raw(query);
+
+  // }
 }
