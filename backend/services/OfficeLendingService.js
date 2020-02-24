@@ -39,17 +39,17 @@ class OfficeLendingService {
     return new Promise(
       async (resolve) => {
         try {
-          // check for conflicting start/end dates TODO if none: / else resolve with 403
-          console.log(startDate);
-          console.log(endDate);
-          console.log(workspaceId);
-          Availabilities.insertAvailability(startDate, endDate, workspaceId).then(() => {
-            Availabilities.getByStartEndDateAndWorkspaceId(startDate, endDate, workspaceId).then(obj => {
-              resolve(obj[0]);
-            });
-          });
-          // console.log(availability);
-          // resolve(availability);
+          Availabilities.getExistingConflictingAvailabilities(startDate, endDate, workspaceId).then(obj => {
+            if (obj[0].length !== 0) {
+              resolve('403'); // TODO!!! how to reject with 403 error???
+            } else {
+              Availabilities.insertAvailability(startDate, endDate, workspaceId).then(() => {
+                Availabilities.getByStartEndDateAndWorkspaceId(startDate, endDate, workspaceId).then(obj => {
+                  resolve(obj[0]);
+                });
+              });
+            }
+          })
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
