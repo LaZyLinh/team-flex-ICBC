@@ -44,7 +44,9 @@ class OfficeLendingService {
           console.log(endDate);
           console.log(workspaceId);
           Availabilities.insertAvailability(startDate, endDate, workspaceId).then(() => {
-            resolve('ok');
+            Availabilities.getByStartEndDateAndWorkspaceId(startDate, endDate, workspaceId).then(obj => {
+              resolve(obj[0]);
+            });
           });
           // console.log(availability);
           // resolve(availability);
