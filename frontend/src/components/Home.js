@@ -47,7 +47,8 @@ class Home extends React.Component {
 const muiStyles = {
   bg: {
     position: "absolute",
-    backgroundImage: `url(${require("../assets/bg.png")})`,
+    backgroundImage: `url(${require("../assets/home_bg.jpg")})`,
+    backgroundSize: "cover",
     height: "100vh",
     width: "100vw",
     top: "0",
