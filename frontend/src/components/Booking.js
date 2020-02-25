@@ -11,6 +11,7 @@ import InfiniteCalendar, { Calendar, withRange } from "react-infinite-calendar";
 import "react-infinite-calendar/styles.css";
 import { ArrowForwardOutlined, YoutubeSearchedFor } from "@material-ui/icons";
 import Button from "@material-ui/core/Button"; // only needs to be imported once
+import EnhancedTable from "./Table.js";
 
 class Booking extends React.Component {
   constructor(props) {
@@ -113,7 +114,7 @@ class Booking extends React.Component {
   // Populating the right panel based on this.state.hasAvail
   rightPanel(classes) {
     if (this.state.hasAvail) {
-      return <YoutubeSearchedFor />;
+      return;
     } else {
       return (
         <React.Fragment>
@@ -315,6 +316,14 @@ const muiStyles = {
     alignItems: "center",
     textAlign: "left",
     color: "#002D7D"
+  },
+  tableHeader: {
+    position: "absolute",
+    left: "0%",
+    right: "0%",
+    top: "0%",
+    bottom: "95%",
+    background: "#F1F4F8"
   }
 };
 
