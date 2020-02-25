@@ -1,5 +1,6 @@
 import React from "react";
 import { withStyles } from "@material-ui/core";
+import Link from "@material-ui/core/Link";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -10,6 +11,7 @@ import Button from "@material-ui/core/Button";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormGroup from "@material-ui/core/FormGroup";
 import InfiniteCalendar, { Calendar, withRange } from "react-infinite-calendar";
+import HomeIcon from "@material-ui/icons/Home";
 import { ArrowForwardOutlined } from "@material-ui/icons";
 
 class Availability extends React.Component {
@@ -20,6 +22,7 @@ class Availability extends React.Component {
       locations: [],
       checkingFeatures: []
     };
+    this.handleInputChange = this.handleInputChange.bind(this);
   }
 
   componentDidMount() {
@@ -79,6 +82,11 @@ class Availability extends React.Component {
 
     return (
       <React.Fragment>
+        <div className={`${classes.topBg}`}>
+          <Link href="/">
+            <HomeIcon className={`${classes.home}`}></HomeIcon>
+          </Link>
+        </div>
         <InfiniteCalendar
           className={`${classes.infiniteCalendar}`}
           Component={CalendarWithRange}
@@ -103,10 +111,10 @@ class Availability extends React.Component {
         <div className={classes.box}>
           <TextField
             label="Office Owner's Staff Id"
-            variant="filled"
+            variant="outlined"
             className={`${classes.field} ${classes.field1}`}
           />
-          <FormControl variant="filled" className={`${classes.field} ${classes.field2}`}>
+          <FormControl variant="outlined" className={`${classes.field} ${classes.field2}`}>
             <InputLabel>Office Location</InputLabel>
             <Select>
               <MenuItem value="">
@@ -117,7 +125,7 @@ class Availability extends React.Component {
               <MenuItem value={30}>Thirty</MenuItem>
             </Select>
           </FormControl>
-          <FormControl variant="filled" className={`${classes.field} ${classes.field3}`}>
+          <FormControl variant="outlined" className={`${classes.field} ${classes.field3}`}>
             <InputLabel>Office Room Number</InputLabel>
             <Select>
               <MenuItem value="">
@@ -165,6 +173,14 @@ const muiStyles = {
     boxSizing: "border-box",
     borderRadius: "15px"
   },
+  topBg: {
+    position: "absolute",
+    left: "0%",
+    right: "0%",
+    top: "0%",
+    bottom: "91%",
+    background: "#EBF2FF"
+  },
   btmBg: {
     position: "absolute",
     left: "0%",
@@ -211,6 +227,15 @@ const muiStyles = {
     top: "25%",
     height: "50%",
     color: "#FFFFFF"
+  },
+  home: {
+    position: "absolute",
+    left: "1.6%",
+    right: "95.56%",
+    top: "25%",
+    height: "50%",
+    color: "#0276BA",
+    fontSize: "3em"
   },
   btn1: {
     position: "absolute",
