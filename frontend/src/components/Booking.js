@@ -42,36 +42,6 @@ class Booking extends React.Component {
       hasAvail: false
     });
 
-    // /* TODO: why is this loop not working?
-    // for (const feature of this.state.features) {
-    //   let obj = {
-    //     name: feature.toString(),
-    //     checked: false
-    //   };
-    //   this.state.checkingFeatures.push(obj);
-    // }*/
-    // let obj = {
-    //   name: "TV",
-    //   checked: false
-    // };
-    // this.state.checkingFeatures.push(obj);
-    // let obj1 = {
-    //   name: "Private",
-    //   checked: false
-    // };
-    // this.state.checkingFeatures.push(obj1);
-    // let obj2 = {
-    //   name: "Conference Phone",
-    //   checked: false
-    // };
-    // this.state.checkingFeatures.push(obj2);
-    // let obj3 = {
-    //   name: "Pet-friendly",
-    //   checked: false
-    // };
-    // this.state.checkingFeatures.push(obj3);
-    // this.setState({ checkingFeatures: this.state.checkingFeatures });
-
     // set whether page should dipslay table or no avail
     // if (this.state.availabilities.length !== 0) {
     //   this.setState({ hasAvail: true });
@@ -103,13 +73,6 @@ class Booking extends React.Component {
 
   handleInputChange(event) {
     console.log("value:" + event.target.value + " checked: " + event.target.checked);
-
-    //find student with that id and set checked value to it
-    // for (const each of this.state.checkingFeatures) {
-    //   if (each.name === event.target.value) {
-    //     each.checked = !each.checked;
-    //   }
-    // }
 
     this.setState({
       checkingFeatures: this.state.checkingFeatures.map(cf => {
@@ -155,7 +118,7 @@ class Booking extends React.Component {
       return (
         <React.Fragment>
           <YoutubeSearchedFor className={`${classes.searchIcon}`}></YoutubeSearchedFor>
-          <div className={`${classes.noAvailText}`}> No office Available. Try again later!</div>
+          <div className={`${classes.noAvailText}`}> No office available. Try again later!</div>
         </React.Fragment>
       );
     }
