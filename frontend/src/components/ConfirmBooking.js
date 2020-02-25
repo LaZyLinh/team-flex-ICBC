@@ -2,6 +2,7 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import { TextField, withStyles } from "@material-ui/core";
+import { ArrowForwardOutlined } from "@material-ui/icons";
 
 class ConfirmBooking extends React.Component {
   // Timer Component
@@ -118,6 +119,7 @@ class ConfirmBooking extends React.Component {
           <Button className={`${classes.label} ${classes.btn} ${classes.btn1}`} variant="contained" href="/finished">
             Confirm Booking
           </Button>
+          <ArrowForwardOutlined className={`${classes.arrow}`}></ArrowForwardOutlined>
           <Button className={`${classes.label} ${classes.btn} ${classes.btn2}`} variant="contained" href="/bookings">
             Go Back
           </Button>
@@ -154,8 +156,8 @@ const muiStyles = {
     fontFamily: "Inter",
     fontStyle: "normal",
     fontWeight: "600",
-    fontSize: "100%",
-    lineHeight: "29px",
+    fontSize: "18px",
+    lineHeight: "45px",
     display: "flex",
     alignItems: "left",
     textAlign: "center",
@@ -163,14 +165,10 @@ const muiStyles = {
   },
   arrow: {
     position: "absolute",
-    left: "93.19%",
-    right: "3.96%",
-    top: "50.59%",
-    bottom: "49.41%",
-
-    border: "5px solid #FFFFFF",
-    boxSizing: "border-box",
-    transform: "rotate(0.11deg)"
+    right: "2.96%",
+    top: "25%",
+    height: "50%",
+    color: "#FFFFFF"
   },
   btn1: {
     position: "absolute",

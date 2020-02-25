@@ -8,7 +8,9 @@ import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import InfiniteCalendar, { Calendar, withRange } from "react-infinite-calendar";
-import "react-infinite-calendar/styles.css"; // only needs to be imported once
+import "react-infinite-calendar/styles.css";
+import { ArrowForwardOutlined, YoutubeSearchedFor } from "@material-ui/icons";
+import Button from "@material-ui/core/Button"; // only needs to be imported once
 
 class Booking extends React.Component {
   constructor(props) {
@@ -17,8 +19,11 @@ class Booking extends React.Component {
       selectedLocation: "",
       locations: [],
       features: [],
-      availabilities: []
+      checkingFeatures: [],
+      availabilities: [],
+      hasAvail: false
     };
+    this.handleInputChange = this.handleInputChange.bind(this);
   }
 
   componentDidMount() {
@@ -26,9 +31,47 @@ class Booking extends React.Component {
     this.setState({
       selectedLocation: "",
       locations: ["Hello World", "BBQ"],
-      features: ["TV", "Private", "Conference Phone"],
-      availabilities: []
+      features: ["TV", "Private", "Conference Phone", "Pet-friendly"],
+      checkingFeatures: [],
+      availabilities: [],
+      hasAvail: false
     });
+
+    /* TODO: why is this loop not working?
+    for (const feature of this.state.features) {
+      let obj = {
+        name: feature.toString(),
+        checked: false
+      };
+      this.state.checkingFeatures.push(obj);
+    }*/
+    let obj = {
+      name: "TV",
+      checked: false
+    };
+    this.state.checkingFeatures.push(obj);
+    let obj1 = {
+      name: "Private",
+      checked: false
+    };
+    this.state.checkingFeatures.push(obj1);
+    let obj2 = {
+      name: "Conference Phone",
+      checked: false
+    };
+    this.state.checkingFeatures.push(obj2);
+    let obj3 = {
+      name: "Pet-friendly",
+      checked: false
+    };
+    this.state.checkingFeatures.push(obj3);
+    this.setState({ checkingFeatures: this.state.checkingFeatures });
+
+    // set whether page should dipslay table or no avail
+    if (this.state.availabilities.length !== 0) {
+      this.state.hasAvail = true;
+      this.setState({ hasAvail: this.state.hasAvail });
+    }
   }
 
   availabilityItems() {
@@ -54,19 +97,36 @@ class Booking extends React.Component {
     return menuItems;
   }
 
-  onFeatureCheckbox = index => event => {
-    // TODO
-  };
+  handleInputChange(event) {
+    console.log("value:" + event.target.value + " checked: " + event.target.checked);
+
+    //find student with that id and set checked value to it
+    for (const each of this.state.checkingFeatures) {
+      if (each.name === event.target.value) {
+        each.checked = !each.checked;
+      }
+    }
+    this.setState({ checkingFeatures: this.state.checkingFeatures });
+  }
 
   featureSelectionItems() {
     let featureItems = [];
     let i = 0;
-    for (const feature of this.state.features) {
+    for (const feature of this.state.checkingFeatures) {
       featureItems.push(
         <FormControlLabel
           className={`${this.props.classes.featureLabel}`}
-          control={<Checkbox checked={false} onChange={this.onFeatureCheckbox(i)} value={feature} />}
-          label={feature}
+          control={
+            <Checkbox
+              checked={feature.checked}
+              onChange={this.handleInputChange}
+              value={feature.name}
+              style={{
+                color: "#002D7D"
+              }}
+            />
+          }
+          label={feature.name}
           key={i++}
         />
       );
@@ -83,10 +143,12 @@ class Booking extends React.Component {
         <div className={`${classes.leftPanel}`}>
           <div className={`${classes.locationPickerBg}`}></div>
           {/* Location Selection */}
-          <FormControl color="secondary" className={`${classes.locationSelect}`}>
-            <InputLabel style={{ fontSize: "27px", color: "darkblue" }}>Office location</InputLabel>
+          <FormControl color="white" className={`${classes.locationSelect}`}>
+            <InputLabel style={{ fontSize: "20px", color: "darkblue" }}>Office location</InputLabel>
             <Select
               className={`${classes.locationSelectDropdown}`}
+              id="standard-basic"
+              variant="standard"
               value={this.selectedLocation}
               onChange={this.onSelectLocation}
             >
@@ -101,7 +163,7 @@ class Booking extends React.Component {
             // for some reason making "width" a string makes it flexible
             width="flex"
             // but doesn't work for height, need to specify a pixel size
-            height={300}
+            height={210}
             minDate={new Date()}
             min={new Date()}
             selected={{
@@ -109,11 +171,11 @@ class Booking extends React.Component {
               end: new Date()
             }}
             locale={{
-              headerFormat: "MMM Do"
+              headerFormat: "MMM D"
             }}
             theme={{
-              headerColor: "darkblue",
-              weekdayColor: "darkblue"
+              headerColor: "#002D7D",
+              weekdayColor: "#002D7D"
             }}
           />
 
@@ -122,7 +184,22 @@ class Booking extends React.Component {
             <FormGroup>{this.featureSelectionItems()}</FormGroup>
           </FormControl>
         </div>
-        <div className={`${classes.rightPanel}`}>{/* TODO */}</div>
+        <div className={`${classes.rightPanel}`}>
+          {this.state.hasAvail ? (
+            <YoutubeSearchedFor></YoutubeSearchedFor>
+          ) : (
+            <React.Fragment>
+              <YoutubeSearchedFor className={`${classes.searchIcon}`}></YoutubeSearchedFor>
+              <div className={`${classes.noAvailText}`}> No office Available. Try again later!</div>
+            </React.Fragment>
+          )}
+        </div>
+        <div className={`${classes.bottomBar}`}>
+          <Button className={`${classes.bottomBtn}`} variant="contained" href="/confirm">
+            Next
+          </Button>
+          <ArrowForwardOutlined className={`${classes.arrow1}`}></ArrowForwardOutlined>
+        </div>
       </div>
     );
   }
@@ -131,58 +208,59 @@ class Booking extends React.Component {
 // Change these to adjust the relative size of the left panel
 const leftPercent = 25;
 const leftMargin = 2;
-const leftPanelColor = "darkblue";
+const leftPanelColor = "#002D7D";
 const rightPanelColor = "white";
 
 const muiStyles = {
   infiniteCalendar: {
     position: "absolute",
-    top: "17vh",
-    left: `${leftMargin - 0.7}vw`,
-    width: `${leftPercent - leftMargin * 2 + 1.4}vw`
+    top: "11vh",
+    left: `${leftMargin - 1.8}vw`,
+    width: `${leftPercent - leftMargin * 2 + 3.6}vw`
   },
   featureLabel: {
     position: "relative",
     left: "0.7vw",
     borderRadius: "10px",
     paddingTop: "1vh",
-    paddingBottom: "1vh",
+    paddingBottom: "0.5vh",
     marginTop: "1vh",
-    marginBottom: "1vh",
+    marginBottom: "0.5vh",
     background: "white",
-    color: "darkblue",
-    fontSize: "30px"
+    color: "#002D7D",
+    fontSize: "25px",
+    height: "5vh"
   },
   featureSelection: {
     position: "absolute",
-    top: "65vh",
+    top: "64vh",
     left: `${leftMargin - 0.7}vw`,
-    width: `${leftPercent - leftMargin * 2 + 1.4}vw`
+    width: `${leftPercent - leftMargin * 2 + 1.8}vw`
   },
   dateRangePicker: {
     position: "absolute",
-    top: "20vh",
+    top: "15vh",
     left: `${leftMargin - 0.7}vw`,
     width: `${leftPercent - leftMargin * 2 + 1.4}vw`
   },
   locationPickerBg: {
     position: "absolute",
-    height: "10.8vh",
+    height: "9vh",
     width: `${leftPercent - leftMargin * 2 + 1.4}vw`,
-    top: "5.5vh",
+    top: "2vh",
     left: `${leftMargin - 0.7}vw`,
     backgroundColor: "white",
     borderRadius: "10px"
   },
   locationSelectDropdown: {
-    fontSize: "35px",
-    color: "darkblue"
+    fontSize: "25px",
+    color: "#002D7D"
   },
   locationSelect: {
     position: "absolute",
-    height: "10vh",
+    height: "5vh",
     width: `${leftPercent - leftMargin * 2}vw`,
-    top: "6vh",
+    top: "2vh",
     left: `${leftMargin}vw`
   },
   container: {
@@ -202,6 +280,60 @@ const muiStyles = {
     left: leftPercent + "vw",
     width: 100 - leftPercent + "vw",
     background: rightPanelColor
+  },
+  bottomBar: {
+    position: "absolute",
+    left: "0%",
+    right: "0%",
+    top: "94%",
+    bottom: "0%",
+    background: "#EBF2FF"
+  },
+  bottomBtn: {
+    position: "absolute",
+    left: "85.14%",
+    right: "3.19%",
+    top: "9.84%",
+    bottom: "11.73%",
+    background: "#0048A8",
+    borderRadius: "20px",
+    fontFamily: "Inter",
+    fontASyle: "normal",
+    fontWeight: "600",
+    fontSize: "20px",
+    lineHeight: "36px",
+    display: "flex",
+    alignItems: "center",
+    textAlign: "left",
+    color: "#FFFFFF"
+  },
+  arrow1: {
+    position: "absolute",
+    left: "94.19%",
+    right: "2.96%",
+    top: "22%",
+    color: "#FFFFFF"
+  },
+  searchIcon: {
+    position: "absolute",
+    left: "31%",
+    top: "40%",
+    height: "15%",
+    color: "#002D7D"
+  },
+  noAvailText: {
+    position: "absolute",
+    left: "35%",
+    top: "45%",
+    fontFamily: "Inter",
+    fontASyle: "normal",
+    fontWeight: "600",
+    fontSize: "24px",
+    lineHeight: "36px",
+    display: "flex",
+    alignItems: "center",
+    textAlign: "left",
+    color: "#002D7D"
   }
 };
 
