@@ -28,7 +28,7 @@ class BookingsTable extends React.Component {
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Office Location</TableCell>
+              <TableCell className={classes.headerRow}>Office Location</TableCell>
               <TableCell align="right">Workspace ID</TableCell>
               <TableCell align="right">Start Date</TableCell>
               <TableCell align="right">End Date</TableCell>
@@ -61,8 +61,9 @@ class BookingsTable extends React.Component {
 }
 
 const muiStyles = {
-  headerText: {
-    color: "red"
+  headerRow: {
+    color: "red",
+    backgroundColor: "black"
   }
 };
 
