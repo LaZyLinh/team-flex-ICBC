@@ -16,7 +16,7 @@ class OfficeLendingService {
       async (resolve) => {
         try {
           await Availabilities.deleteAvailability(id);
-          resolve("OK");
+          resolve('200');
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
@@ -37,17 +37,19 @@ class OfficeLendingService {
    **/
   static createAvailability({ startDate, endDate, workspaceId }) {
     return new Promise(
-      async (resolve) => {
+      async (resolve, reject) => {
         try {
-          // check for conflicting start/end dates TODO if none: / else resolve with 403
-          console.log(startDate);
-          console.log(endDate);
-          console.log(workspaceId);
-          Availabilities.insertAvailability(startDate, endDate, workspaceId).then(() => {
-            resolve('ok');
-          });
-          // console.log(availability);
-          // resolve(availability);
+          Availabilities.getExistingConflictingAvailabilities(startDate, endDate, workspaceId).then(obj => {
+            if (obj[0].length !== 0) {
+              reject(new Error(403));
+            } else {
+              Availabilities.insertAvailability(startDate, endDate, workspaceId).then(() => {
+                Availabilities.getByStartEndDateAndWorkspaceId(startDate, endDate, workspaceId).then(obj => {
+                  resolve(obj[0]);
+                });
+              });
+            }
+          })
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',

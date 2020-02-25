@@ -15,7 +15,8 @@ class OfficeBookingService {
     return new Promise(
       async (resolve) => {
         try {
-          resolve(Service.successResponse(''));
+          await Booking.deleteBooking(id);
+          resolve('200');
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',

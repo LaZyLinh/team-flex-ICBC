@@ -38,20 +38,35 @@ module.exports = {
 
   insertAvailability: function (startDate, endDate, workspaceId) {
     return knex('availability').insert({ StartDate: startDate, EndDate: endDate, WorkspaceId: workspaceId });
+  },
+
+  getByStartEndDateAndWorkspaceId: function (startDate, endDate, workspaceId) {
+    let query = 'select * from availability a where a.StartDate = \"';
+    query += startDate;
+    query += '\" and a.EndDate = \"';
+    query += endDate;
+    query += '\" and a.WorkspaceId = \"';
+    query += workspaceId;
+    query += '\";';
+
+    console.log(query);
+    return knex.raw(query);
+
+  },
+
+  getExistingConflictingAvailabilities: function (startDate, endDate, workspaceId) {
+    let query = 'select * from availability a where a.WorkspaceId = \"';
+    query += workspaceId;
+    query += '\" and (a.StartDate <= \"';
+    query += endDate;
+    query += '\" or a.EndDate >= \"';
+    query += startDate;
+    query += '\" or (a.StartDate <= \"';
+    query += startDate;
+    query += '\" and a.EndDate >= \"';
+    query += endDate;
+    query += '\"));'
+    console.log(query);
+    return knex.raw(query);
   }
-
-  // getByStartEndDateAndWorkspaceId: function (startDate, endDate, workspaceId) {
-  //   console.log('in tgetByStartEndDateAndWorkspaceIdlalalala');
-  //   let query = 'select * from availability a where a.StartDate = ';
-  //   query += startDate;
-  //   query += ' and a.EndDate = ';
-  //   query += endDate;
-  //   query += ' and a.WorkspaceId = ';
-  //   query += workspaceId;
-  //   query += ';';
-
-  //   console.log(query);
-  //   return knex.raw(query);
-
-  // }
 }
