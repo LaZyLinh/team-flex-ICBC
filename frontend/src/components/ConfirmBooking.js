@@ -1,12 +1,14 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
 import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
 import { TextField, withStyles } from "@material-ui/core";
+import { ArrowForwardOutlined } from "@material-ui/icons";
 
 class ConfirmBooking extends React.Component {
+  // Timer Component
   constructor() {
     super();
-    this.state = { time: {}, seconds: 1200 };
+    this.state = { time: {}, seconds: 1200, timeout: false };
     this.timer = 0;
     this.startTimer = this.startTimer.bind(this);
     this.countDown = this.countDown.bind(this);
@@ -51,16 +53,38 @@ class ConfirmBooking extends React.Component {
     // Check if we're at zero.
     if (seconds == 0) {
       clearInterval(this.timer);
+      this.setState({ timeout: true });
     }
   }
+
+  redirectIfTimeout() {
+    if (this.state.timeout) {
+      return <Redirect to={{ pathname: "/bookings" }} />;
+    }
+  }
+  // rendering component
+  // TODO: return map url for rendering based on Booking
+  static generateMapLink() {
+    return "#C4C4C4";
+  }
+
   render() {
     this.startTimer();
     const { classes } = this.props;
     return (
       <React.Fragment>
+        {this.redirectIfTimeout()}
         <div className={`${classes.bg}`}>
+          <div className={`${classes.timer}`}>
+            <div className={`${classes.timerText}`}>
+              {this.state.time.m < 10 ? `0${this.state.time.m}` : this.state.time.m}:
+              {this.state.time.s < 10 ? `0${this.state.time.s}` : this.state.time.s}
+            </div>
+          </div>
           <div className={`${classes.text1}`}>Booking Confirmation</div>
-          <div className={`${classes.box1}`}></div>
+          <div className={`${classes.box1}`}>
+            <div className={`${classes.map}`}>To render map.jpg</div>
+          </div>
           <div className={`${classes.box2}`}>
             <div className={`${classes.employText}`}>Employee Information</div>
             <TextField
@@ -92,15 +116,13 @@ class ConfirmBooking extends React.Component {
           </div>
         </div>
         <div className={`${classes.btmBg}`}>
-          <Button className={`${classes.label} ${classes.btn} ${classes.btn1}`} variant="contained" href="/withdraw">
+          <Button className={`${classes.label} ${classes.btn} ${classes.btn1}`} variant="contained" href="/finished">
             Confirm Booking
           </Button>
+          <ArrowForwardOutlined className={`${classes.arrow}`}></ArrowForwardOutlined>
           <Button className={`${classes.label} ${classes.btn} ${classes.btn2}`} variant="contained" href="/bookings">
             Go Back
           </Button>
-        </div>
-        <div className={`${classes.timer}`}>
-          Time Remaining: {this.state.time.m} : {this.state.time.s}
         </div>
       </React.Fragment>
     );
@@ -134,8 +156,8 @@ const muiStyles = {
     fontFamily: "Inter",
     fontStyle: "normal",
     fontWeight: "600",
-    fontSize: "100%",
-    lineHeight: "29px",
+    fontSize: "18px",
+    lineHeight: "45px",
     display: "flex",
     alignItems: "left",
     textAlign: "center",
@@ -143,14 +165,10 @@ const muiStyles = {
   },
   arrow: {
     position: "absolute",
-    left: "93.19%",
-    right: "3.96%",
-    top: "50.59%",
-    bottom: "49.41%",
-
-    border: "5px solid #FFFFFF",
-    boxSizing: "border-box",
-    transform: "rotate(0.11deg)"
+    right: "2.96%",
+    top: "25%",
+    height: "50%",
+    color: "#FFFFFF"
   },
   btn1: {
     position: "absolute",
@@ -204,7 +222,7 @@ const muiStyles = {
   employText: {
     position: "absolute",
     left: "3%",
-    right: "50%",
+    right: "5%",
     top: "5%",
     bottom: "10%",
     fontFamily: "Inter",
@@ -250,11 +268,36 @@ const muiStyles = {
   timer: {
     position: "absolute",
     left: "76.67%",
-    right: "4.86%",
+    right: "3.82%",
     top: "4.22%",
     bottom: "87.67%",
-
     background: "#F4F7FC",
+    borderRadius: "20px"
+  },
+  timerText: {
+    position: "absolute",
+    left: "35%",
+    right: "50%",
+    top: "5%",
+    bottom: "5%",
+
+    fontFamily: "Inter",
+    fontStyle: "normal",
+    fontWeight: "600",
+    fontSize: "28px",
+    lineHeight: "36px",
+    display: "flex",
+    alignItems: "center",
+    textAlign: "center",
+    color: "#000000"
+  },
+  map: {
+    position: "absolute",
+    left: "5%",
+    right: "5%",
+    top: "52.89%",
+    bottom: "3%",
+    background: ConfirmBooking.generateMapLink(),
     borderRadius: "20px"
   }
 };

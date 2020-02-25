@@ -23,7 +23,6 @@
     "react-infinite-calendar": "^2.3.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
-    "rsuite": "^4.2.1",
     "superagent": "3.7.0"
   },
   "devDependencies": {
