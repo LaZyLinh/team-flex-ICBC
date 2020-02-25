@@ -113,19 +113,10 @@ class Withdraw extends React.Component {
           <TextField onInput={e => this.setState({ staffId: e.target.value })} type="text" label="ID" name="staffId" />
         </form>
         <SearchIcon className={`${classes.searchIcon}`} />
-
-        <BookingsTable onCancelBooking={this.onCancelBooking} rows={this.createTableRowData()}></BookingsTable>
+        <div className={`${classes.bookingTable}`}>
+          <BookingsTable onCancelBooking={this.onCancelBooking} rows={this.createTableRowData()}></BookingsTable>
+        </div>
       </div>
-
-      // {/*<React.Fragment>*/}
-      // {/*  <h4>PUT YOUR StaffID</h4>*/}
-      // {/*  <form>*/}
-      // {/*    <label>*/}
-      // {/*      <input className={`${classes.inputOne}`} type="text" name="staffID" />*/}
-      // {/*    </label>*/}
-      // {/*    <button type="submit" value="staffId" />*/}
-      // {/*  </form>*/}
-      // {/*</React.Fragment>*/}
     );
   }
 }
@@ -160,8 +151,12 @@ const withdrawSty = {
     background: " #DAE1EC",
     borderRadius: "4px"
   },
-  inputOne: { position: "absolute", height: "35px", width: "200px" },
-  buttonOne: { height: "25px", width: "60px", marginLeft: "65%", fontSize: 10, backgroundColor: "#008CBA" }
+  bookingTable: {
+    position: "absolute",
+    top: "9%",
+    left: "0%",
+    right: "0%"
+  }
 };
 
 // export default Withdraw;
