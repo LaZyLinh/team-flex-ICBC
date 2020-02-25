@@ -18,7 +18,6 @@ class Booking extends React.Component {
     this.state = {
       selectedLocation: "",
       locations: [],
-      features: [],
       checkingFeatures: [],
       availabilities: [],
       hasAvail: false
@@ -27,51 +26,56 @@ class Booking extends React.Component {
   }
 
   componentDidMount() {
-    // Replace with API call to /locations and (to be added to API) /features
+    // TODO: Replace with API call to /locations and (to be added to API) /features
+
+    // Fake features:
     this.setState({
       selectedLocation: "",
       locations: ["Hello World", "BBQ"],
-      features: ["TV", "Private", "Conference Phone", "Pet-friendly"],
-      checkingFeatures: [],
+      checkingFeatures: [
+        { name: "TV", checked: false },
+        { name: "Private", checked: false },
+        { name: "Conference Phone", checked: false },
+        { name: "Pet-friendly", checked: false }
+      ],
       availabilities: [],
       hasAvail: false
     });
 
-    /* TODO: why is this loop not working?
-    for (const feature of this.state.features) {
-      let obj = {
-        name: feature.toString(),
-        checked: false
-      };
-      this.state.checkingFeatures.push(obj);
-    }*/
-    let obj = {
-      name: "TV",
-      checked: false
-    };
-    this.state.checkingFeatures.push(obj);
-    let obj1 = {
-      name: "Private",
-      checked: false
-    };
-    this.state.checkingFeatures.push(obj1);
-    let obj2 = {
-      name: "Conference Phone",
-      checked: false
-    };
-    this.state.checkingFeatures.push(obj2);
-    let obj3 = {
-      name: "Pet-friendly",
-      checked: false
-    };
-    this.state.checkingFeatures.push(obj3);
-    this.setState({ checkingFeatures: this.state.checkingFeatures });
+    // /* TODO: why is this loop not working?
+    // for (const feature of this.state.features) {
+    //   let obj = {
+    //     name: feature.toString(),
+    //     checked: false
+    //   };
+    //   this.state.checkingFeatures.push(obj);
+    // }*/
+    // let obj = {
+    //   name: "TV",
+    //   checked: false
+    // };
+    // this.state.checkingFeatures.push(obj);
+    // let obj1 = {
+    //   name: "Private",
+    //   checked: false
+    // };
+    // this.state.checkingFeatures.push(obj1);
+    // let obj2 = {
+    //   name: "Conference Phone",
+    //   checked: false
+    // };
+    // this.state.checkingFeatures.push(obj2);
+    // let obj3 = {
+    //   name: "Pet-friendly",
+    //   checked: false
+    // };
+    // this.state.checkingFeatures.push(obj3);
+    // this.setState({ checkingFeatures: this.state.checkingFeatures });
 
     // set whether page should dipslay table or no avail
-    if (this.state.availabilities.length !== 0) {
-      this.state.hasAvail = true;
-      this.setState({ hasAvail: this.state.hasAvail });
-    }
+    // if (this.state.availabilities.length !== 0) {
+    //   this.setState({ hasAvail: true });
+    // }
   }
 
   availabilityItems() {
@@ -101,12 +105,21 @@ class Booking extends React.Component {
     console.log("value:" + event.target.value + " checked: " + event.target.checked);
 
     //find student with that id and set checked value to it
-    for (const each of this.state.checkingFeatures) {
-      if (each.name === event.target.value) {
-        each.checked = !each.checked;
-      }
-    }
-    this.setState({ checkingFeatures: this.state.checkingFeatures });
+    // for (const each of this.state.checkingFeatures) {
+    //   if (each.name === event.target.value) {
+    //     each.checked = !each.checked;
+    //   }
+    // }
+
+    this.setState({
+      checkingFeatures: this.state.checkingFeatures.map(cf => {
+        if (cf.name === event.target.value) {
+          return { name: cf.name, checked: !cf.checked };
+        } else {
+          return cf;
+        }
+      })
+    });
   }
 
   featureSelectionItems() {
@@ -134,6 +147,20 @@ class Booking extends React.Component {
     return featureItems;
   }
 
+  // Populating the right panel based on this.state.hasAvail
+  rightPanel(classes) {
+    if (this.state.hasAvail) {
+      return <YoutubeSearchedFor />;
+    } else {
+      return (
+        <React.Fragment>
+          <YoutubeSearchedFor className={`${classes.searchIcon}`}></YoutubeSearchedFor>
+          <div className={`${classes.noAvailText}`}> No office Available. Try again later!</div>
+        </React.Fragment>
+      );
+    }
+  }
+
   render() {
     const { classes } = this.props;
     const CalendarWithRange = withRange(Calendar);
@@ -143,7 +170,7 @@ class Booking extends React.Component {
         <div className={`${classes.leftPanel}`}>
           <div className={`${classes.locationPickerBg}`}></div>
           {/* Location Selection */}
-          <FormControl color="white" className={`${classes.locationSelect}`}>
+          <FormControl color="primary" className={`${classes.locationSelect}`}>
             <InputLabel style={{ fontSize: "20px", color: "darkblue" }}>Office location</InputLabel>
             <Select
               className={`${classes.locationSelectDropdown}`}
@@ -184,16 +211,7 @@ class Booking extends React.Component {
             <FormGroup>{this.featureSelectionItems()}</FormGroup>
           </FormControl>
         </div>
-        <div className={`${classes.rightPanel}`}>
-          {this.state.hasAvail ? (
-            <YoutubeSearchedFor></YoutubeSearchedFor>
-          ) : (
-            <React.Fragment>
-              <YoutubeSearchedFor className={`${classes.searchIcon}`}></YoutubeSearchedFor>
-              <div className={`${classes.noAvailText}`}> No office Available. Try again later!</div>
-            </React.Fragment>
-          )}
-        </div>
+        <div className={`${classes.rightPanel}`}> {this.rightPanel(classes)}</div>
         <div className={`${classes.bottomBar}`}>
           <Button className={`${classes.bottomBtn}`} variant="contained" href="/confirm">
             Next
