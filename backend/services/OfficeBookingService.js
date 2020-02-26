@@ -3,6 +3,9 @@ const Service = require('./Service');
 const Availabilities = require('../db/availabilities');
 const Booking = require('../db/bookings');
 
+// Added for direct usage of knex
+const knex = require("../db/mysqlDB");
+
 class OfficeBookingService {
 
   /**
@@ -144,10 +147,16 @@ class OfficeBookingService {
     return new Promise(
       async (resolve) => {
         try {
-          resolve(Service.successResponse(''));
+          const queryResults = (await knex.raw("SELECT DISTINCT city from floor"))[0];
+          // console.log(queryResults);
+          const cities = queryResults.map(rdp => rdp.city);
+          // console.log(cities);
+          console.log("locations /GET -> getLocations -> 200 OK");
+          resolve(Service.successResponse(cities));
         } catch (e) {
+          console.error("ERROR: locations /GET -> getLocations");
           resolve(Service.rejectResponse(
-            e.message || 'Invalid input',
+            e.message || 'Unknown Error (probably MySQL DB error)',
             e.status || 405,
           ));
         }
