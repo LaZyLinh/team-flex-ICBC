@@ -25,15 +25,17 @@ class OfficeBookingService {
           const EmailService = require("./EmailService");
           const emailService = new EmailService();
 
-          let booking = await Booking.getByBookingId(id);
+          let booking = JSON.parse(JSON.stringify(await Booking.getByBookingId(id)))[0][0];
           let bookingInfo = {
-            startDate: booking[0].StartDate,
-            endDate: booking[0].EndDate,
-            workspaceId: booking[0].WorkspaceId
-          }
+            startDate: new Date(booking.StartDate).toLocaleDateString(),
+            endDate: new Date(booking.EndDate).toLocaleDateString(),
+            workspaceId: booking.WorkspaceId
+          };
+
           console.log(booking[0]);
+          console.log(bookingInfo);
           emailService.sendEmailDeleteBookingBooker(bookerEmail.Email, bookingInfo);
-          emailService.sendEmailDeleteBookingBooker(workspaceOwnerEmail.Email, bookingInfo);
+          emailService.sendEmailDeleteBookingLender(workspaceOwnerEmail.Email, bookingInfo);
 
           await Booking.deleteBooking(id);
           resolve('200');
