@@ -68,5 +68,9 @@ module.exports = {
     query += '\"));'
     console.log(query);
     return knex.raw(query);
+  },
+
+  getByAvailabilityId: function (id) {
+    return knex.raw('select a.StartDate, a.EndDate from availability a where a.AvailabilityId = ?', [id]);
   }
 }

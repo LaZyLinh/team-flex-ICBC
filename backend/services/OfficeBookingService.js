@@ -6,21 +6,36 @@ const Booking = require('../db/bookings');
 class OfficeBookingService {
 
   /**
-   * Cancel an upcoming Booking
-   *
-   * id Integer ID of the Booking to delete
-   * no response value expected for this operation
-   **/
+      * Cancel an upcoming Booking
+      *
+      * id Integer ID of the Booking to delete
+      * no response value expected for this operation
+      **/
   static cancelBooking({ id }) {
     return new Promise(
       async (resolve) => {
         try {
+          // send email notification that this booking is about to be deleted to booker and workspace owner
+          let booker = await Booking.getUserEmail(id);
+          let bookerEmail = Object.values(JSON.parse(JSON.stringify(booker)))[0][0];
+
+          let workspaceOwner = await Booking.getOwnerEmail(id);
+          let workspaceOwnerEmail = Object.values(JSON.parse(JSON.stringify(workspaceOwner)))[0][0];
+
+          const EmailService = require("./EmailService");
+          const emailService = new EmailService();
+
+          let booking = await Booking.getByBookingId(id);
+          console.log(booking[0]);
+          emailService.sendEmailDeleteBookingBooker(bookerEmail.Email, booking[0]);
+          emailService.sendEmailDeleteBookingBooker(workspaceOwnerEmail.Email, booking[0]);
+
           await Booking.deleteBooking(id);
           resolve('200');
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
-            e.status || 405,
+            e.status || 403,
           ));
         }
       },
@@ -37,11 +52,14 @@ class OfficeBookingService {
     return new Promise(
       async (resolve) => {
         try {
+          await Booking.confirmBooking(bookingId);
+          // send email notification to booker and workspace owner
+          // stop timer
           resolve(Service.successResponse(''));
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
-            e.status || 405,
+            e.status || 403,
           ));
         }
       },
@@ -162,13 +180,29 @@ class OfficeBookingService {
    **/
   static lockBooking({ availabilityId, staffId, startDate, endDate }) {
     return new Promise(
-      async (resolve) => {
+      async (resolve, reject) => {
         try {
-          resolve(Service.successResponse(''));
+          console.log('in lockBooking');
+          Availabilities.getByAvailabilityId(availabilityId).then((availability) => {
+            let a = Object.values(JSON.parse(JSON.stringify(availability)))[0][0];
+            if (startDate >= a.StartDate.slice(0, 10) && endDate <= a.EndDate.slice(0, 10)) {
+              console.log('booking is valid');
+              // create booking
+              Booking.insertBooking(availabilityId, staffId, startDate, endDate, false).then(() => {
+                Booking.getBookingbyAvailStaffDates(availabilityId, staffId, startDate, endDate).then((booking) => {
+                  console.log(booking);
+                  resolve(booking[0]);
+                });
+              });
+            } else {
+              console.log('booking is not valid');
+              reject(new Error(403));
+            }
+          });
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
-            e.status || 405,
+            e.status || 403,
           ));
         }
       },
