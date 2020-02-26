@@ -60,6 +60,10 @@ class OfficeLendingService {
           //     });
           //   }
           // })
+          if (endDate < startDate) {
+            console.log("/availability POST -> createAvailability -> Response: 403 End Date before Start Date");
+            throw { message: "End Date before Start Date", status: 403 };
+          }
           const hasConflict = await Availabilities.hasAvailabilityConflict(startDate, endDate, workspaceId);
           if (hasConflict) {
             console.log("/availability POST -> createAvailability -> Response: 403 Date Conflict");
