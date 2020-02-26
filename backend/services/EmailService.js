@@ -2,11 +2,15 @@ const sendmail = require("sendmail")();
 
 const FROM = '"ICBC Flex Work" <flexwork@icbc.com>';
 
+/**
+ * See EmailServiceExample.js for usage (do not import/require/run it .. it will send an email to me haha)
+ */
 class EmailService {
 
   /**
    * Sends an email to notify an employee of a deleted booking, to the owner of the booking
-   *  
+   * 
+   * @param {string} bookingOwnerEmailAddress
    * @param {{startDate: string, endDate: string, workspaceId: string}} booking
    */
   sendEmailDeleteBookingBooker(bookingOwnerEmailAddress, booking) {
