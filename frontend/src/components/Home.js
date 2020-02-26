@@ -29,13 +29,6 @@ class Home extends React.Component {
         >
           Manage Booking
         </Button>
-        <Button
-          className={`${classes.btn} ${classes.label} ${classes.btn4} ${classes.label4}`}
-          variant="contained"
-          href="/confirm"
-        >
-          Confirm Booking
-        </Button>
         <Link className={classes.link} href="/admin">
           Admin
         </Link>
