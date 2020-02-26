@@ -20,6 +20,10 @@ class OfficeBookingService {
         try {
           // send email notification that this booking is about to be deleted to booker and workspace owner
           let booker = await Booking.getUserEmail(id);
+          if (booker[0].length === 0) {
+            console.log("/bookings DELETE -> cancelBooking -> 400 ID doesn't exist");
+            throw { message: "ID doesn't exist", status: 400 }
+          }
           let bookerEmail = Object.values(JSON.parse(JSON.stringify(booker)))[0][0];
 
           let workspaceOwner = await Booking.getOwnerEmail(id);
