@@ -49,7 +49,8 @@ module.exports = {
     query += workspaceId;
     query += '\";';
 
-    console.log(query);
+    // Commenting this out since this is working
+    // console.log(query);
     return knex.raw(query);
 
   },
