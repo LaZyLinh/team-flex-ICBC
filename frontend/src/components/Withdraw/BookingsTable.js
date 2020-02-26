@@ -11,6 +11,8 @@ import { confirmAlert } from "react-confirm-alert";
 // Delete Icon
 import DeleteIcon from "@material-ui/icons/Delete";
 import { withRouter } from "react-router";
+import Checkbox from "@material-ui/core/Checkbox";
+import TaleSortLabel from "@material-ui/core/TableSortLabel";
 
 class BookingsTable extends React.Component {
   onClickDelete = bookingId => () => {
@@ -32,7 +34,6 @@ class BookingsTable extends React.Component {
         }
       ]
     };
-    // TODO: confirmation
     // https://www.npmjs.com/package/react-confirm-alert
     confirmAlert(options);
     // Call parent component's callback
@@ -46,11 +47,13 @@ class BookingsTable extends React.Component {
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow>
+              <TableCell />
               <TableCell className={classes.headerRow}>Office Location</TableCell>
               <TableCell align="right">Workspace ID</TableCell>
               <TableCell align="right">Start Date</TableCell>
               <TableCell align="right">End Date</TableCell>
-              <TableCell align="right">Office Owner</TableCell>
+              <TableCell align="right">Office Owner
+              </TableCell>
               <TableCell align="right">Status</TableCell>
               <TableCell align="right">Cancel</TableCell>
               {/*<confirmA />*/}
@@ -58,7 +61,7 @@ class BookingsTable extends React.Component {
           </TableHead>
           <TableBody>
             {this.props.rows.map(row => (
-              <TableRow key={row.bookingId}>
+              <TableRow key={row.bookingId}><TableCell><Checkbox/></TableCell>
                 <TableCell component="th" scope="row">
                   {row.city}
                 </TableCell>
