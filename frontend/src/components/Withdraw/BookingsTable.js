@@ -7,17 +7,35 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-
+import { confirmAlert } from "react-confirm-alert";
 // Delete Icon
 import DeleteIcon from "@material-ui/icons/Delete";
+import { withRouter } from "react-router";
 
 class BookingsTable extends React.Component {
   onClickDelete = bookingId => () => {
+    const options = {
+      title: "Confirm deletion",
+      message: "Are you sure to delete this booking",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            this.props.onCancelBooking(bookingId);
+          }
+        },
+        {
+          label: "No",
+          onClick: () => {
+            window.history.back();
+          }
+        }
+      ]
+    };
     // TODO: confirmation
     // https://www.npmjs.com/package/react-confirm-alert
-
+    confirmAlert(options);
     // Call parent component's callback
-    this.props.onCancelBooking(bookingId);
     console.log("DELETE " + bookingId);
   };
 
@@ -35,6 +53,7 @@ class BookingsTable extends React.Component {
               <TableCell align="right">Office Owner</TableCell>
               <TableCell align="right">Status</TableCell>
               <TableCell align="right">Cancel</TableCell>
+              {/*<confirmA />*/}
             </TableRow>
           </TableHead>
           <TableBody>

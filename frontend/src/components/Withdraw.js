@@ -63,6 +63,7 @@ class Withdraw extends React.Component {
   }
 
   onCancelBooking(id) {
+    console.log("handle delete");
     this.api.cancelBooking(id, error => {
       if (error) {
         this.setState({
@@ -116,6 +117,7 @@ class Withdraw extends React.Component {
         <div className={`${classes.bookingTable}`}>
           <BookingsTable onCancelBooking={this.onCancelBooking} rows={this.createTableRowData()}></BookingsTable>
         </div>
+        <confirmA />
       </div>
     );
   }
