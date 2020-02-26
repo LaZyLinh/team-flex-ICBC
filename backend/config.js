@@ -2,7 +2,7 @@ const path = require('path');
 
 const config = {
   ROOT_DIR: __dirname,
-  URL_PORT: 6000,
+  URL_PORT: 6001,
   URL_PATH: 'http://localhost',
   BASE_VERSION: 'v2',
   CONTROLLER_DIRECTORY: path.join(__dirname, 'controllers'),
