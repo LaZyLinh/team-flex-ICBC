@@ -14,7 +14,7 @@ class EmailService {
    * @param {{startDate: string, endDate: string, workspaceId: string}} booking
    */
   sendEmailDeleteBookingBooker(bookingOwnerEmailAddress, booking) {
-    console.log(`sendEmilDeleteBooking: recipient: ${bookingOwnerEmailAddress}, booking: ${JSON.stringify(booking)}`);
+    console.log(`sendEmailDeleteBookingBooker: recipient: ${bookingOwnerEmailAddress}, booking: ${JSON.stringify(booking)}`);
     sendmail({
       from: FROM,
       to: bookingOwnerEmailAddress,
@@ -35,7 +35,7 @@ class EmailService {
    * @param {{startDate: string, endDate: string, workspaceId: string}} booking
    */
   sendEmailDeleteBookingLender(availabilityOwnerEmailAddress, booking) {
-    console.log(`sendEmilDeleteBooking: recipient: ${availabilityOwnerEmailAddress}, booking: ${JSON.stringify(booking)}`);
+    console.log(`sendEmilDeleteBookingRecipient: recipient: ${availabilityOwnerEmailAddress}, booking: ${JSON.stringify(booking)}`);
     sendmail({
       from: FROM,
       to: availabilityOwnerEmailAddress,
