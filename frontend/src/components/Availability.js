@@ -20,6 +20,7 @@ class Availability extends React.Component {
       locations: [],
       checkingFeatures: []
     };
+    this.handleInputChange = this.handleInputChange.bind(this);
   }
 
   componentDidMount() {
@@ -103,10 +104,10 @@ class Availability extends React.Component {
         <div className={classes.box}>
           <TextField
             label="Office Owner's Staff Id"
-            variant="filled"
+            variant="outlined"
             className={`${classes.field} ${classes.field1}`}
           />
-          <FormControl variant="filled" className={`${classes.field} ${classes.field2}`}>
+          <FormControl variant="outlined" className={`${classes.field} ${classes.field2}`}>
             <InputLabel>Office Location</InputLabel>
             <Select>
               <MenuItem value="">
@@ -117,7 +118,7 @@ class Availability extends React.Component {
               <MenuItem value={30}>Thirty</MenuItem>
             </Select>
           </FormControl>
-          <FormControl variant="filled" className={`${classes.field} ${classes.field3}`}>
+          <FormControl variant="outlined" className={`${classes.field} ${classes.field3}`}>
             <InputLabel>Office Room Number</InputLabel>
             <Select>
               <MenuItem value="">
@@ -151,7 +152,8 @@ const muiStyles = {
     position: "absolute",
     top: boxTop,
     left: "4.79%",
-    width: "35%"
+    width: "35%",
+    borderRadius: "15px"
   },
   box: {
     position: "absolute",

@@ -20,25 +20,44 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import { withStyles } from "@material-ui/core/styles";
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
 }
 
+const StyledTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white
+  },
+  body: {
+    fontSize: 14
+  }
+}))(TableCell);
+
+const StyledTableRow = withStyles(theme => ({
+  root: {
+    "&:nth-of-type(odd)": {
+      backgroundColor: "#F1F4F8"
+    }
+  }
+}))(TableRow);
+
 const rows = [
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Donut", 452, 25.0, 51, 4.9),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Frozen yogurt", 159, 6.0, 24, 4.0),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Honeycomb", 408, 3.2, 87, 6.5),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Jelly Bean", 375, 0.0, 94, 0.0),
-  createData("KitKat", 518, 26.0, 65, 7.0),
-  createData("Lollipop", 392, 0.2, 98, 0.0),
-  createData("Marshmallow", 318, 0, 81, 2.0),
-  createData("Nougat", 360, 19.0, 9, 37.0),
-  createData("Oreo", 437, 18.0, 63, 4.0)
+  createData("North Vancouver #1", 305, 3.7, 67, 4.3),
+  createData("North Vancouver #2", 452, 25.0, 51, 4.9),
+  createData("North Vancouver #3", 262, 16.0, 24, 6.0),
+  createData("North Vancouver #4", 159, 6.0, 24, 4.0),
+  createData("North Vancouver #5", 356, 16.0, 49, 3.9),
+  createData("North Vancouver #6", 408, 3.2, 87, 6.5),
+  createData("North Vancouver #7", 237, 9.0, 37, 4.3),
+  createData("North Vancouver #8", 375, 0.0, 94, 0.0),
+  createData("North Vancouver #9", 518, 26.0, 65, 7.0),
+  createData("North Vancouver #10", 392, 0.2, 98, 0.0),
+  createData("North Vancouver #11", 318, 0, 81, 2.0),
+  createData("North Vancouver #12", 360, 19.0, 9, 37.0),
+  createData("North Vancouver #13", 437, 18.0, 63, 4.0)
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -68,11 +87,11 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: "name", numeric: false, disablePadding: true, label: "Dessert (100g serving)" },
-  { id: "calories", numeric: true, disablePadding: false, label: "Calories" },
-  { id: "fat", numeric: true, disablePadding: false, label: "Fat (g)" },
-  { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
-  { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" }
+  { id: "name", numeric: false, disablePadding: true, label: "OFFICE LOCATION" },
+  { id: "calories", numeric: true, disablePadding: false, label: "CONDITIONS" },
+  { id: "fat", numeric: true, disablePadding: false, label: "START DATE" },
+  { id: "carbs", numeric: true, disablePadding: false, label: "END DATE" },
+  { id: "protein", numeric: false, disablePadding: false, label: "OWNER" }
 ];
 
 function EnhancedTableHead(props) {
@@ -86,6 +105,9 @@ function EnhancedTableHead(props) {
       <TableRow>
         <TableCell padding="checkbox">
           <Checkbox
+            style={{
+              color: "#002D7D"
+            }}
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
@@ -94,6 +116,7 @@ function EnhancedTableHead(props) {
         </TableCell>
         {headCells.map(headCell => (
           <TableCell
+            className={`${classes.headText}`}
             key={headCell.id}
             align={headCell.numeric ? "right" : "left"}
             padding={headCell.disablePadding ? "none" : "default"}
@@ -131,7 +154,7 @@ EnhancedTableHead.propTypes = {
 const useToolbarStyles = makeStyles(theme => ({
   root: {
     paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1)
+    paddingRight: theme.spacing(4)
   },
   highlight:
     theme.palette.type === "light"
@@ -210,17 +233,34 @@ const useStyles = makeStyles(theme => ({
     position: "absolute",
     top: 20,
     width: 1
+  },
+  headText: {
+    fontFamily: "Inter",
+    fontStyle: "normal",
+    fontWeight: "600",
+    fontSize: "16px",
+    lineHeight: "20px",
+    letterSpacing: "0.05em",
+    color: "#606F89"
+  },
+  rowText: {
+    fontFamily: "Inter",
+    fontStyle: "normal",
+    fontWeight: "500",
+    fontSize: "16px",
+    lineHeight: "24px",
+    color: "#2E3B52"
   }
 }));
 
 export default function EnhancedTable() {
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("calories");
+  const [orderBy, setOrderBy] = React.useState("name");
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -238,6 +278,7 @@ export default function EnhancedTable() {
   };
 
   const handleClick = (event, name) => {
+    console.log("Handle Clicked" + name);
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
 
@@ -274,7 +315,7 @@ export default function EnhancedTable() {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        {/*<EnhancedTableToolbar numSelected={selected.length} /> */}
         <TableContainer>
           <Table
             className={classes.table}
@@ -299,26 +340,42 @@ export default function EnhancedTable() {
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
-                    <TableRow
+                    <StyledTableRow
                       hover
                       onClick={event => handleClick(event, row.name)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
+                      // change here to make rows independent even with the same office name
                       key={row.name}
                       selected={isItemSelected}
+                      className={`${classes.headText}`}
                     >
                       <TableCell padding="checkbox">
-                        <Checkbox checked={isItemSelected} inputProps={{ "aria-labelledby": labelId }} />
+                        <Checkbox
+                          style={{
+                            color: "#002D7D"
+                          }}
+                          checked={isItemSelected}
+                          inputProps={{ "aria-labelledby": labelId }}
+                        />
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
+                      <StyledTableCell component="th" scope="row" className={`${classes.rowText}`}>
                         {row.name}
+                      </StyledTableCell>
+                      <TableCell align="right" className={`${classes.rowText}`} padding={"none"}>
+                        {row.calories}
                       </TableCell>
-                      <TableCell align="right">{row.calories}</TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
-                    </TableRow>
+                      <TableCell align="right" className={`${classes.rowText}`}>
+                        {row.fat}
+                      </TableCell>
+                      <TableCell align="right" className={`${classes.rowText}`}>
+                        {row.carbs}
+                      </TableCell>
+                      <TableCell align="right" className={`${classes.rowText}`}>
+                        {row.protein}
+                      </TableCell>
+                    </StyledTableRow>
                   );
                 })}
               {emptyRows > 0 && (
@@ -330,7 +387,7 @@ export default function EnhancedTable() {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[5, 10]}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}
@@ -339,7 +396,6 @@ export default function EnhancedTable() {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      {/* <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label="Dense padding" /> */}
     </div>
   );
 }
