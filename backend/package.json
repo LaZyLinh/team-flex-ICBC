@@ -35,6 +35,7 @@
     "mysql": "^2.18.1",
     "ono": "^5.0.1",
     "openapi-sampler": "^1.0.0-beta.15",
+    "sendmail": "^1.6.1",
     "swagger-express-middleware": "^2.0.2",
     "swagger-tools": "^0.10.4",
     "swagger-ui-express": "^4.0.2",
