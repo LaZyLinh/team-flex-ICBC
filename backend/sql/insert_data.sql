@@ -2,7 +2,7 @@
 
 insert into `user`(Email,FirstName,LastName,Department,Valid) values ("aalmekhlafy@gmail.com", "Asem", "Ghaleb", "R&D", true);
 
-insert into `user`(Email,FirstName,LastName,Department,Valid) values ("ravinakaur@gmail.com", "Ravina", "Gill", "IT", true);
+insert into `user`(Email,FirstName,LastName,Department,Valid) values ("ravinakaur@hotmail.com", "Ravina", "Gill", "IT", true);
 
 insert into `user`(Email,FirstName,LastName,Department,Valid) values ("john.hua.zou@gmail.com", "John", "Zou", "Management", true);
 
