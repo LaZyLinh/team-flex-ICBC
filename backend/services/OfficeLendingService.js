@@ -2,6 +2,9 @@
 const Service = require('./Service');
 const Availabilities = require('../db/availabilities');
 const Bookings = require('../db/bookings');
+const Floors = require('../db/floors');
+const OfficeBookingService = require('./OfficeBookingService');
+
 
 class OfficeLendingService {
 
@@ -15,12 +18,19 @@ class OfficeLendingService {
     return new Promise(
       async (resolve) => {
         try {
+          // query all bookings related to this availability
+          let bookings = await Bookings.getByAvailabilityId(id);
+          console.log('bookings');
+          console.log(bookings);
+          bookings[0].forEach((booking) => {
+            OfficeBookingService.cancelBooking(booking.BookingId);
+          });
           await Availabilities.deleteAvailability(id);
           resolve('200');
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
-            e.status || 405,
+            e.status || 403,
           ));
         }
       },
@@ -70,7 +80,8 @@ class OfficeLendingService {
     return new Promise(
       async (resolve) => {
         try {
-          resolve(Service.successResponse(''));
+          let locations = await Floors.getLocations();
+          resolve(locations[0]);
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
