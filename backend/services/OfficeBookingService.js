@@ -26,9 +26,14 @@ class OfficeBookingService {
           const emailService = new EmailService();
 
           let booking = await Booking.getByBookingId(id);
+          let bookingInfo = {
+            startDate: booking[0].StartDate,
+            endDate: booking[0].EndDate,
+            workspaceId: booking[0].WorkspaceId
+          }
           console.log(booking[0]);
-          emailService.sendEmailDeleteBookingBooker(bookerEmail.Email, booking[0]);
-          emailService.sendEmailDeleteBookingBooker(workspaceOwnerEmail.Email, booking[0]);
+          emailService.sendEmailDeleteBookingBooker(bookerEmail.Email, bookingInfo);
+          emailService.sendEmailDeleteBookingBooker(workspaceOwnerEmail.Email, bookingInfo);
 
           await Booking.deleteBooking(id);
           resolve('200');
