@@ -49,17 +49,31 @@ class OfficeLendingService {
     return new Promise(
       async (resolve, reject) => {
         try {
-          Availabilities.getExistingConflictingAvailabilities(startDate, endDate, workspaceId).then(obj => {
-            if (obj[0].length !== 0) {
-              reject(new Error(403));
-            } else {
-              Availabilities.insertAvailability(startDate, endDate, workspaceId).then(() => {
-                Availabilities.getByStartEndDateAndWorkspaceId(startDate, endDate, workspaceId).then(obj => {
-                  resolve(obj[0]);
-                });
-              });
-            }
-          })
+          // Availabilities.getExistingConflictingAvailabilities(startDate, endDate, workspaceId).then(obj => {
+          //   if (obj[0].length !== 0) {
+          //     reject(new Error(403));
+          //   } else {
+          //     Availabilities.insertAvailability(startDate, endDate, workspaceId).then(() => {
+          //       Availabilities.getByStartEndDateAndWorkspaceId(startDate, endDate, workspaceId).then(obj => {
+          //         resolve(obj[0]);
+          //       });
+          //     });
+          //   }
+          // })
+          const hasConflict = await Availabilities.hasAvailabilityConflict(startDate, endDate, workspaceId);
+          if (hasConflict) {
+            console.log("/availability POST -> createAvailability -> Response: 403 Date Conflict");
+            throw { message: "Cannot create availability due to date conflict with existing availability on the same workspace.", status: 403 };
+          } else {
+            // console.log("createAvailability: no conflict. About to insert.");
+            await Availabilities.insertAvailability(startDate, endDate, workspaceId);
+            const createdAvailability = (await Availabilities.getByStartEndDateAndWorkspaceId(startDate, endDate, workspaceId))[0];
+            // console.log("createAvailability: successful.");
+            // console.log("newly created availability: ");
+            // console.log(createdAvailability);
+            console.log("/availability POST -> createAvailability -> Response: 200 OK");
+            resolve(createdAvailability);
+          }
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
