@@ -8,6 +8,7 @@ import FormControl from "@material-ui/core/FormControl";
 import TextField from "@material-ui/core/TextField/TextField";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import SearchIcon from "@material-ui/icons/Search";
+import ManageTable from "./Withdraw/ManageTable";
 
 class Withdraw extends React.Component {
   constructor(props) {
@@ -30,6 +31,36 @@ class Withdraw extends React.Component {
             staff: {
               firstName: "Kobe",
               lastName: "Bryant"
+            }
+          }
+        },
+        {
+          bookingId: 10,
+          startDate: "2020-04-12",
+          endDate: "2020-04-15",
+          workspace: {
+            workspaceId: "NV4-03B",
+            floor: {
+              city: "North Vancouver"
+            },
+            staff: {
+              firstName: "Kevin",
+              lastName: "Wei"
+            }
+          }
+        },
+        {
+          bookingId: 14,
+          startDate: "2020-04-10",
+          endDate: "2020-04-12",
+          workspace: {
+            workspaceId: "NV2-03B",
+            floor: {
+              city: "North Vancouver"
+            },
+            staff: {
+              firstName: "Lihn",
+              lastName: "Phan"
             }
           }
         }
@@ -63,6 +94,7 @@ class Withdraw extends React.Component {
   }
 
   onCancelBooking(id) {
+    console.log("handle delete");
     this.api.cancelBooking(id, error => {
       if (error) {
         this.setState({
@@ -114,8 +146,10 @@ class Withdraw extends React.Component {
         </form>
         <SearchIcon className={`${classes.searchIcon}`} />
         <div className={`${classes.bookingTable}`}>
-          <BookingsTable onCancelBooking={this.onCancelBooking} rows={this.createTableRowData()}></BookingsTable>
+          {/*<BookingsTable onCancelBooking={this.onCancelBooking} rows={this.createTableRowData()}></BookingsTable>*/}
+          <ManageTable />
         </div>
+        <confirmA />
       </div>
     );
   }
