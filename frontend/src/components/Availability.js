@@ -13,6 +13,9 @@ import FormGroup from "@material-ui/core/FormGroup";
 import InfiniteCalendar, { Calendar, withRange } from "react-infinite-calendar";
 import HomeIcon from "@material-ui/icons/Home";
 import { ArrowForwardOutlined } from "@material-ui/icons";
+import Typography from "@material-ui/core/Typography";
+import OfficeBookingApi from "../api/OfficeBookingApi";
+import OfficeLendingApi from "../api/OfficeLendingApi";
 
 class Availability extends React.Component {
   constructor(props) {
@@ -20,27 +23,33 @@ class Availability extends React.Component {
     this.state = {
       selectedLocation: "",
       locations: [],
-      checkingFeatures: []
+      features: [],
+      workspaceId: "",
+      startDate: new Date(),
+      endDate: new Date()
     };
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const proms = [OfficeLendingApi.getLocations(), OfficeLendingApi.getFeatures()];
+    const results = await Promise.all(proms);
     this.setState({
       selectedLocation: "",
-      locations: ["Hello World", "BBQ"],
-      checkingFeatures: [
-        { name: "TV", checked: false },
-        { name: "Private", checked: false },
-        { name: "Conference Phone", checked: false }
-      ]
+      locations: results[0],
+      features: results[1].map(featureName => {
+        return { name: featureName, checked: false };
+      })
     });
+    console.log("WASSSUP!");
+    console.log(this.state.locations);
+    console.log(this.state.features);
   }
 
   featureSelectionItems() {
     let featureItems = [];
     let i = 0;
-    for (const feature of this.state.checkingFeatures) {
+    for (const feature of this.state.features) {
       featureItems.push(
         <FormControlLabel
           className={`${this.props.classes.featureLabel}`}
@@ -66,17 +75,45 @@ class Availability extends React.Component {
     console.log("value:" + event.target.value + " checked: " + event.target.checked);
 
     this.setState({
-      checkingFeatures: this.state.checkingFeatures.map(cf => {
-        if (cf.name === event.target.value) {
-          return { name: cf.name, checked: !cf.checked };
+      features: this.state.features.map(f => {
+        if (f.name === event.target.value) {
+          return { name: f.name, checked: !f.checked };
         } else {
-          return cf;
+          return f;
         }
       })
     });
   }
 
-  render() {
+  locationSelectMenuItems = () => {
+    let menuItems = [];
+    for (const location of this.state.locations) {
+      menuItems.push(
+        <MenuItem value={location} key={location}>
+          {location}
+        </MenuItem>
+      );
+    }
+    return menuItems;
+  };
+
+  onClickConfirmAvailability = async () => {
+    // const features = this.state.features;
+    // const location = this.state.selectedLocation;
+    const workspaceId = this.state.workspaceId;
+    const sd = this.state.startDate;
+    const ed = this.state.endDate;
+    const sdStr = sd.toISOString().slice(0, 10);
+    const edStr = ed.toISOString().slice(0, 10);
+    try {
+      await OfficeLendingApi.createAvailability(sdStr, edStr, workspaceId);
+      console.log("createAvailability: 200 OK!");
+    } catch (err) {
+      console.log("createAvalability: " + err);
+    }
+  };
+
+  render = () => {
     const { classes } = this.props;
     const CalendarWithRange = withRange(Calendar);
 
@@ -86,6 +123,31 @@ class Availability extends React.Component {
           <Link href="/">
             <HomeIcon className={`${classes.home}`}></HomeIcon>
           </Link>
+          <div
+            style={{
+              position: "absolute",
+              top: "1.2vh",
+              left: "6vw",
+              fontFamily: "calibri",
+              fontSize: "3vw",
+              color: "#80ADED"
+            }}
+          >
+            ICBC FLEX WORK
+          </div>
+          <div
+            style={{
+              position: "absolute",
+              top: "1.2vh",
+              left: "29vw",
+              fontFamily: "calibri",
+              fontSize: "3vw",
+              fontWeight: "bold",
+              color: "#002D7D"
+            }}
+          >
+            LEND OFFICE
+          </div>
         </div>
         <InfiniteCalendar
           className={`${classes.infiniteCalendar}`}
@@ -93,7 +155,7 @@ class Availability extends React.Component {
           // for some reason making "width" a string makes it flexible
           width="flex"
           // but doesn't work for height, need to specify a pixel size
-          height={300}
+          height={400}
           minDate={new Date()}
           min={new Date()}
           selected={{
@@ -107,25 +169,16 @@ class Availability extends React.Component {
             headerColor: "darkblue",
             weekdayColor: "darkblue"
           }}
+          onSelect={this.onSelectCalendar}
         />
         <div className={classes.box}>
-          <TextField
-            label="Office Owner's Staff Id"
-            variant="outlined"
-            className={`${classes.field} ${classes.field1}`}
-          />
+          <TextField label="Your Staff ID" variant="outlined" className={`${classes.field} ${classes.field1}`} />
           <FormControl variant="outlined" className={`${classes.field} ${classes.field2}`}>
             <InputLabel>Office Location</InputLabel>
-            <Select>
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
+            <Select>{this.locationSelectMenuItems()}</Select>
           </FormControl>
-          <FormControl variant="outlined" className={`${classes.field} ${classes.field3}`}>
+          <TextField label="Workspace" variant="outlined" className={`${classes.field} ${classes.field3}`} />
+          {/* <FormControl variant="outlined" className={`${classes.field} ${classes.field3}`}>
             <InputLabel>Office Room Number</InputLabel>
             <Select>
               <MenuItem value="">
@@ -135,20 +188,25 @@ class Availability extends React.Component {
               <MenuItem value={20}>Twenty</MenuItem>
               <MenuItem value={30}>Thirty</MenuItem>
             </Select>
-          </FormControl>
+          </FormControl> */}
           <FormControl component="fieldset" className={`${classes.featureSelection}`}>
             <FormGroup>{this.featureSelectionItems()}</FormGroup>
           </FormControl>
         </div>
         <div className={`${classes.btmBg}`}>
-          <Button className={`${classes.label} ${classes.btn} ${classes.btn1}`} variant="contained" href="/finished">
+          <Button
+            onClick={this.onClickConfirmAvailability}
+            className={`${classes.label} ${classes.btn} ${classes.btn1}`}
+            variant="contained"
+          // href="/finished"
+          >
             Confirm Availability
           </Button>
           <ArrowForwardOutlined className={`${classes.arrow}`}></ArrowForwardOutlined>
         </div>
       </React.Fragment>
     );
-  }
+  };
 }
 
 const boxTop = "15.33%";
