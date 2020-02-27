@@ -244,7 +244,7 @@ const useStyles = makeStyles(theme => ({
     color: "#2E3B52"
   }
 }));
-export default function ManageTable() {
+export default function ManageTables() {
   
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
