@@ -5,6 +5,8 @@ const Booking = require('../db/bookings');
 
 // Added for direct usage of knex
 const knex = require("../db/mysqlDB");
+// How many availabilities in the DB to dig for open ones
+const LIMIT = 500;
 
 class OfficeBookingService {
 
@@ -175,7 +177,7 @@ class OfficeBookingService {
     return new Promise(
       async (resolve) => {
         try {
-          const queryResults = (await knex.raw("SELECT DISTINCT city from floor"))[0];
+          const queryResults = (await knex.raw("select distinct city from floor"))[0];
           // console.log(queryResults);
           const cities = queryResults.map(rdp => rdp.city);
           // console.log(cities);
@@ -192,6 +194,27 @@ class OfficeBookingService {
     );
   }
 
+  static makeBookingHelper(bookingId, startDate, endDate, staffId, email, firstName, lastName, department, valid) {
+    return {
+      bookingId, startDate, endDate,
+      user: {
+        staffId, email, firstName, lastName, department, valid
+      }
+    };
+  }
+
+  static makeBooking(row) {
+    return makeBookingHelper(row.BookingId, row.BStartDate, row.BEndDate, row.BStaffId, row.Email, row.FirstName, row.LastName, row.Department, row.Valid);
+  }
+
+  static makeAvailabilityHelper(availabilityId, startDate, endDate, workspaceId, workspaceName, floorId, location) {
+    return 
+  }
+
+  static makeAvailability(row) {
+    return makeAvailabilityHelper // TODO: FINISH
+  }
+
   /**
    * Finds top availabilities, not filtered
    *
@@ -202,6 +225,40 @@ class OfficeBookingService {
     return new Promise(
       async (resolve) => {
         try {
+          const query = `select * from
+                        (select
+                        a.AvailabilityId,
+                        a.StartDate as AStartDate, a.EndDate as AEndDate,
+                        b.BookingId,
+                        a.WorkspaceId,
+                        b.StartDate as BStartDate, b.EndDate as BEndDate,
+                        b.StaffId as BStaffId
+                        from (select * from availability limit ${LIMIT}) a
+                        left join booking b
+                        on a.AvailabilityId = b.AvailabilityId) ab
+                        natural join workspace
+                        natural join floor
+                        left join user u on BStaffId = u.StaffId
+                        order by AvailabilityId`;
+          const rows = (await knex.raw(query))[0];
+          let currAvailabilityId = -1;
+          const response = [];
+          for (const row of rows) {
+            if (row.AvailabilityId === currAvailabilityId) {
+              // Push booking into current availability in response;
+              const booking = makeBooking(row);
+              response[currAvailabilityId].bookings.push(booking);
+            } else {
+              // Increment response index
+              ++currAvailabilityId;
+              const availability = makeAvailability(row);
+              response.push(availability);
+              if (row.BookingId != null) {
+                const booking = makeBooking(row);
+                response[currAvailabilityId].bookings.push(booking);
+              }
+            }
+          }
           resolve(Service.successResponse(''));
         } catch (e) {
           resolve(Service.rejectResponse(
