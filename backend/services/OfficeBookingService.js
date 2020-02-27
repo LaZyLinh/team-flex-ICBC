@@ -376,6 +376,65 @@ class OfficeBookingService {
     );
   }
 
+  static async getAllFeatures() {
+    try {
+      const rows = (await knex.raw(`select distinct FeatureName from feature`))[0];
+      return Service.successResponse(rows.map(row => row.FeatureName));
+    }
+    catch (err) {
+      return Service.rejectResponse(err, 403);
+    }
+  }
+
+  static async getFeaturesByAvailabilityId(availabilityId) {
+    try {
+      const query = `select distinct f.FeatureName from availability a
+                    inner join workspace w on a.WorkspaceId = w.WorkspaceId
+                    inner join workspacefeature wf on w.WorkspaceId = wf.WorkspaceId
+                    inner join feature f on f.FeatureId = wf.FeatureId
+                    where a.AvailabilityId = ${availabilityId}`;
+      const rows = (await knex.raw(query))[0];
+      return Service.successResponse(rows.map(row => row.FeatureName));
+    }
+    catch (err) {
+      return Service.rejectResponse(err, 403);
+    }
+  }
+
+  static async getFeaturesByWorkspaceId(workspaceId) {
+    try {
+      const query = `select distinct f.FeatureName from workspace w
+                    inner join workspacefeature wf on w.WorkspaceId = wf.WorkspaceId
+                    inner join feature f on f.FeatureId = wf.FeatureId
+                    where w.WorkspaceId = '${workspaceId}'`
+      const rows = (await knex.raw(query))[0];
+      return Service.successResponse(rows.map(row => row.FeatureName));
+    }
+    catch (err) {
+      return Service.rejectResponse(err, 403);
+    }
+  }
+
+
+  /**
+   * Get features by availabilityId, workspaceId, or all features if no params
+   *
+   * availabilityId BigDecimal  (optional)
+   * workspaceId String  (optional)
+   * returns List
+   **/
+  static async getFeatures({ availabilityId, workspaceId }) {
+    if (!availabilityId && !workspaceId) {
+      return OfficeBookingService.getAllFeatures();
+    }
+    if (availabilityId) {
+      return OfficeBookingService.getFeaturesByAvailabilityId(availabilityId);
+    }
+    if (workspaceId) {
+      return OfficeBookingService.getFeaturesByWorkspaceId(workspaceId);
+    }
+  }
+
 }
 
 module.exports = OfficeBookingService;

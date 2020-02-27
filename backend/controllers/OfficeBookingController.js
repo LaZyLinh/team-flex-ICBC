@@ -37,6 +37,10 @@ class OfficeBookingController {
     await Controller.handleRequest(request, response, this.service.unlockBooking);
   }
 
+  async getFeatures(request, response) {
+    await Controller.handleRequest(request, response, this.service.getFeatures);
+  }
+
 }
 
 module.exports = OfficeBookingController;

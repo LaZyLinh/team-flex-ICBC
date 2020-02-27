@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   description: This is the REST API Documentation for ICBC Flex Work, by Team Flex
   title: Flex Work
-  version: 0.0.3
+  version: 0.0.6
 servers:
 - url: http://34.224.250.122:8080/
 tags:
@@ -13,6 +13,45 @@ tags:
 - description: Operations for Facility Administrator (TODO)
   name: Admin
 paths:
+  /features:
+    get:
+      operationId: getFeatures
+      parameters:
+      - example: 12
+        explode: true
+        in: query
+        name: availabilityId
+        required: false
+        schema:
+          type: number
+        style: form
+      - example: NV4-01D
+        explode: true
+        in: query
+        name: workspaceId
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                example:
+                - Conference Phone
+                - Private
+                items:
+                  type: string
+                type: array
+          description: Successful Operation
+      summary: Get features by availabilityId, workspaceId, or all features if no
+        params
+      tags:
+      - Office Booking
+      - Office Lending
+      x-openapi-router-controller: OfficeBookingController
+      x-openapi-router-service: OfficeBookingService
   /locations:
     get:
       operationId: getLocations
@@ -22,7 +61,8 @@ paths:
             application/json:
               schema:
                 example:
-                - North Vancouver, Surrey
+                - North Vancouver, BC
+                - Vancouver, BC
                 items:
                   type: string
                 type: array
@@ -371,10 +411,10 @@ components:
           location: North Vancouver
           floorName: NV4
           building: ICBC North Vancouver Building 1
-        workspaceId: "NV4-02B"
+        workspaceId: NV4-24B
       properties:
         workspaceId:
-          example: "NV4-02B"
+          example: NV4-24B
           type: string
         staff:
           $ref: '#/components/schemas/User'
@@ -415,7 +455,7 @@ components:
           bookingId: 8
           startDate: 2000-01-23
         startDate: 2000-01-23
-        workspaceId: "NV4-02B"
+        workspaceId: NV4-24B
       properties:
         availabilityId:
           example: 2
@@ -427,7 +467,7 @@ components:
           format: date
           type: string
         workspaceId:
-          example: "NV4-02B"
+          example: NV4-24B
           type: string
         workspaceName:
           example: NV4-24B
@@ -488,7 +528,7 @@ components:
             location: North Vancouver
             floorName: NV4
             building: ICBC North Vancouver Building 1
-          workspaceId: "NV4-02B"
+          workspaceId: NV4-24B
         endDate: 2000-01-23
         availabilityId: 2
         user:

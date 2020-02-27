@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: Flex Work
   description: 'This is the REST API Documentation for ICBC Flex Work, by Team Flex'
-  version: 0.0.4
+  version: 0.0.6
 servers:
   - url: 'http://34.224.250.122:8080/'
 tags:
@@ -13,6 +13,39 @@ tags:
   - name: Admin
     description: Operations for Facility Administrator (TODO)
 paths:
+  /features:
+    get:
+      tags:
+        - Office Booking
+        - Office Lending
+      summary: 'Get features by availabilityId, workspaceId, or all features if no params'
+      operationId: getFeatures
+      parameters:
+        - name: availabilityId
+          in: query
+          required: false
+          schema:
+            type: number
+          example: 12
+        - name: workspaceId
+          in: query
+          required: false
+          schema:
+            type: string
+          example: "NV4-01D"
+      responses:
+        '200':
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                example:
+                  - 'Conference Phone'
+                  - 'Private'
+          
   /locations:
     get:
       tags:
@@ -30,7 +63,8 @@ paths:
                 items:
                   type: string
                 example:
-                  - 'North Vancouver, Surrey'
+                  - 'North Vancouver, BC'
+                  - 'Vancouver, BC'
   '/availabilities/top/{amount}':
     get:
       tags:
