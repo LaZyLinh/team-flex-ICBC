@@ -12,6 +12,7 @@ import "react-infinite-calendar/styles.css";
 import { ArrowForwardOutlined, YoutubeSearchedFor } from "@material-ui/icons";
 import Button from "@material-ui/core/Button"; // only needs to be imported once
 import EnhancedTable from "./Table.js";
+import OfficeBookingApi from "../api/OfficeBookingApi";
 
 class Booking extends React.Component {
   constructor(props) {
@@ -26,13 +27,12 @@ class Booking extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
-  componentDidMount() {
-    // TODO: Replace with API call to /locations and (to be added to API) /features
-
-    // Fake features:
+  async componentDidMount() {
+    const locs = await OfficeBookingApi.getLocations();
+    // TODO: get features from api
     this.setState({
       selectedLocation: "",
-      locations: ["Hello World", "BBQ"],
+      locations: locs,
       checkingFeatures: [
         { name: "TV", checked: false },
         { name: "Private", checked: false },
@@ -41,6 +41,8 @@ class Booking extends React.Component {
       availabilities: [],
       hasAvail: true
     });
+
+    // Fake features:
 
     // set whether page should dipslay table or no avail
     // if (this.state.availabilities.length !== 0) {
