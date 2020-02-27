@@ -60,16 +60,40 @@ class OfficeBookingService {
    * Confirm a temporarily locked Booking
    *
    * bookingId Integer 
-   * returns BookingSummary
+   * returns BookingSummary 
    **/
   static createBooking({ bookingId }) {
     return new Promise(
       async (resolve) => {
         try {
           await Booking.confirmBooking(bookingId);
-          // send email notification to booker and workspace owner
-          // stop timer
-          resolve(Service.successResponse(''));
+
+          let booker = await Booking.getUserEmail(bookingId);
+          if (booker[0].length === 0) {
+            console.log("/bookings DELETE -> cancelBooking -> 400 ID doesn't exist");
+            throw { message: "ID doesn't exist", status: 400 }
+          }
+          let bookerEmail = Object.values(JSON.parse(JSON.stringify(booker)))[0][0];
+
+          let workspaceOwner = await Booking.getOwnerEmail(bookingId);
+          let workspaceOwnerEmail = Object.values(JSON.parse(JSON.stringify(workspaceOwner)))[0][0];
+
+          let booking = JSON.parse(JSON.stringify(await Booking.getByBookingId(bookingId)))[0][0];
+          let bookingInfo = {
+            startDate: new Date(booking.StartDate).toLocaleDateString(),
+            endDate: new Date(booking.EndDate).toLocaleDateString(),
+            workspaceId: booking.WorkspaceId
+          };
+
+          const EmailService = require("./EmailService");
+          const emailService = new EmailService();
+
+          console.log(booking[0]);
+          console.log(bookingInfo);
+          emailService.sendEmailDeleteBookingBooker(bookerEmail.Email, bookingInfo);
+          emailService.sendEmailDeleteBookingLender(workspaceOwnerEmail.Email, bookingInfo);
+          // stop timer !!!
+          resolve(bookingInfo);
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
