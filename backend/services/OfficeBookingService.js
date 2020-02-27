@@ -3,24 +3,53 @@ const Service = require('./Service');
 const Availabilities = require('../db/availabilities');
 const Booking = require('../db/bookings');
 
+// Added for direct usage of knex
+const knex = require("../db/mysqlDB");
+
 class OfficeBookingService {
 
   /**
-   * Cancel an upcoming Booking
-   *
-   * id Integer ID of the Booking to delete
-   * no response value expected for this operation
-   **/
+      * Cancel an upcoming Booking
+      *
+      * id Integer ID of the Booking to delete
+      * no response value expected for this operation
+      **/
   static cancelBooking({ id }) {
     return new Promise(
       async (resolve) => {
         try {
+          // send email notification that this booking is about to be deleted to booker and workspace owner
+          let booker = await Booking.getUserEmail(id);
+          if (booker[0].length === 0) {
+            console.log("/bookings DELETE -> cancelBooking -> 400 ID doesn't exist");
+            throw { message: "ID doesn't exist", status: 400 }
+          }
+          let bookerEmail = Object.values(JSON.parse(JSON.stringify(booker)))[0][0];
+
+          let workspaceOwner = await Booking.getOwnerEmail(id);
+          let workspaceOwnerEmail = Object.values(JSON.parse(JSON.stringify(workspaceOwner)))[0][0];
+
+          const EmailService = require("./EmailService");
+          const emailService = new EmailService();
+
+          let booking = JSON.parse(JSON.stringify(await Booking.getByBookingId(id)))[0][0];
+          let bookingInfo = {
+            startDate: new Date(booking.StartDate).toLocaleDateString(),
+            endDate: new Date(booking.EndDate).toLocaleDateString(),
+            workspaceId: booking.WorkspaceId
+          };
+
+          console.log(booking[0]);
+          console.log(bookingInfo);
+          emailService.sendEmailDeleteBookingBooker(bookerEmail.Email, bookingInfo);
+          emailService.sendEmailDeleteBookingLender(workspaceOwnerEmail.Email, bookingInfo);
+
           await Booking.deleteBooking(id);
           resolve('200');
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
-            e.status || 405,
+            e.status || 403,
           ));
         }
       },
@@ -37,11 +66,14 @@ class OfficeBookingService {
     return new Promise(
       async (resolve) => {
         try {
+          await Booking.confirmBooking(bookingId);
+          // send email notification to booker and workspace owner
+          // stop timer
           resolve(Service.successResponse(''));
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
-            e.status || 405,
+            e.status || 403,
           ));
         }
       },
@@ -119,10 +151,16 @@ class OfficeBookingService {
     return new Promise(
       async (resolve) => {
         try {
-          resolve(Service.successResponse(''));
+          const queryResults = (await knex.raw("SELECT DISTINCT city from floor"))[0];
+          // console.log(queryResults);
+          const cities = queryResults.map(rdp => rdp.city);
+          // console.log(cities);
+          console.log("locations /GET -> getLocations -> 200 OK");
+          resolve(Service.successResponse(cities));
         } catch (e) {
+          console.error("ERROR: locations /GET -> getLocations");
           resolve(Service.rejectResponse(
-            e.message || 'Invalid input',
+            e.message || 'Unknown Error (probably MySQL DB error)',
             e.status || 405,
           ));
         }
@@ -162,13 +200,29 @@ class OfficeBookingService {
    **/
   static lockBooking({ availabilityId, staffId, startDate, endDate }) {
     return new Promise(
-      async (resolve) => {
+      async (resolve, reject) => {
         try {
-          resolve(Service.successResponse(''));
+          console.log('in lockBooking');
+          Availabilities.getByAvailabilityId(availabilityId).then((availability) => {
+            let a = Object.values(JSON.parse(JSON.stringify(availability)))[0][0];
+            if (startDate >= a.StartDate.slice(0, 10) && endDate <= a.EndDate.slice(0, 10)) {
+              console.log('booking is valid');
+              // create booking
+              Booking.insertBooking(availabilityId, staffId, startDate, endDate, false).then(() => {
+                Booking.getBookingbyAvailStaffDates(availabilityId, staffId, startDate, endDate).then((booking) => {
+                  console.log(booking);
+                  resolve(booking[0]);
+                });
+              });
+            } else {
+              console.log('booking is not valid');
+              reject(new Error(403));
+            }
+          });
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
-            e.status || 405,
+            e.status || 403,
           ));
         }
       },

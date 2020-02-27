@@ -12,7 +12,7 @@ class Service {
   static makeBookingPromise(obj) {
     return new Promise((resolve, reject) => {
       Bookings.getByAvailabilityId(obj.AvailabilityId).then(o => {
-        obj["booking"] = o[0];
+        obj["bookings"] = o[0];
         resolve(obj);
       }).catch(err => {
         reject(err);

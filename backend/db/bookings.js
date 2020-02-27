@@ -15,4 +15,39 @@ module.exports = {
   deleteBooking: function (id) {
     return knex.raw('delete from booking where BookingId = ?', [id]);
   },
+
+  confirmBooking: function (bookingId) {
+    return knex('booking').where({ BookingId: bookingId }).update({ Confirmed: true });
+  },
+
+  getUserEmail: function (bookingId) {
+    return knex.raw("select u.Email from booking b, user u where b.BookingId = ? and u.StaffId = b.StaffId", [bookingId]);
+  },
+
+  getOwnerEmail: function (bookingId) {
+    return knex.raw("select u.Email from booking b, user u, workspace w where w.StaffId = u.StaffId and b.WorkspaceId = w.WorkspaceId and b.BookingId = ?", [bookingId]);
+  },
+
+  getByBookingId: function (bookingId) {
+    return knex.raw("select * from booking b where b.BookingId = ?", [bookingId]);
+  },
+
+  insertBooking: function (availabilityId, staffId, startDate, endDate, confirmedStatus) {
+    return knex('booking').insert({ AvailabilityId: availabilityId, StaffId: staffId, StartDate: startDate, EndDate: endDate, Confirmed: confirmedStatus });
+  },
+
+  getBookingbyAvailStaffDates: function (availabilityId, staffId, startDate, endDate) {
+    let query = 'select * from booking b where b.AvailabilityId = ';
+    query += availabilityId;
+    query += ' and b.StaffId = ';
+    query += staffId;
+    query += ' and b.StartDate = \"';
+    query += startDate;
+    query += '\" and b.EndDate = \"';
+    query += endDate;
+    query += '\";'
+
+    console.log(query);
+    return knex.raw(query);
+  }
 }

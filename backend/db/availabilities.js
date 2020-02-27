@@ -49,7 +49,8 @@ module.exports = {
     query += workspaceId;
     query += '\";';
 
-    console.log(query);
+    // Commenting this out since this is working
+    // console.log(query);
     return knex.raw(query);
 
   },
@@ -68,5 +69,25 @@ module.exports = {
     query += '\"));'
     console.log(query);
     return knex.raw(query);
+  },
+
+  /**
+   * @returns {Promise<boolean>} whether there is a conflict
+   * 
+   * @param {string} startDate 
+   * @param {string} endDate 
+   * @param {string} workspaceId 
+   */
+  hasAvailabilityConflict: async function (startDate, endDate, workspaceId) {
+    const query = `SELECT COUNT(*) from availability a WHERE a.WorkspaceId = '${workspaceId}' AND a.StartDate <= '${endDate}' AND '${startDate}' <= a.EndDate`;
+    // console.log(query);
+    const queryResult = await knex.raw(query);
+    const count = queryResult[0][0]["COUNT(*)"];
+    // console.log("Count: " + count);
+    return count > 0;
+  },
+
+  getByAvailabilityId: function (id) {
+    return knex.raw('select a.StartDate, a.EndDate from availability a where a.AvailabilityId = ?', [id]);
   }
 }

@@ -4,7 +4,7 @@ info:
   title: Flex Work
   version: 0.0.3
 servers:
-- url: http://34.224.250.122:6000/
+- url: http://34.224.250.122:8080/
 tags:
 - description: As an ICBC employee, make a **Booking** on an office in any ICBC location
   name: Office Booking
