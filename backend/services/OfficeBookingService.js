@@ -5,7 +5,10 @@ const Booking = require('../db/bookings');
 
 // Added for direct usage of knex
 const knex = require("../db/mysqlDB");
+// flexwork-common helper functions
+const FWC = require("flexwork-common");
 // How many availabilities in the DB to dig for open ones
+// The ones that we dig might not be open, and the general use case is to return the top 10 open ones
 const LIMIT = 500;
 
 class OfficeBookingService {
@@ -196,23 +199,44 @@ class OfficeBookingService {
 
   static makeBookingHelper(bookingId, startDate, endDate, staffId, email, firstName, lastName, department, valid) {
     return {
-      bookingId, startDate, endDate,
+      bookingId,
+      startDate,
+      endDate,
       user: {
-        staffId, email, firstName, lastName, department, valid
+        staffId,
+        email,
+        firstName,
+        lastName,
+        department,
+        valid
       }
     };
   }
 
   static makeBooking(row) {
-    return makeBookingHelper(row.BookingId, row.BStartDate, row.BEndDate, row.BStaffId, row.Email, row.FirstName, row.LastName, row.Department, row.Valid);
+    return OfficeBookingService.makeBookingHelper(row.BookingId, row.BStartDate, row.BEndDate, row.BStaffId, row.Email, row.FirstName, row.LastName, row.Department, row.Valid);
   }
 
   static makeAvailabilityHelper(availabilityId, startDate, endDate, workspaceId, workspaceName, floorId, location) {
-    return 
+    return {
+      availabilityId,
+      startDate,
+      endDate,
+      workspaceId,
+      workspaceName,
+      floorId,
+      location,
+      bookings: []
+    }
   }
 
   static makeAvailability(row) {
-    return makeAvailabilityHelper // TODO: FINISH
+    return OfficeBookingService.makeAvailabilityHelper(row.AvailabilityId, row.AStartDate, row.AEndDate, row.WorkspaceId, row.WorkspaceName, row.FloorNo, row.City);
+  }
+
+  static hasOpening(availability) {
+    availability.bookings.sort((b1, b2) => b1.startDate - b2.startDate);
+    return FWC.openDates(availability).length > 0;
   }
 
   /**
@@ -222,9 +246,14 @@ class OfficeBookingService {
    * returns List
    **/
   static getTopAvailabilities({ amount }) {
+    if (!amount) {
+      console.log("availabilities/top GET -> getTopAvailabilities -> invalid amount, using 10 instead.");
+      amount = 10;
+    }
     return new Promise(
       async (resolve) => {
         try {
+          // TODO: set this complex query as a View and/or Stored Procedure in MySQL
           const query = `select * from
                         (select
                         a.AvailabilityId,
@@ -241,25 +270,40 @@ class OfficeBookingService {
                         left join user u on BStaffId = u.StaffId
                         order by AvailabilityId`;
           const rows = (await knex.raw(query))[0];
+          // console.log(rows);
           let currAvailabilityId = -1;
-          const response = [];
+          const availabilities = [];
           for (const row of rows) {
+            // The rows are in sorted AvailabilityId, so rows for the same availability are consecutive
+            // If the next row's AvailabilityId the same as the curr one, then only create
+            // a new booking and push it into curr's bookings array
             if (row.AvailabilityId === currAvailabilityId) {
               // Push booking into current availability in response;
-              const booking = makeBooking(row);
-              response[currAvailabilityId].bookings.push(booking);
+              const booking = OfficeBookingService.makeBooking(row);
+              availabilities[availabilities.length - 1].bookings.push(booking);
             } else {
-              // Increment response index
-              ++currAvailabilityId;
-              const availability = makeAvailability(row);
-              response.push(availability);
+              // update index;
+              currAvailabilityId = row.AvailabilityId;
+              const availability = OfficeBookingService.makeAvailability(row);
+              // console.log(availability);
+              availabilities.push(availability);
               if (row.BookingId != null) {
-                const booking = makeBooking(row);
-                response[currAvailabilityId].bookings.push(booking);
+                const booking = OfficeBookingService.makeBooking(row);
+                availabilities[availabilities.length - 1].bookings.push(booking);
               }
             }
           }
-          resolve(Service.successResponse(''));
+          const response = [];
+          for (const availability of availabilities) {
+            if (OfficeBookingService.hasOpening(availability)) {
+              response.push(availability);
+              if (response.length === amount) {
+                break;
+              }
+            }
+          }
+          console.log(`getAvailabilities/top/${amount} GET -> getTopAvaliabilities -> 200 OK`);
+          resolve(Service.successResponse(response));
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
