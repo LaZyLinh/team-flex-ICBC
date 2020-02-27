@@ -447,8 +447,9 @@ class ApiClient {
             }
         }
 
-        request.end((error, response) => {
-            if (callback) {
+        if (callback) {
+            // Run the callback (this is roughly the original generated code)
+            request.end((error, response) => {
                 var data = null;
                 if (!error) {
                     try {
@@ -462,11 +463,32 @@ class ApiClient {
                 }
 
                 callback(error, data, response);
-            }
-        });
-
-        return request;
+            });
+            return request;
+        }
+        else {
+            // Modified so that all generated API functions can be awaited
+            return new Promise((resolve, reject) => {
+                request.end((error, response) => {
+                    if (error) {
+                        reject(error);
+                    }
+                    let data;
+                    try {
+                        data = this.deserialize(response, returnType);
+                        if (this.enableCookies && typeof window === 'undefined') {
+                            this.agent._saveCookies(response);
+                        }
+                        resolve(data);
+                    } catch (err) {
+                        reject(err);
+                    }
+                });
+            });
+        }
     }
+
+
 
     /**
     * Parses an ISO-8601 string representation of a date value.
