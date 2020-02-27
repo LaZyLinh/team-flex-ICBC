@@ -32,9 +32,9 @@ class ApiClient {
         /**
          * The base URL against which to resolve every API call's (relative) path.
          * @type {String}
-         * @default http://34.224.250.122:6000
+         * @default http://34.224.250.122:8080
          */
-        this.basePath = 'http://34.224.250.122:6000'.replace(/\/+$/, '');
+        this.basePath = 'http://34.224.250.122:8080'.replace(/\/+$/, '');
 
         /**
          * The authentication methods to be included for all API calls.
@@ -77,13 +77,13 @@ class ApiClient {
          * if this.enableCookies is set to true.
          */
         if (typeof window === 'undefined') {
-          this.agent = new superagent.agent();
+            this.agent = new superagent.agent();
         }
 
         /*
          * Allow user to override superagent agent
          */
-         this.requestAgent = null;
+        this.requestAgent = null;
 
         /*
          * Allow user to add superagent plugins
@@ -108,14 +108,14 @@ class ApiClient {
         return param.toString();
     }
 
-   /**
-    * Builds full URL by appending the given path to the base URL and replacing path parameter place-holders with parameter values.
-    * NOTE: query parameters are not handled here.
-    * @param {String} path The path to append to the base URL.
-    * @param {Object} pathParams The parameter values to append.
-    * @param {String} apiBasePath Base path defined in the path, operation level to override the default one
-    * @returns {String} The encoded path with parameter values substituted.
-    */
+    /**
+     * Builds full URL by appending the given path to the base URL and replacing path parameter place-holders with parameter values.
+     * NOTE: query parameters are not handled here.
+     * @param {String} path The path to append to the base URL.
+     * @param {Object} pathParams The parameter values to append.
+     * @param {String} apiBasePath Base path defined in the path, operation level to override the default one
+     * @returns {String} The encoded path with parameter values substituted.
+     */
     buildUrl(path, pathParams, apiBasePath) {
         if (!path.match(/^\//)) {
             path = '/' + path;
@@ -183,7 +183,7 @@ class ApiClient {
             let fs;
             try {
                 fs = require('fs');
-            } catch (err) {}
+            } catch (err) { }
             if (fs && fs.ReadStream && param instanceof fs.ReadStream) {
                 return true;
             }
@@ -278,7 +278,7 @@ class ApiClient {
                     break;
                 case 'bearer':
                     if (auth.accessToken) {
-                        request.set({'Authorization': 'Bearer ' + auth.accessToken});
+                        request.set({ 'Authorization': 'Bearer ' + auth.accessToken });
                     }
 
                     break;
@@ -301,7 +301,7 @@ class ApiClient {
                     break;
                 case 'oauth2':
                     if (auth.accessToken) {
-                        request.set({'Authorization': 'Bearer ' + auth.accessToken});
+                        request.set({ 'Authorization': 'Bearer ' + auth.accessToken });
                     }
 
                     break;
@@ -311,15 +311,15 @@ class ApiClient {
         });
     }
 
-   /**
-    * Deserializes an HTTP response body into a value of the specified type.
-    * @param {Object} response A SuperAgent response object.
-    * @param {(String|Array.<String>|Object.<String, Object>|Function)} returnType The type to return. Pass a string for simple types
-    * or the constructor function for a complex type. Pass an array containing the type name to return an array of that type. To
-    * return an object, pass an object with one property whose name is the key type and whose value is the corresponding value type:
-    * all properties on <code>data<code> will be converted to this type.
-    * @returns A value of the specified type.
-    */
+    /**
+     * Deserializes an HTTP response body into a value of the specified type.
+     * @param {Object} response A SuperAgent response object.
+     * @param {(String|Array.<String>|Object.<String, Object>|Function)} returnType The type to return. Pass a string for simple types
+     * or the constructor function for a complex type. Pass an array containing the type name to return an array of that type. To
+     * return an object, pass an object with one property whose name is the key type and whose value is the corresponding value type:
+     * all properties on <code>data<code> will be converted to this type.
+     * @returns A value of the specified type.
+     */
     deserialize(response, returnType) {
         if (response == null || returnType == null || response.status == 204) {
             return null;
@@ -336,32 +336,32 @@ class ApiClient {
         return ApiClient.convertToType(data, returnType);
     }
 
-   /**
-    * Callback function to receive the result of the operation.
-    * @callback module:ApiClient~callApiCallback
-    * @param {String} error Error message, if any.
-    * @param data The data returned by the service call.
-    * @param {String} response The complete HTTP response.
-    */
+    /**
+     * Callback function to receive the result of the operation.
+     * @callback module:ApiClient~callApiCallback
+     * @param {String} error Error message, if any.
+     * @param data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
 
-   /**
-    * Invokes the REST service using the supplied settings and parameters.
-    * @param {String} path The base URL to invoke.
-    * @param {String} httpMethod The HTTP method to use.
-    * @param {Object.<String, String>} pathParams A map of path parameters and their values.
-    * @param {Object.<String, Object>} queryParams A map of query parameters and their values.
-    * @param {Object.<String, Object>} headerParams A map of header parameters and their values.
-    * @param {Object.<String, Object>} formParams A map of form parameters and their values.
-    * @param {Object} bodyParam The value to pass as the request body.
-    * @param {Array.<String>} authNames An array of authentication type names.
-    * @param {Array.<String>} contentTypes An array of request MIME types.
-    * @param {Array.<String>} accepts An array of acceptable response MIME types.
-    * @param {(String|Array|ObjectFunction)} returnType The required type to return; can be a string for simple types or the
-    * constructor for a complex type.
-    * @param {String} apiBasePath base path defined in the operation/path level to override the default one
-    * @param {module:ApiClient~callApiCallback} callback The callback function.
-    * @returns {Object} The SuperAgent request object.
-    */
+    /**
+     * Invokes the REST service using the supplied settings and parameters.
+     * @param {String} path The base URL to invoke.
+     * @param {String} httpMethod The HTTP method to use.
+     * @param {Object.<String, String>} pathParams A map of path parameters and their values.
+     * @param {Object.<String, Object>} queryParams A map of query parameters and their values.
+     * @param {Object.<String, Object>} headerParams A map of header parameters and their values.
+     * @param {Object.<String, Object>} formParams A map of form parameters and their values.
+     * @param {Object} bodyParam The value to pass as the request body.
+     * @param {Array.<String>} authNames An array of authentication type names.
+     * @param {Array.<String>} contentTypes An array of request MIME types.
+     * @param {Array.<String>} accepts An array of acceptable response MIME types.
+     * @param {(String|Array|ObjectFunction)} returnType The required type to return; can be a string for simple types or the
+     * constructor for a complex type.
+     * @param {String} apiBasePath base path defined in the operation/path level to override the default one
+     * @param {module:ApiClient~callApiCallback} callback The callback function.
+     * @returns {Object} The SuperAgent request object.
+     */
     callApi(path, httpMethod, pathParams,
         queryParams, headerParams, formParams, bodyParam, authNames, contentTypes, accepts,
         returnType, apiBasePath, callback) {
@@ -392,7 +392,7 @@ class ApiClient {
 
         // set requestAgent if it is set by user
         if (this.requestAgent) {
-          request.agent(this.requestAgent);
+            request.agent(this.requestAgent);
         }
 
         // set request timeout
@@ -401,7 +401,7 @@ class ApiClient {
         var contentType = this.jsonPreferredMime(contentTypes);
         if (contentType) {
             // Issue with superagent and multipart/form-data (https://github.com/visionmedia/superagent/issues/746)
-            if(contentType != 'multipart/form-data') {
+            if (contentType != 'multipart/form-data') {
                 request.type(contentType);
             }
         } else if (!request.header['Content-Type']) {
@@ -432,13 +432,13 @@ class ApiClient {
         }
 
         if (returnType === 'Blob') {
-          request.responseType('blob');
+            request.responseType('blob');
         } else if (returnType === 'String') {
-          request.responseType('string');
+            request.responseType('string');
         }
 
         // Attach previously saved cookies, if enabled
-        if (this.enableCookies){
+        if (this.enableCookies) {
             if (typeof window === 'undefined') {
                 this.agent._attachCookies(request);
             }
@@ -453,7 +453,7 @@ class ApiClient {
                 if (!error) {
                     try {
                         data = this.deserialize(response, returnType);
-                        if (this.enableCookies && typeof window === 'undefined'){
+                        if (this.enableCookies && typeof window === 'undefined') {
                             this.agent._saveCookies(response);
                         }
                     } catch (err) {
@@ -545,20 +545,20 @@ class ApiClient {
         }
     }
 
-  /**
-    * Gets an array of host settings
-    * @returns An array of host settings
-    */
+    /**
+      * Gets an array of host settings
+      * @returns An array of host settings
+      */
     hostSettings() {
         return [
             {
-              'url': "http://34.224.250.122:6000/",
-              'description': "No description provided",
+                'url': "http://34.224.250.122:6000/",
+                'description': "No description provided",
             }
-      ];
+        ];
     }
 
-    getBasePathFromSettings(index, variables={}) {
+    getBasePathFromSettings(index, variables = {}) {
         var servers = this.hostSettings();
 
         // check array index out of bound
@@ -573,7 +573,7 @@ class ApiClient {
         for (var variable_name in server['variables']) {
             if (variable_name in variables) {
                 let variable = server['variables'][variable_name];
-                if ( !('enum_values' in variable) || variable['enum_values'].includes(variables[variable_name]) ) {
+                if (!('enum_values' in variable) || variable['enum_values'].includes(variables[variable_name])) {
                     url = url.replace("{" + variable_name + "}", variables[variable_name]);
                 } else {
                     throw new Error("The variable `" + variable_name + "` in the host URL has invalid value " + variables[variable_name] + ". Must be " + server['variables'][variable_name]['enum_values'] + ".");
