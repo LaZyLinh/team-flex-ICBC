@@ -11,6 +11,7 @@ import InfiniteCalendar, { Calendar, withRange } from "react-infinite-calendar";
 import "react-infinite-calendar/styles.css";
 import { ArrowForwardOutlined, YoutubeSearchedFor } from "@material-ui/icons";
 import Button from "@material-ui/core/Button"; // only needs to be imported once
+import EnhancedTable from "./Table.js";
 
 class Booking extends React.Component {
   constructor(props) {
@@ -35,11 +36,10 @@ class Booking extends React.Component {
       checkingFeatures: [
         { name: "TV", checked: false },
         { name: "Private", checked: false },
-        { name: "Conference Phone", checked: false },
-        { name: "Pet-friendly", checked: false }
+        { name: "Conference Phone", checked: false }
       ],
       availabilities: [],
-      hasAvail: false
+      hasAvail: true
     });
 
     // set whether page should dipslay table or no avail
@@ -72,8 +72,6 @@ class Booking extends React.Component {
   }
 
   handleInputChange(event) {
-    console.log("value:" + event.target.value + " checked: " + event.target.checked);
-
     this.setState({
       checkingFeatures: this.state.checkingFeatures.map(cf => {
         if (cf.name === event.target.value) {
@@ -113,7 +111,7 @@ class Booking extends React.Component {
   // Populating the right panel based on this.state.hasAvail
   rightPanel(classes) {
     if (this.state.hasAvail) {
-      return <YoutubeSearchedFor />;
+      return <EnhancedTable />;
     } else {
       return (
         <React.Fragment>
@@ -300,7 +298,7 @@ const muiStyles = {
     left: "31%",
     top: "40%",
     height: "15%",
-    color: "#002D7D"
+    color: "#817B7B"
   },
   noAvailText: {
     position: "absolute",
@@ -314,7 +312,15 @@ const muiStyles = {
     display: "flex",
     alignItems: "center",
     textAlign: "left",
-    color: "#002D7D"
+    color: "#817B7B"
+  },
+  tableHeader: {
+    position: "absolute",
+    left: "0%",
+    right: "0%",
+    top: "0%",
+    bottom: "95%",
+    background: "#F1F4F8"
   }
 };
 

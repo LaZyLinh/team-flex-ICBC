@@ -159,7 +159,8 @@ const muiStyles = {
     position: "absolute",
     top: boxTop,
     left: "4.79%",
-    width: "35%"
+    width: "35%",
+    borderRadius: "15px"
   },
   box: {
     position: "absolute",
