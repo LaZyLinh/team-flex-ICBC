@@ -20,9 +20,43 @@ import BookingSummary from '../model/BookingSummary';
 /**
 * OfficeBooking service.
 * @module api/OfficeBookingApi
-* @version 0.0.3
+* @version 0.0.6
 */
 class OfficeBookingApi {
+
+  /**
+   * Get features by availabilityId, workspaceId, or all features if no params
+   * @param {Object} opts Optional parameters
+   * @param {Number} opts.availabilityId 
+   * @param {String} opts.workspaceId 
+   * @param {module:api/OfficeBookingApi~getFeaturesCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link Array.<String>}
+   */
+  getFeatures(opts, callback) {
+    opts = opts || {};
+    let postBody = null;
+
+    let pathParams = {
+    };
+    let queryParams = {
+      'availabilityId': opts['availabilityId'],
+      'workspaceId': opts['workspaceId']
+    };
+    let headerParams = {
+    };
+    let formParams = {
+    };
+
+    let authNames = [];
+    let contentTypes = [];
+    let accepts = ['application/json'];
+    let returnType = ['String'];
+    return this.apiClient.callApi(
+      '/features', 'GET',
+      pathParams, queryParams, headerParams, formParams, postBody,
+      authNames, contentTypes, accepts, returnType, null, callback
+    );
+  }
 
   /**
   * Constructs a new OfficeBookingApi. 
