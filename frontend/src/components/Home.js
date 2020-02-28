@@ -13,14 +13,14 @@ class Home extends React.Component {
           variant="contained"
           href="/availabilities"
         >
-          Register Office
+          Lend Office
         </Button>
         <Button
           className={`${classes.btn} ${classes.label} ${classes.btn2} ${classes.label2}`}
           variant="contained"
           href="/bookings"
         >
-          Make Booking
+          Book Office
         </Button>
         <Button
           className={`${classes.btn} ${classes.label} ${classes.btn3} ${classes.label3}`}
@@ -28,13 +28,6 @@ class Home extends React.Component {
           href="/withdraw"
         >
           Manage Booking
-        </Button>
-        <Button
-          className={`${classes.btn} ${classes.label} ${classes.btn4} ${classes.label4}`}
-          variant="contained"
-          href="/confirm"
-        >
-          Confirm Booking
         </Button>
         <Link className={classes.link} href="/admin">
           Admin
@@ -47,14 +40,15 @@ class Home extends React.Component {
 const muiStyles = {
   bg: {
     position: "absolute",
-    backgroundImage: `url(${require("../assets/bg.png")})`,
+    backgroundImage: `url(${require("../assets/van_bg.png")})`,
+    backgroundSize: "cover",
     height: "100vh",
     width: "100vw",
     top: "0",
     left: "0"
   },
   btn: {
-    background: "#002D7D",
+    background: "rgba(0,18,49,1)",
     borderRadius: "20px",
     textAlign: "center",
     height: "10vh",

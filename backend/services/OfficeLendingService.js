@@ -2,6 +2,9 @@
 const Service = require('./Service');
 const Availabilities = require('../db/availabilities');
 const Bookings = require('../db/bookings');
+const Floors = require('../db/floors');
+const OfficeBookingService = require('./OfficeBookingService');
+
 
 class OfficeLendingService {
 
@@ -15,12 +18,19 @@ class OfficeLendingService {
     return new Promise(
       async (resolve) => {
         try {
+          // query all bookings related to this availability
+          let bookings = await Bookings.getByAvailabilityId(id);
+          console.log('bookings');
+          console.log(bookings);
+          bookings[0].forEach((booking) => {
+            OfficeBookingService.cancelBooking(booking.BookingId);
+          });
           await Availabilities.deleteAvailability(id);
-          resolve("OK");
+          resolve('200');
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
-            e.status || 405,
+            e.status || 403,
           ));
         }
       },
@@ -37,10 +47,43 @@ class OfficeLendingService {
    **/
   static createAvailability({ startDate, endDate, workspaceId }) {
     return new Promise(
-      async (resolve) => {
+      async (resolve, reject) => {
         try {
-          console.log("start: " + startDate);
-          resolve(Service.successResponse(''));
+          // Availabilities.getExistingConflictingAvailabilities(startDate, endDate, workspaceId).then(obj => {
+          //   if (obj[0].length !== 0) {
+          //     reject(new Error(403));
+          //   } else {
+          //     Availabilities.insertAvailability(startDate, endDate, workspaceId).then(() => {
+          //       Availabilities.getByStartEndDateAndWorkspaceId(startDate, endDate, workspaceId).then(obj => {
+          //         resolve(obj[0]);
+          //       });
+          //     });
+          //   }
+          // })
+          if (endDate < startDate) {
+            console.log("/availability POST -> createAvailability -> Response: 403 End Date before Start Date");
+            throw { message: "End Date before Start Date", status: 403 };
+          }
+          const hasConflict = await Availabilities.hasAvailabilityConflict(startDate, endDate, workspaceId);
+          if (hasConflict) {
+            console.log("/availability POST -> createAvailability -> Response: 403 Date Conflict");
+            throw { message: "Date Conflict", status: 403 };
+          } else {
+            // console.log("createAvailability: no conflict. About to insert.");
+            try {
+              await Availabilities.insertAvailability(startDate, endDate, workspaceId);
+              const createdAvailability = (await Availabilities.getByStartEndDateAndWorkspaceId(startDate, endDate, workspaceId))[0];
+              // console.log("createAvailability: successful.");
+              // console.log("newly created availability: ");
+              // console.log(createdAvailability);
+              console.log("/availability POST -> createAvailability -> Response: 200 OK");
+              resolve(Service.successResponse(createdAvailability));
+            } catch (e) {
+              console.log(e);
+              console.log("/availability POST -> createAvailabiltiy -> Response: 403 Cannot Insert (likely WorkplaceID not found)");
+              throw { message: e, status: 403 };
+            }
+          }
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
@@ -61,7 +104,8 @@ class OfficeLendingService {
     return new Promise(
       async (resolve) => {
         try {
-          resolve(Service.successResponse(''));
+          let locations = await Floors.getLocations();
+          resolve(locations[0]);
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
@@ -115,7 +159,7 @@ class OfficeLendingService {
 const makeBookingPromise = function (obj) {
   return new Promise((resolve, reject) => {
     Bookings.getByAvailabilityId(obj.AvailabilityId).then(o => {
-      obj["booking"] = o[0];
+      obj["bookings"] = o[0];
       resolve(obj);
     }).catch(err => {
       reject(err);
