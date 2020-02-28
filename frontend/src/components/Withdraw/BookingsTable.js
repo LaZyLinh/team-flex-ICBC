@@ -52,8 +52,7 @@ class BookingsTable extends React.Component {
               <TableCell align="right">Workspace ID</TableCell>
               <TableCell align="right">Start Date</TableCell>
               <TableCell align="right">End Date</TableCell>
-              <TableCell align="right">Office Owner
-              </TableCell>
+              <TableCell align="right">Office Owner</TableCell>
               <TableCell align="right">Status</TableCell>
               <TableCell align="right">Cancel</TableCell>
               {/*<confirmA />*/}
@@ -61,7 +60,10 @@ class BookingsTable extends React.Component {
           </TableHead>
           <TableBody>
             {this.props.rows.map(row => (
-              <TableRow key={row.bookingId}><TableCell><Checkbox/></TableCell>
+              <TableRow key={row.bookingId}>
+                <TableCell>
+                  <Checkbox />
+                </TableCell>
                 <TableCell component="th" scope="row">
                   {row.city}
                 </TableCell>

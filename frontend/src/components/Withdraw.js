@@ -6,14 +6,13 @@ import { withStyles } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import FormControl from "@material-ui/core/FormControl";
 import TextField from "@material-ui/core/TextField/TextField";
-import FilterListIcon from "@material-ui/icons/FilterList";
+import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
 import ManageTable from "./Withdraw/ManageTable";
 
 class Withdraw extends React.Component {
   constructor(props) {
     super(props);
-    this.api = new OfficeBookingApi();
     this.state = {
       staffId: -1,
       // bookings: [],
@@ -75,7 +74,7 @@ class Withdraw extends React.Component {
   onSubmitStaffId(event) {
     event.preventDefault();
     const staffId = this.state.staffId;
-    this.api.getBookingsByUserID(staffId, (error, data) => {
+    OfficeBookingApi.getBookingsByUserID(staffId, (error, data) => {
       if (error) {
         console.log("Got an error from API call");
         this.setState({
@@ -139,7 +138,7 @@ class Withdraw extends React.Component {
     // Otherwise, show this.state.bookings in dynamically generated list
     return (
       <div>
-        <FilterListIcon className={`${classes.shapeFilter}`} />
+        <HomeIcon className={`${classes.shapeFilter}`} />
         <div className={`${classes.searchBar}`}> </div>
         <form onSubmit={this.onSubmitStaffId} className={`${classes.idSearch}`}>
           <TextField onInput={e => this.setState({ staffId: e.target.value })} type="text" label="ID" name="staffId" />

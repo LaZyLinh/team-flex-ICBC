@@ -130,6 +130,14 @@ class Booking extends React.Component {
 
     return (
       <div className={`${classes.container}`}>
+        <div className={`${classes.rightPanel}`}> {this.rightPanel(classes)}</div>
+        {/* Reason for putting bottom bar here: so the left panel goes on top */}
+        <div className={`${classes.bottomBar}`}>
+          <Button className={`${classes.bottomBtn}`} variant="contained" href="/confirm">
+            Next
+          </Button>
+          <ArrowForwardOutlined className={`${classes.arrow1}`}></ArrowForwardOutlined>
+        </div>
         <div className={`${classes.leftPanel}`}>
           <div className={`${classes.locationPickerBg}`}></div>
           {/* Location Selection */}
@@ -173,13 +181,6 @@ class Booking extends React.Component {
           <FormControl component="fieldset" className={classes.featureSelection}>
             <FormGroup>{this.featureSelectionItems()}</FormGroup>
           </FormControl>
-        </div>
-        <div className={`${classes.rightPanel}`}> {this.rightPanel(classes)}</div>
-        <div className={`${classes.bottomBar}`}>
-          <Button className={`${classes.bottomBtn}`} variant="contained" href="/confirm">
-            Next
-          </Button>
-          <ArrowForwardOutlined className={`${classes.arrow1}`}></ArrowForwardOutlined>
         </div>
       </div>
     );
@@ -247,7 +248,9 @@ const muiStyles = {
   container: {
     position: "absolute",
     height: "100vh",
-    width: "100vw"
+    width: "100vw",
+    left: "0",
+    top: "0"
   },
   leftPanel: {
     position: "absolute",

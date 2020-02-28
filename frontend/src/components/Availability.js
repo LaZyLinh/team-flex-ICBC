@@ -152,9 +152,9 @@ class Availability extends React.Component {
           <div
             style={{
               position: "absolute",
-              top: "1.2vh",
+              top: "1.4vh",
               left: "6vw",
-              fontFamily: "calibri",
+              fontFamily: "Arial",
               fontSize: "3vw",
               color: "#80ADED"
             }}
@@ -164,9 +164,9 @@ class Availability extends React.Component {
           <div
             style={{
               position: "absolute",
-              top: "1.2vh",
-              left: "29vw",
-              fontFamily: "calibri",
+              top: "1.4vh",
+              left: "40vw",
+              fontFamily: "Arial",
               fontSize: "3vw",
               fontWeight: "bold",
               color: "#002D7D"
@@ -192,18 +192,13 @@ class Availability extends React.Component {
             headerFormat: "MMM Do"
           }}
           theme={{
-            headerColor: "rgba(0,18,49,0.5)",
-            weekdayColor: "rgba(0,18,49,0.5)"
+            headerColor: "rgba(0,18,49,0.7)",
+            weekdayColor: "rgba(0,18,49,0.7)"
           }}
           onSelect={this.onSelectCalendar}
         />
         <div className={classes.box}>
-          <TextField
-            label="Your Staff ID"
-            variant="outlined"
-            className={`${classes.field} ${classes.field1}`}
-            value={this.state.staffId}
-          />
+          <TextField label="Your Staff ID" variant="outlined" className={`${classes.field} ${classes.field1}`} />
           <FormControl variant="outlined" className={`${classes.field} ${classes.field2}`}>
             <InputLabel>Office Location</InputLabel>
             <Select>{this.locationSelectMenuItems(this.state.locations)}</Select>
@@ -257,7 +252,7 @@ const muiStyles = {
     right: "6.6%",
     top: boxTop,
     bottom: "17.4%",
-    background: "rgba(0,18,49,0.5)",
+    background: "rgba(0,18,49,0.7)",
     mixBlendMode: "normal",
     border: "1px solid #FFFFFF",
     boxSizing: "border-box",

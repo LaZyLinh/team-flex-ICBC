@@ -48,7 +48,7 @@ const muiStyles = {
     left: "0"
   },
   btn: {
-    background: "rgba(0,18,49,0.75)",
+    background: "rgba(0,18,49,1)",
     borderRadius: "20px",
     textAlign: "center",
     height: "10vh",

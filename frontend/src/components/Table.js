@@ -102,7 +102,7 @@ function EnhancedTableHead(props) {
 
   return (
     <TableHead>
-      <TableRow>
+      <TableRow style={{ height: "8vh" }}>
         <TableCell padding="checkbox">
           <Checkbox
             style={{
@@ -114,11 +114,12 @@ function EnhancedTableHead(props) {
             inputProps={{ "aria-label": "select all desserts" }}
           />
         </TableCell>
-        {headCells.map(headCell => (
+        {headCells.map((headCell, idx) => (
           <TableCell
+            style={{ fontFamily: "Calibri", fontSize: "2.5vh" }}
             className={`${classes.headText}`}
             key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
+            align={idx === 0 ? "left" : "right"}
             padding={headCell.disablePadding ? "none" : "default"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -159,13 +160,13 @@ const useToolbarStyles = makeStyles(theme => ({
   highlight:
     theme.palette.type === "light"
       ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
-        }
+        color: theme.palette.secondary.main,
+        backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+      }
       : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark
-        },
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.secondary.dark
+      },
   title: {
     flex: "1 1 100%"
   }
@@ -186,10 +187,10 @@ const EnhancedTableToolbar = props => {
           {numSelected} selected
         </Typography>
       ) : (
-        <Typography className={classes.title} variant="h6" id="tableTitle">
-          Nutrition
+          <Typography className={classes.title} variant="h6" id="tableTitle">
+            Nutrition
         </Typography>
-      )}
+        )}
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
@@ -198,12 +199,12 @@ const EnhancedTableToolbar = props => {
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+          <Tooltip title="Filter list">
+            <IconButton aria-label="filter list">
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
+        )}
     </Toolbar>
   );
 };
@@ -221,7 +222,8 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(2)
   },
   table: {
-    minWidth: 750
+    minWidth: 750,
+    minHeight: "85vh"
   },
   visuallyHidden: {
     border: 0,
