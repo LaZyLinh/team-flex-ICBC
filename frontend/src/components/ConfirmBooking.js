@@ -83,6 +83,16 @@ class ConfirmBooking extends React.Component {
           </div>
           <div className={`${classes.text1}`}>Booking Confirmation</div>
           <div className={`${classes.box1}`}>
+            <div style={{ fontSize: "25px", position: "absolute", top: "10%", left: "10%" }}>
+              Location: North Vancouver
+            </div>
+            <div style={{ fontSize: "25px", position: "absolute", top: "40%", left: "10%" }}>Workspace: NV4-01A</div>
+            <div style={{ fontSize: "25px", position: "absolute", top: "20%", left: "10%" }}>
+              Start Date: February 27, 2020
+            </div>
+            <div style={{ fontSize: "25px", position: "absolute", top: "30%", left: "10%" }}>
+              End Date: March 1, 2020
+            </div>
             <div className={`${classes.map}`}></div>
           </div>
           <div className={`${classes.box2}`}>
@@ -298,6 +308,7 @@ const muiStyles = {
     top: "52.89%",
     bottom: "3%",
     backgroundImage: ConfirmBooking.generateMapLink(),
+    backgroundSize: "400px 300px",
     borderRadius: "20px"
   }
 };
