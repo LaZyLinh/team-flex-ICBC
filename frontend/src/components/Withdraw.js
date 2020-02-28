@@ -9,6 +9,7 @@ import TextField from "@material-ui/core/TextField/TextField";
 import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
 import ManageTable from "./Withdraw/ManageTable";
+import Link from "@material-ui/core/Link";
 
 class Withdraw extends React.Component {
   constructor(props) {
@@ -138,7 +139,9 @@ class Withdraw extends React.Component {
     // Otherwise, show this.state.bookings in dynamically generated list
     return (
       <div>
-        <HomeIcon className={`${classes.shapeFilter}`} />
+        <Link href="/">
+          <HomeIcon className={`${classes.shapeFilter}`} />
+        </Link>
         <div className={`${classes.searchBar}`}> </div>
         <form onSubmit={this.onSubmitStaffId} className={`${classes.idSearch}`}>
           <TextField onInput={e => this.setState({ staffId: e.target.value })} type="text" label="ID" name="staffId" />
