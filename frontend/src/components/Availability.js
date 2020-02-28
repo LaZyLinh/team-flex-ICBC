@@ -13,8 +13,6 @@ import FormGroup from "@material-ui/core/FormGroup";
 import InfiniteCalendar, { Calendar, withRange } from "react-infinite-calendar";
 import HomeIcon from "@material-ui/icons/Home";
 import { ArrowForwardOutlined } from "@material-ui/icons";
-import Typography from "@material-ui/core/Typography";
-import OfficeBookingApi from "../api/OfficeBookingApi";
 import OfficeLendingApi from "../api/OfficeLendingApi";
 
 class Availability extends React.Component {
@@ -23,10 +21,12 @@ class Availability extends React.Component {
     this.state = {
       selectedLocation: "",
       locations: [],
+      selectedRoom: "",
+      rooms: [],
       features: [],
-      workspaceId: "",
       startDate: new Date(),
-      endDate: new Date()
+      endDate: new Date(),
+      staffId: ""
     };
     this.handleInputChange = this.handleInputChange.bind(this);
   }
@@ -44,6 +44,32 @@ class Availability extends React.Component {
     console.log("WASSSUP!");
     console.log(this.state.locations);
     console.log(this.state.features);
+  }
+
+  roomSelectMenuItems() {
+    let menuItems = [];
+    let i = 0;
+    for (const room of this.state.rooms) {
+      menuItems.push(
+        <MenuItem value={room} key={i++}>
+          {room}
+        </MenuItem>
+      );
+    }
+    return menuItems;
+  }
+
+  locationSelectMenuItems(locations) {
+    let menuItems = [];
+    let i = 0;
+    for (const location of locations) {
+      menuItems.push(
+        <MenuItem value={location} key={i++}>
+          {location}
+        </MenuItem>
+      );
+    }
+    return menuItems;
   }
 
   featureSelectionItems() {
@@ -118,7 +144,7 @@ class Availability extends React.Component {
     const CalendarWithRange = withRange(Calendar);
 
     return (
-      <React.Fragment>
+      <div className={`${classes.bg}`}>
         <div className={`${classes.topBg}`}>
           <Link href="/">
             <HomeIcon className={`${classes.home}`}></HomeIcon>
@@ -159,8 +185,8 @@ class Availability extends React.Component {
           minDate={new Date()}
           min={new Date()}
           selected={{
-            start: new Date(),
-            end: new Date()
+            start: this.state.startDate,
+            end: this.state.endDate
           }}
           locale={{
             headerFormat: "MMM Do"
@@ -172,23 +198,21 @@ class Availability extends React.Component {
           onSelect={this.onSelectCalendar}
         />
         <div className={classes.box}>
-          <TextField label="Your Staff ID" variant="outlined" className={`${classes.field} ${classes.field1}`} />
+          <TextField
+            label="Your Staff ID"
+            variant="outlined"
+            className={`${classes.field} ${classes.field1}`}
+            value={this.state.staffId}
+          />
           <FormControl variant="outlined" className={`${classes.field} ${classes.field2}`}>
             <InputLabel>Office Location</InputLabel>
-            <Select>{this.locationSelectMenuItems()}</Select>
+            <Select>{this.locationSelectMenuItems(this.state.locations)}</Select>
           </FormControl>
           <TextField label="Workspace" variant="outlined" className={`${classes.field} ${classes.field3}`} />
-          {/* <FormControl variant="outlined" className={`${classes.field} ${classes.field3}`}>
+          <FormControl variant="outlined" className={`${classes.field} ${classes.field3}`}>
             <InputLabel>Office Room Number</InputLabel>
-            <Select>
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-          </FormControl> */}
+            <Select>{this.roomSelectMenuItems()}</Select>
+          </FormControl>
           <FormControl component="fieldset" className={`${classes.featureSelection}`}>
             <FormGroup>{this.featureSelectionItems()}</FormGroup>
           </FormControl>
@@ -198,21 +222,28 @@ class Availability extends React.Component {
             onClick={this.onClickConfirmAvailability}
             className={`${classes.label} ${classes.btn} ${classes.btn1}`}
             variant="contained"
-          // href="/finished"
+            href="/finished"
           >
             Confirm Availability
           </Button>
           <ArrowForwardOutlined className={`${classes.arrow}`}></ArrowForwardOutlined>
         </div>
-      </React.Fragment>
+      </div>
     );
   };
 }
 
 const boxTop = "15.33%";
-const leftMargin = 2;
 
 const muiStyles = {
+  bg: {
+    position: "absolute",
+    backgroundImage: `url(${require("../assets/bg.png")})`,
+    height: "100vh",
+    width: "100vw",
+    top: "0",
+    left: "0"
+  },
   infiniteCalendar: {
     position: "absolute",
     top: boxTop,
