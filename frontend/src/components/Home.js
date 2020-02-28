@@ -13,14 +13,14 @@ class Home extends React.Component {
           variant="contained"
           href="/availabilities"
         >
-          Register Office
+          Lend Office
         </Button>
         <Button
           className={`${classes.btn} ${classes.label} ${classes.btn2} ${classes.label2}`}
           variant="contained"
           href="/bookings"
         >
-          Make Booking
+          Book Office
         </Button>
         <Button
           className={`${classes.btn} ${classes.label} ${classes.btn3} ${classes.label3}`}
@@ -40,7 +40,7 @@ class Home extends React.Component {
 const muiStyles = {
   bg: {
     position: "absolute",
-    backgroundImage: `url(${require("../assets/home_bg.jpg")})`,
+    backgroundImage: `url(${require("../assets/van_bg.png")})`,
     backgroundSize: "cover",
     height: "100vh",
     width: "100vw",
@@ -48,7 +48,7 @@ const muiStyles = {
     left: "0"
   },
   btn: {
-    background: "#002D7D",
+    background: "rgba(0,18,49,0.75)",
     borderRadius: "20px",
     textAlign: "center",
     height: "10vh",

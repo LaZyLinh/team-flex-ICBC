@@ -192,8 +192,8 @@ class Availability extends React.Component {
             headerFormat: "MMM Do"
           }}
           theme={{
-            headerColor: "darkblue",
-            weekdayColor: "darkblue"
+            headerColor: "rgba(0,18,49,0.5)",
+            weekdayColor: "rgba(0,18,49,0.5)"
           }}
           onSelect={this.onSelectCalendar}
         />
@@ -238,7 +238,7 @@ const boxTop = "15.33%";
 const muiStyles = {
   bg: {
     position: "absolute",
-    backgroundImage: `url(${require("../assets/bg.png")})`,
+    backgroundImage: `url(${require("../assets/blank.jpg")})`,
     height: "100vh",
     width: "100vw",
     top: "0",
@@ -257,7 +257,7 @@ const muiStyles = {
     right: "6.6%",
     top: boxTop,
     bottom: "17.4%",
-    background: "#002D7D",
+    background: "rgba(0,18,49,0.5)",
     mixBlendMode: "normal",
     border: "1px solid #FFFFFF",
     boxSizing: "border-box",
@@ -269,7 +269,7 @@ const muiStyles = {
     right: "0%",
     top: "0%",
     bottom: "91%",
-    background: "#EBF2FF"
+    background: "rgba(235,242,255,0.7)"
   },
   btmBg: {
     position: "absolute",
@@ -277,7 +277,7 @@ const muiStyles = {
     right: "0%",
     top: "91%",
     bottom: "0%",
-    background: "#EBF2FF"
+    background: "rgba(235,242,255,0.7)"
   },
   field: {
     position: "absolute",
