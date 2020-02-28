@@ -22,8 +22,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { withStyles } from "@material-ui/core/styles";
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
+export function createData(name, conditions, start, end) {
+  return { name, conditions, start, end };
 }
 
 const StyledTableCell = withStyles(theme => ({
@@ -44,21 +44,21 @@ const StyledTableRow = withStyles(theme => ({
   }
 }))(TableRow);
 
-const rows = [
-  createData("North Vancouver #1", 305, 3.7, 67, 4.3),
-  createData("North Vancouver #2", 452, 25.0, 51, 4.9),
-  createData("North Vancouver #3", 262, 16.0, 24, 6.0),
-  createData("North Vancouver #4", 159, 6.0, 24, 4.0),
-  createData("North Vancouver #5", 356, 16.0, 49, 3.9),
-  createData("North Vancouver #6", 408, 3.2, 87, 6.5),
-  createData("North Vancouver #7", 237, 9.0, 37, 4.3),
-  createData("North Vancouver #8", 375, 0.0, 94, 0.0),
-  createData("North Vancouver #9", 518, 26.0, 65, 7.0),
-  createData("North Vancouver #10", 392, 0.2, 98, 0.0),
-  createData("North Vancouver #11", 318, 0, 81, 2.0),
-  createData("North Vancouver #12", 360, 19.0, 9, 37.0),
-  createData("North Vancouver #13", 437, 18.0, 63, 4.0)
-];
+/*const rows = [
+  createData("North Vancouver #1", 305, 3.7, 67),
+  createData("North Vancouver #2", 452, 25.0, 5),
+  createData("North Vancouver #3", 262, 16.0, 24),
+  createData("North Vancouver #4", 159, 6.0, 24),
+  createData("North Vancouver #5", 356, 16.0, 49),
+  createData("North Vancouver #6", 408, 3.2, 87),
+  createData("North Vancouver #7", 237, 9.0, 37),
+  createData("North Vancouver #8", 375, 0.0, 94),
+  createData("North Vancouver #9", 518, 26.0, 65),
+  createData("North Vancouver #10", 392, 0.2, 98),
+  createData("North Vancouver #11", 318, 0, 81),
+  createData("North Vancouver #12", 360, 19.0, 9),
+  createData("North Vancouver #13", 437, 18.0, 63)
+];*/
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -88,10 +88,9 @@ function stableSort(array, comparator) {
 
 const headCells = [
   { id: "name", numeric: false, disablePadding: true, label: "OFFICE LOCATION" },
-  { id: "calories", numeric: true, disablePadding: false, label: "CONDITIONS" },
-  { id: "fat", numeric: true, disablePadding: false, label: "START DATE" },
-  { id: "carbs", numeric: true, disablePadding: false, label: "END DATE" },
-  { id: "protein", numeric: false, disablePadding: false, label: "OWNER" }
+  { id: "conditions", numeric: false, disablePadding: false, label: "CONDITIONS" },
+  { id: "start", numeric: false, disablePadding: false, label: "START DATE" },
+  { id: "end", numeric: false, disablePadding: false, label: "END DATE" }
 ];
 
 function EnhancedTableHead(props) {
@@ -215,10 +214,12 @@ EnhancedTableToolbar.propTypes = {
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: "100%"
+    width: "100%",
+    height: "98.5%"
   },
   paper: {
     width: "100%",
+    height: "98.5%",
     marginBottom: theme.spacing(2)
   },
   table: {
@@ -252,10 +253,23 @@ const useStyles = makeStyles(theme => ({
     fontSize: "16px",
     lineHeight: "24px",
     color: "#2E3B52"
+  },
+  rowPos: {
+    height: "5%"
+  },
+  bodyHeight: {
+    top: "0%",
+    bottom: "2%"
+  },
+  paginationPos: {
+    top: "95%",
+    bottom: "98.5%",
+    left: "0%",
+    right: "0%"
   }
 }));
 
-export default function EnhancedTable() {
+export default function EnhancedTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
@@ -272,7 +286,7 @@ export default function EnhancedTable() {
 
   const handleSelectAllClick = event => {
     if (event.target.checked) {
-      const newSelecteds = rows.map(n => n.name);
+      const newSelecteds = props.rows.map(n => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -312,7 +326,7 @@ export default function EnhancedTable() {
 
   const isSelected = name => selected.indexOf(name) !== -1;
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.rows.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
@@ -332,10 +346,10 @@ export default function EnhancedTable() {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={props.rows.length}
             />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
+            <TableBody className={`${classes.bodyHeight}`}>
+              {stableSort(props.rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.name);
@@ -351,7 +365,7 @@ export default function EnhancedTable() {
                       // change here to make rows independent even with the same office name
                       key={row.name}
                       selected={isItemSelected}
-                      className={`${classes.headText}`}
+                      className={`${classes.headText} ${classes.rowPos}`}
                     >
                       <TableCell padding="checkbox">
                         <Checkbox
@@ -366,32 +380,30 @@ export default function EnhancedTable() {
                         {row.name}
                       </StyledTableCell>
                       <TableCell align="right" className={`${classes.rowText}`} padding={"none"}>
-                        {row.calories}
+                        {row.conditions}
                       </TableCell>
                       <TableCell align="right" className={`${classes.rowText}`}>
-                        {row.fat}
+                        {row.start}
                       </TableCell>
                       <TableCell align="right" className={`${classes.rowText}`}>
-                        {row.carbs}
-                      </TableCell>
-                      <TableCell align="right" className={`${classes.rowText}`}>
-                        {row.protein}
+                        {row.end}
                       </TableCell>
                     </StyledTableRow>
                   );
                 })}
               {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                  <TableCell colSpan={6} />
+                <TableRow style={{ height: 57 * emptyRows }}>
+                  <TableCell colSpan={5} />
                 </TableRow>
               )}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
+          className={`${classes.paginationPos}`}
           rowsPerPageOptions={[5, 10]}
           component="div"
-          count={rows.length}
+          count={props.rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
