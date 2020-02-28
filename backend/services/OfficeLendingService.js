@@ -70,13 +70,19 @@ class OfficeLendingService {
             throw { message: "Date Conflict", status: 403 };
           } else {
             // console.log("createAvailability: no conflict. About to insert.");
-            await Availabilities.insertAvailability(startDate, endDate, workspaceId);
-            const createdAvailability = (await Availabilities.getByStartEndDateAndWorkspaceId(startDate, endDate, workspaceId))[0];
-            // console.log("createAvailability: successful.");
-            // console.log("newly created availability: ");
-            // console.log(createdAvailability);
-            console.log("/availability POST -> createAvailability -> Response: 200 OK");
-            resolve(Service.successResponse(createdAvailability));
+            try {
+              await Availabilities.insertAvailability(startDate, endDate, workspaceId);
+              const createdAvailability = (await Availabilities.getByStartEndDateAndWorkspaceId(startDate, endDate, workspaceId))[0];
+              // console.log("createAvailability: successful.");
+              // console.log("newly created availability: ");
+              // console.log(createdAvailability);
+              console.log("/availability POST -> createAvailability -> Response: 200 OK");
+              resolve(Service.successResponse(createdAvailability));
+            } catch (e) {
+              console.log(e);
+              console.log("/availability POST -> createAvailabiltiy -> Response: 403 Cannot Insert (likely WorkplaceID not found)");
+              throw { message: e, status: 403 };
+            }
           }
         } catch (e) {
           resolve(Service.rejectResponse(
