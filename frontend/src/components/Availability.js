@@ -20,9 +20,9 @@ class Availability extends React.Component {
     super(props);
     this.state = {
       selectedLocation: "",
-      locations: [],
+      locations: [""],
       selectedRoom: "",
-      rooms: [],
+      // rooms: [],
       features: [],
       startDate: new Date(),
       endDate: new Date(),
@@ -35,7 +35,7 @@ class Availability extends React.Component {
     const proms = [OfficeLendingApi.getLocations(), OfficeLendingApi.getFeatures()];
     const results = await Promise.all(proms);
     this.setState({
-      selectedLocation: "",
+      selectedLocation: results[0][0],
       locations: results[0],
       features: results[1].map(featureName => {
         return { name: featureName, checked: false };
@@ -59,18 +59,18 @@ class Availability extends React.Component {
     return menuItems;
   }
 
-  locationSelectMenuItems(locations) {
-    let menuItems = [];
-    let i = 0;
-    for (const location of locations) {
-      menuItems.push(
-        <MenuItem value={location} key={i++}>
-          {location}
-        </MenuItem>
-      );
-    }
-    return menuItems;
-  }
+  // locationSelectMenuItems(locations) {
+  //   let menuItems = [];
+  //   let i = 0;
+  //   for (const location of locations) {
+  //     menuItems.push(
+  //       <MenuItem value={location} key={i++}>
+  //         {location}
+  //       </MenuItem>
+  //     );
+  //   }
+  //   return menuItems;
+  // }
 
   featureSelectionItems() {
     let featureItems = [];
@@ -98,6 +98,7 @@ class Availability extends React.Component {
   }
 
   handleInputChange(event) {
+    event.preventDefault();
     console.log("value:" + event.target.value + " checked: " + event.target.checked);
 
     this.setState({
@@ -123,6 +124,21 @@ class Availability extends React.Component {
     return menuItems;
   };
 
+  onStaffIdChange = event => {
+    console.log("input change");
+    // event.preventDefault();
+    this.setState({
+      staffId: event.target.value
+    });
+  };
+
+  onSelectLocation = event => {
+    event.preventDefault();
+    this.setState({
+      selectedLocation: event.target.value
+    });
+  };
+
   onClickConfirmAvailability = async () => {
     // const features = this.state.features;
     // const location = this.state.selectedLocation;
@@ -137,6 +153,10 @@ class Availability extends React.Component {
     } catch (err) {
       console.log("createAvalability: " + err);
     }
+  };
+
+  onSelectCalendar = async e => {
+    this.setState({ startDate: e.start, endDate: e.end });
   };
 
   render = () => {
@@ -184,10 +204,10 @@ class Availability extends React.Component {
           height={400}
           minDate={new Date()}
           min={new Date()}
-          selected={{
-            start: this.state.startDate,
-            end: this.state.endDate
-          }}
+          // selected={{
+          //   start: this.state.startDate,
+          //   end: this.state.endDate
+          // }}
           locale={{
             headerFormat: "MMM Do"
           }}
@@ -195,19 +215,27 @@ class Availability extends React.Component {
             headerColor: "rgba(0,18,49,0.7)",
             weekdayColor: "rgba(0,18,49,0.7)"
           }}
-          onSelect={this.onSelectCalendar}
+        // onSelect={this.onSelectCalendar}
         />
         <div className={classes.box}>
-          <TextField label="Your Staff ID" variant="outlined" className={`${classes.field} ${classes.field1}`} />
+          <TextField
+            label="Your Staff ID"
+            variant="outlined"
+            className={`${classes.field} ${classes.field1}`}
+          // value={this.state.staffId}
+          // onChange={this.onStaffIdChange}
+          />
           <FormControl variant="outlined" className={`${classes.field} ${classes.field2}`}>
             <InputLabel>Office Location</InputLabel>
-            <Select>{this.locationSelectMenuItems(this.state.locations)}</Select>
+            <Select onChange={this.onSelectLocation} value={this.state.selectedLocation}>
+              {this.locationSelectMenuItems(this.state.locations)}
+            </Select>
           </FormControl>
           <TextField label="Workspace" variant="outlined" className={`${classes.field} ${classes.field3}`} />
-          <FormControl variant="outlined" className={`${classes.field} ${classes.field3}`}>
+          {/* <FormControl variant="outlined" className={`${classes.field} ${classes.field3}`}>
             <InputLabel>Office Room Number</InputLabel>
             <Select>{this.roomSelectMenuItems()}</Select>
-          </FormControl>
+          </FormControl> */}
           <FormControl component="fieldset" className={`${classes.featureSelection}`}>
             <FormGroup>{this.featureSelectionItems()}</FormGroup>
           </FormControl>
