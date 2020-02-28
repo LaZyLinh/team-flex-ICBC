@@ -168,7 +168,7 @@ class Booking extends React.Component {
             // for some reason making "width" a string makes it flexible
             width="flex"
             // but doesn't work for height, need to specify a pixel size
-            height={210}
+            height={300}
             minDate={new Date()}
             min={new Date()}
             selected={{

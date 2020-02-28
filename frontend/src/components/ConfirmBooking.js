@@ -65,7 +65,7 @@ class ConfirmBooking extends React.Component {
   // rendering component
   // TODO: return map url for rendering based on Booking
   static generateMapLink() {
-    return "#C4C4C4";
+    return `url(${require("../assets/map.jpg")})`;
   }
 
   render() {
@@ -83,7 +83,7 @@ class ConfirmBooking extends React.Component {
           </div>
           <div className={`${classes.text1}`}>Booking Confirmation</div>
           <div className={`${classes.box1}`}>
-            <div className={`${classes.map}`}>To render map.jpg</div>
+            <div className={`${classes.map}`}></div>
           </div>
           <div className={`${classes.box2}`}>
             <div className={`${classes.employText}`}>Employee Information</div>
@@ -297,7 +297,7 @@ const muiStyles = {
     right: "5%",
     top: "52.89%",
     bottom: "3%",
-    background: ConfirmBooking.generateMapLink(),
+    backgroundImage: ConfirmBooking.generateMapLink(),
     borderRadius: "20px"
   }
 };

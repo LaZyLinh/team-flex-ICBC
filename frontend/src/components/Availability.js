@@ -204,10 +204,10 @@ class Availability extends React.Component {
           height={400}
           minDate={new Date()}
           min={new Date()}
-          // selected={{
-          //   start: this.state.startDate,
-          //   end: this.state.endDate
-          // }}
+          selected={{
+            start: this.state.startDate,
+            end: this.state.endDate
+          }}
           locale={{
             headerFormat: "MMM Do"
           }}
