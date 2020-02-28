@@ -97,17 +97,18 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            style={{
-              color: "#002D7D"
-            }}
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ "aria-label": "select all desserts" }}
-          />
-        </TableCell>
+        <TableCell/>
+        {/*<TableCell padding="checkbox">*/}
+        {/*  <Checkbox*/}
+        {/*    style={{*/}
+        {/*      color: "#002D7D"*/}
+        {/*    }}*/}
+        {/*    indeterminate={numSelected > 0 && numSelected < rowCount}*/}
+        {/*    checked={rowCount > 0 && numSelected === rowCount}*/}
+        {/*    onChange={onSelectAllClick}*/}
+        {/*    inputProps={{ "aria-label": "select all desserts" }}*/}
+        {/*  />*/}
+        {/*</TableCell>*/}
         {headCells.map(headCell => (
           <TableCell
             className={`${classes.headText}`}
@@ -343,15 +344,16 @@ export default function ManageTables() {
                       selected={isItemSelected}
                       className={`${classes.headText}`}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          style={{
-                            color: "#002D7D"
-                          }}
-                          checked={isItemSelected}
-                          inputProps={{ "aria-labelledby": labelId }}
-                        />
-                      </TableCell>
+                      {/*<TableCell padding="checkbox">*/}
+                      {/*  <Checkbox*/}
+                      {/*    style={{*/}
+                      {/*      color: "#002D7D"*/}
+                      {/*    }}*/}
+                      {/*    checked={isItemSelected}*/}
+                      {/*    inputProps={{ "aria-labelledby": labelId }}*/}
+                      {/*  />*/}
+                      {/*</TableCell>*/}
+                      <TableCell/>
                       <TableCell align="left" scope="row" className={`${classes.rowText}`}>
                         {row.officeLoc}
                       </TableCell>
