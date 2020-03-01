@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const { OpenApiValidator } = require('express-openapi-validator');
 const openapiRouter = require('./utils/openapiRouter');
+const admin = require('./admin/adminApp');
 const logger = require('./logger');
 
 class ExpressServer {
@@ -27,9 +28,10 @@ class ExpressServer {
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(cookieParser());
     this.app.use('/spec', express.static(path.join(__dirname, 'api')));
-    this.app.get('/hello', (req, res) => res.send('Hello World. path: '+this.openApiPath));
+    this.app.get('/hello', (req, res) => res.send('Hello World. path: ' + this.openApiPath));
     // this.app.get('/spec', express.static(this.openApiPath));
     this.app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(this.schema));
+    this.app.use('/admin', admin);
     this.app.get('/login-redirect', (req, res) => {
       res.status(200);
       res.json(req.query);
@@ -42,10 +44,7 @@ class ExpressServer {
       apiSpecPath: this.openApiPath,
     }).install(this.app);
     this.app.use(openapiRouter());
-    this.app.get('/', (req, res) => {
-      res.status(200);
-      res.end('Hello World');
-    });
+
   }
 
   addErrorHandler() {
