@@ -95,8 +95,8 @@ class OfficeBookingService {
 
           console.log(booking[0]);
           console.log(bookingInfo);
-          emailService.sendEmailDeleteBookingBooker(bookerEmail.Email, bookingInfo);
-          emailService.sendEmailDeleteBookingLender(workspaceOwnerEmail.Email, bookingInfo);
+          emailService.sendEmailConfirmBookingBooker(bookerEmail.Email, bookingInfo);
+          emailService.sendEmailConfirmBookingLender(workspaceOwnerEmail.Email, bookingInfo);
           // stop timer !!!
           resolve(bookingInfo);
         } catch (e) {
