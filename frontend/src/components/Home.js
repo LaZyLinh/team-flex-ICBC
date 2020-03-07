@@ -6,8 +6,13 @@ import { withStyles } from "@material-ui/core";
 class Home extends React.Component {
   render() {
     const { classes } = this.props;
+    console.log(this.props.userInfo);
+
     return (
       <div className={`${classes.bg}`}>
+        {/* https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-core/src/Account.ts */}
+        <h1>Hello, {this.props.userInfo.account.name}</h1>
+        <h1>Your email address is: {this.props.userInfo.account.userName}</h1>
         <Button
           className={`${classes.btn} ${classes.label} ${classes.btn1} ${classes.label1}`}
           variant="contained"
