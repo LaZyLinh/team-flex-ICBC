@@ -10,6 +10,7 @@ router.get('/', (req, res) => {
 });
 
 
+
 // Admin Add User
 // /admin/user endpoint
 // Mandatory body values: firstName, lastName, department, email

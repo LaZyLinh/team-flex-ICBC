@@ -10,6 +10,8 @@ import Finished from "./Finished";
 
 function App(props) {
   const userInfo = props.userInfo;
+  // TODO make request to backend with email, then store staffId
+  // request("http://localhost:8080/auth/user?email=" + userInfo.account.userName);
   return (
     <Router>
       <div>

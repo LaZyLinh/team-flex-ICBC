@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const { OpenApiValidator } = require('express-openapi-validator');
 const openapiRouter = require('./utils/openapiRouter');
 const admin = require('./admin/adminApp');
+const auth = require('./auth/auth');
 const logger = require('./logger');
 
 class ExpressServer {
@@ -32,6 +33,7 @@ class ExpressServer {
     // this.app.get('/spec', express.static(this.openApiPath));
     this.app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(this.schema));
     this.app.use('/admin', admin);
+    this.app.use('/auth', auth);
     this.app.get('/login-redirect', (req, res) => {
       res.status(200);
       res.json(req.query);
