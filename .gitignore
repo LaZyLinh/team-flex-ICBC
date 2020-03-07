@@ -27,3 +27,4 @@
 
 #backend logs
 /backend/combined.log
+/backend/*.log
