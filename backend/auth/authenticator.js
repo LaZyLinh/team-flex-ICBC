@@ -64,7 +64,6 @@ function authenticate() {
       // console.log("decoded sign: " + decoded.signature);
       let key = await getKey(decoded.header.kid);
       let appendedkey = '-----BEGIN CERTIFICATE-----\n' + key + '\n-----END CERTIFICATE-----'
-      console.log("key: " + appendedkey);
       // Verify the token with this key
       jwt.verify(theToken, appendedkey, async function (err, decodeedToken) {
         if (err) {
@@ -81,7 +80,6 @@ function authenticate() {
             throw new Error(error)
           }
         } else {
-          console.log(decodeedToken);
           next();
           return;
         }

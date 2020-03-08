@@ -7,7 +7,7 @@ module.exports = {
     });
   },
 
-  findUser: function (email) {
+  findUserByEmail: function (email) {
     return knex("user").select("*").where("email", "=", email);
   }
 }
