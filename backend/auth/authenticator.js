@@ -77,7 +77,8 @@ function authenticate() {
             jwt.verify(theToken, appendedkey);
             next();
           } catch (error) {
-            throw new Error(error)
+            response.status(401);
+            next(new Error("user authentication failed!" + error))
           }
         } else {
           next();

@@ -2,16 +2,8 @@ import React from "react";
 import Button from "@material-ui/core/Button";
 import Link from "@material-ui/core/Link";
 import { withStyles } from "@material-ui/core";
-import { request } from "../api/authentication";
 
 class Home extends React.Component {
-  async componentDidMount() {
-    console.log("got here");
-    request("http://localhost:8080/auth/user?email=" + this.props.userInfo.account.userName).then(res => {
-      console.log(res);
-    });
-  }
-
   render() {
     const { classes } = this.props;
     console.log(this.props.userInfo);

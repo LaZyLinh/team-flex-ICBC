@@ -8,6 +8,6 @@ module.exports = {
   },
 
   findUserByEmail: function (email) {
-    return knex("user").select("*").where("email", "=", email);
+    return knex("user").select("*").where("Email", "=", email);
   }
 }
