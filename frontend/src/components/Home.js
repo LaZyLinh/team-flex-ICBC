@@ -3,13 +3,10 @@ import Button from "@material-ui/core/Button";
 import Link from "@material-ui/core/Link";
 import { withStyles } from "@material-ui/core";
 import { request } from "../api/authentication";
-import { authProvider } from "../authProvider";
 
 class Home extends React.Component {
   async componentDidMount() {
     console.log("got here");
-    const token = await authProvider.getAccessToken();
-    console.log("the token is " + token.accessToken);
     request("http://localhost:8080/auth/user?email=" + this.props.userInfo.account.userName).then(res => {
       console.log(res);
     });

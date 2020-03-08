@@ -1,6 +1,7 @@
 const config = require('./config');
 const logger = require('./logger');
 const ExpressServer = require('./expressServer');
+const authenticator = require('./auth/authenticator')
 // const App = require('./app');
 
 // const app = new App(config);
@@ -24,5 +25,7 @@ const launchServer = async () => {
     await this.close();
   }
 };
+
+authenticator.getAndStoreMSADKey();
 
 launchServer().catch(e => logger.error(e));

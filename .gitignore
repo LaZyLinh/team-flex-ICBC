@@ -26,4 +26,5 @@
 /backend/.env
 
 #backend logs
+/backend/*.log
 /backend/combined.log
