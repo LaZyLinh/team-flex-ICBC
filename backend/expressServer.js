@@ -45,6 +45,10 @@ class ExpressServer {
     new OpenApiValidator({
       apiSpecPath: this.openApiPath,
     }).install(this.app);
+
+    // Middleware for authenticating JWT for Azure AD
+    this.app.use(authenticator());
+
     this.app.use(openapiRouter());
 
   }
