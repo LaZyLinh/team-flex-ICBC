@@ -11,6 +11,7 @@ const openapiRouter = require('./utils/openapiRouter');
 const admin = require('./admin/adminApp');
 const auth = require('./auth/auth');
 const logger = require('./logger');
+const authenticator = require('./auth/authenticator');
 
 class ExpressServer {
   constructor(port, openApiYaml) {
@@ -28,6 +29,7 @@ class ExpressServer {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(cookieParser());
+    this.app.use(authenticator.authenticate());
     this.app.use('/spec', express.static(path.join(__dirname, 'api')));
     this.app.get('/hello', (req, res) => res.send('Hello World. path: ' + this.openApiPath));
     // this.app.get('/spec', express.static(this.openApiPath));
@@ -47,7 +49,6 @@ class ExpressServer {
     }).install(this.app);
 
     // Middleware for authenticating JWT for Azure AD
-    this.app.use(authenticator());
 
     this.app.use(openapiRouter());
 

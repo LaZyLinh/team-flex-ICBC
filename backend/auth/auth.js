@@ -6,8 +6,8 @@ const cookieParser = require("cookie-parser")
 
 router.get("/user", (req, res) => {
   console.log('got here!');
-  console.log(JSON.stringify(req.headers));
-  console.log(req.params)
+  // console.log(JSON.stringify(req.headers));
+  // console.log(req.params)
   res.json({ res: 200 })
 })
 
