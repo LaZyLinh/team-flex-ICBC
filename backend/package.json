@@ -27,6 +27,7 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.17.2",
     "express": "^4.16.4",
+    "express-fileupload": "^1.1.6",
     "express-openapi-validator": "^1.0.0",
     "flexwork-common": "0.0.5",
     "form-data": "^2.3.3",

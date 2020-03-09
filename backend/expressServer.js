@@ -12,6 +12,8 @@ const admin = require('./admin/adminApp');
 const auth = require('./auth/auth');
 const logger = require('./logger');
 const authenticator = require('./auth/authenticator');
+const fileUpload = require('express-fileupload');
+const FloorPlanUploadService = require("./services/FloorPlanUploadService");
 
 class ExpressServer {
   constructor(port, openApiYaml) {
@@ -26,6 +28,9 @@ class ExpressServer {
     // this.setupAllowedMedia();
     this.app.use(cors());
     this.app.use(bodyParser.json());
+    this.app.use(express.static("public"));
+    this.app.use(fileUpload());
+    this.app.post("/upload-floorplan", FloorPlanUploadService.uploadFloorPlan);
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(cookieParser());
