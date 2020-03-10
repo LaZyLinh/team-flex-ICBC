@@ -7,6 +7,7 @@ import Withdraw from "./Withdraw";
 import Admin from "./Admin";
 import ConfirmBooking from "./ConfirmBooking";
 import Finished from "./Finished";
+import AdminPage from "./AdminPage";
 
 function App() {
   return (
@@ -27,8 +28,8 @@ function App() {
         <Route exact path="/withdraw">
           <Withdraw />
         </Route>
-        <Route exact path="/admin">
-          <Admin />
+        <Route exact path="/AdminPage">
+          <AdminPage />
         </Route>
         <Route exact path="/">
           <Home />

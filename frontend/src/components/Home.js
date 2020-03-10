@@ -29,7 +29,7 @@ class Home extends React.Component {
         >
           Manage Booking
         </Button>
-        <Link className={classes.link} href="/admin">
+        <Link className={classes.link} href="/AdminPage">
           Admin
         </Link>
       </div>
