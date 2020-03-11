@@ -20,8 +20,8 @@ ReactDOM.render(
     // WITHOUT AD
     <App userInfo={{
         account: {
-            name: "John",
-            userName: "john@john.john"
+            name: "Barack Obama",
+            userName: "bo44@icbc.com"
         }
     }} />,
 
