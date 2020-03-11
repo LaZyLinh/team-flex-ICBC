@@ -1,6 +1,5 @@
 Changes:
-  - Added /features GET
-  - Changed port mumber
+  - Added 3 admin end points
 
 To generate redoc:
 (while in this folder)

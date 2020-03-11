@@ -2,13 +2,34 @@ import React from "react";
 import Button from "@material-ui/core/Button";
 import Link from "@material-ui/core/Link";
 import { withStyles } from "@material-ui/core";
+import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
+import 'react-dates/lib/css/_datepicker.css';
 
 class Home extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      startDate: null,
+      endDate: null,
+      focusedInput: "START_DATE"
+    }
+  }
+
   render() {
     const { classes } = this.props;
     console.log(this.props.userInfo);
     return (
       <div className={`${classes.bg}`}>
+        <DateRangePicker
+          startDate={this.state.startDate} // momentPropTypes.momentObj or null,
+          startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
+          endDate={this.state.endDate} // momentPropTypes.momentObj or null,
+          endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
+          onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
+          focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
+          onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
+        />
+
         {/* https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-core/src/Account.ts */}
         <h1>Hello, {this.props.userInfo.account.name}</h1>
         <h1>Your email address is: {this.props.userInfo.account.userName}</h1>
