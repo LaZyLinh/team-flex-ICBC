@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: Flex Work
   description: 'This is the REST API Documentation for ICBC Flex Work, by Team Flex'
-  version: 0.0.6
+  version: 0.0.9
 servers:
   - url: 'http://34.224.250.122:8080/'
 tags:
@@ -11,8 +11,94 @@ tags:
   - name: Office Lending
     description: 'As an ICBC office owner, create **Availabilities** for fellow employees'
   - name: Admin
-    description: Operations for Facility Administrator (TODO)
+    description: 'As an ICBC facility admin, manage locations and floor plans'
+    
 paths:
+  # Admin
+  /admin/upload-floor-data:
+    post:
+      summary:
+        Upload a CSV of a floor's workspaces
+      description:
+        Upload a CSV containing information about each workspace on a floor (owner and features)
+      tags:
+        - Admin
+      operationId: adminUploadFloorData
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                floorId:
+                  type: integer
+                floorData:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful Operation
+        '400':
+          description: Something went wrong
+          content:
+            text/plain:
+              schema:
+                type: string
+              example:
+                "Error: CSV was missing column: OfficeID"
+  /admin/upload-floorplan-image:
+    post:
+      summary:
+        Upload a JPG floor plan for a specific floor
+      tags:
+        - Admin
+      operationId: adminUploadFloorplanImage
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                floorId:
+                  type: integer
+                floorplanImage:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful Operation
+        '400':
+          description: Something went wrong
+          content:
+            text/plain:
+              schema:
+                type: string
+              example:
+                "Error: Floor with ID 9000 does not exist"
+  /admin/reset-features:
+    post:
+      tags:
+        - Admin
+      summary: Resets the list of features to a custom specified list
+      description: "Sets the list of features in the system. Previous features that do not exist in this list are deleted, and new features are added. Does not affect features that exist both previously and in this list"
+      operationId: adminResetFeatures
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: Successful Operation
+        '400':
+          description: Bad Request
+  
+  # Employee
   /features:
     get:
       tags:
@@ -45,7 +131,6 @@ paths:
                 example:
                   - 'Conference Phone'
                   - 'Private'
-          
   /locations:
     get:
       tags:
