@@ -17,3 +17,8 @@
 ### Backend
 - `npm start` to start the Express server
 - accessible on http://localhost:8080/ unless PORT environment variable specified
+- openapi.yaml spec file is statically at http://localhost:8080/openapi.yaml
+
+### Shared
+- shared/api contains the latest openapi.yaml specification along with info on how to update it
+- shared/flexwork-common is the source for [some functions in an NPM package. Click it for info.](https://www.npmjs.com/package/flexwork-common)
