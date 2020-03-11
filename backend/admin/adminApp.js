@@ -3,6 +3,11 @@ const router = express.Router();
 const User = require('./User')
 const userDB = require('../db/user')
 const workspaceDB = require('../db/workspace')
+// const bcrypt = require('bcrypt');
+// const jwt = require('jsonwebtoken');
+
+
+require('dotenv').config();
 
 router.get('/', (req, res) => {
   res.status(200);
@@ -10,6 +15,13 @@ router.get('/', (req, res) => {
 });
 
 
+/*
+ admin login
+*/
+// router.post('/login', (req, res) => {
+//   let pass = req.body.password;
+
+// })
 
 // Admin Add User
 // /admin/user endpoint
