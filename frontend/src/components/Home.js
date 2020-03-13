@@ -59,7 +59,8 @@ const muiStyles = {
   container: {
     justifyContent: "center",
     padding: "15% 10% 15% 10%",
-    overflowY: "scroll"
+    width: "100vw",
+    height: "100vh"
   },
   item: {
     textAlign: "center"
