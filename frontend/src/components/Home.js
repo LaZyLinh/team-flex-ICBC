@@ -1,157 +1,98 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
 import { withStyles } from "@material-ui/core";
-import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
-import 'react-dates/lib/css/_datepicker.css';
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import { GiCalendar, GiDesk, GiChecklist } from "react-icons/gi";
 
 class Home extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      startDate: null,
-      endDate: null,
-      focusedInput: "START_DATE"
-    }
-  }
-
   render() {
-    const { classes } = this.props;
     console.log(this.props.userInfo);
+    const { classes } = this.props;
     return (
-      <div className={`${classes.bg}`}>
-        <DateRangePicker
-          startDate={this.state.startDate} // momentPropTypes.momentObj or null,
-          startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
-          endDate={this.state.endDate} // momentPropTypes.momentObj or null,
-          endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
-          onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
-          focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
-          onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
-        />
-
-        {/* https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-core/src/Account.ts */}
-        <h1>Hello, {this.props.userInfo.account.name}</h1>
-        <h1>Your email address is: {this.props.userInfo.account.userName}</h1>
-        <Button
-          className={`${classes.btn} ${classes.label} ${classes.btn1} ${classes.label1}`}
-          variant="contained"
-          href="/availabilities"
-        >
-          Lend Office
+      <React.Fragment>
+        <div className={classes.background}></div>
+        <Button className={classes.adminButton} href="/admin" variant="outlined" color="primary">
+          Admin Portal
         </Button>
-        <Button
-          className={`${classes.btn} ${classes.label} ${classes.btn2} ${classes.label2}`}
-          variant="contained"
-          href="/bookings"
-        >
-          Book Office
-        </Button>
-        <Button
-          className={`${classes.btn} ${classes.label} ${classes.btn3} ${classes.label3}`}
-          variant="contained"
-          href="/withdraw"
-        >
-          Manage Booking
-        </Button>
-        <Link className={classes.link} href="/admin">
-          Admin
-        </Link>
-      </div>
+        <Grid container className={classes.container} spacing={2}>
+          <Grid className={classes.item} item xs={4}>
+            <Button className={classes.button}>
+              <div>
+                <GiCalendar className={classes.icon} />
+                <div className={classes.buttonText}>Lend Office</div>
+              </div>
+            </Button>
+          </Grid>
+          <Grid className={classes.item} item xs={4}>
+            <Button className={classes.button}>
+              <div>
+                <GiDesk className={classes.icon} />
+                <div className={classes.buttonText}>Book Office</div>
+              </div>
+            </Button>
+          </Grid>
+          <Grid className={classes.item} item xs={4}>
+            <Button className={classes.button}>
+              <div>
+                <GiChecklist className={classes.icon} />
+                <div className={classes.buttonText}>Manage Bookings and Lendings</div>
+              </div>
+            </Button>
+          </Grid>
+        </Grid>
+      </React.Fragment>
     );
   }
 }
 
 const muiStyles = {
-  bg: {
+  background: {
     position: "absolute",
-    backgroundImage: `url(${require("../assets/van_bg.png")})`,
-    backgroundSize: "cover",
-    height: "100vh",
-    width: "100vw",
     top: "0",
-    left: "0"
+    left: "0",
+    width: "100vw",
+    height: "100vh",
+    // backgroundImage: "linear-gradient(to top, #fff1eb 0%, #ace0f9 100%)",
+    backgroundImage: "linear-gradient(to top, #89f7fe 0%, #66a6ff 100%)",
+    backgroundSize: "cover"
   },
-  btn: {
-    background: "rgba(0,18,49,1)",
-    borderRadius: "20px",
-    textAlign: "center",
-    height: "10vh",
-    width: "20vw"
+  container: {
+    justifyContent: "center",
+    padding: "15% 10% 0% 10%",
+    overflowY: "scroll"
   },
-  label: {
-    fontFamily: "Inter",
-    fontStyle: "normal",
-    fontWeight: "bold",
-    fontSize: "1.7vw",
-    lineHeight: "8vh",
-    textDecoration: "none",
-    color: "#FFFFFF",
-    display: "inline-block",
+  item: {
     textAlign: "center"
   },
-  btn1: {
-    position: "absolute",
-    left: "59.17%",
-    right: "12.43%",
-    top: "31.78%",
-    bottom: "58.44%"
+  button: {
+    height: "50vh",
+    width: "80%",
+    backgroundColor: "#FFFFFF",
+    borderTop: "5px solid #2E3B52",
+    transition: "transform 0.5s ease-in-out",
+    "&:hover": {
+      transform: "scale(1.03)",
+      color: "#F4F7FC"
+    },
+    boxShadow: "0px 6px 4px rgba(0, 0, 0, 0.2)"
   },
-  btn2: {
-    position: "absolute",
-    left: "59.17%",
-    right: "12.43%",
-    top: "45.11%",
-    bottom: "45.11%"
+  icon: {
+    fontSize: "6em"
   },
-  btn3: {
-    position: "absolute",
-    left: "59.17%",
-    right: "12.43%",
-    top: "58.44%",
-    bottom: "31.78%"
+  buttonText: {
+    fontFamily: "Inter",
+    fontSize: "1.2em"
   },
-  btn4: {
+  adminButton: {
+    fontFamily: "Inter",
+    color: "#0A65FF",
+    border: "1px solid rgba(10, 101, 255, 0.5)",
     position: "absolute",
-    left: "59.17%",
-    right: "12.43%",
-    top: "70.44%",
-    bottom: "78.78%"
-  },
-  label1: {
-    position: "absolute",
-    left: "59.93%",
-    right: "13.19%",
-    top: "31.78%",
-    bottom: "58.44%"
-  },
-  label2: {
-    position: "absolute",
-    left: "59.93%",
-    right: "13.19%",
-    top: "45.11%",
-    bottom: "45.11%"
-  },
-  label3: {
-    position: "absolute",
-    left: "59.93%",
-    right: "13.19%",
-    top: "58.44%",
-    bottom: "31.78%"
-  },
-  label4: {
-    position: "absolute",
-    left: "59.93%",
-    right: "13.19%",
-    top: "70.44%",
-    bottom: "78.78%"
-  },
-  link: {
-    position: "absolute",
-    left: "50%",
-    right: "0%",
-    top: "95.44%",
-    bottom: "0%"
+    right: "5%",
+    top: "5%",
+    "&:hover": {
+      border: "1px solid rgba(10, 101, 255, 1)"
+    }
   }
 };
 
