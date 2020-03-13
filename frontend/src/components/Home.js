@@ -16,7 +16,7 @@ class Home extends React.Component {
         </Button>
         <Grid container className={classes.container} spacing={2}>
           <Grid className={classes.item} item xs={4}>
-            <Button className={classes.button}>
+            <Button href="/availabilities" className={classes.button}>
               <div>
                 <GiCalendar className={classes.icon} />
                 <div className={classes.buttonText}>Lend Office</div>
@@ -24,7 +24,7 @@ class Home extends React.Component {
             </Button>
           </Grid>
           <Grid className={classes.item} item xs={4}>
-            <Button className={classes.button}>
+            <Button href="/bookings" className={classes.button}>
               <div>
                 <GiDesk className={classes.icon} />
                 <div className={classes.buttonText}>Book Office</div>
@@ -32,7 +32,7 @@ class Home extends React.Component {
             </Button>
           </Grid>
           <Grid className={classes.item} item xs={4}>
-            <Button className={classes.button}>
+            <Button href="/withdraw" className={classes.button}>
               <div>
                 <GiChecklist className={classes.icon} />
                 <div className={classes.buttonText}>Manage Bookings and Lendings</div>
