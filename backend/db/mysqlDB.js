@@ -34,9 +34,6 @@ const remoteOption = {
   }
 }
 
-
-// console.log("local? " + process.env.LOCAL);
-let knex;
 if (process.env.LOCAL) {
   module.exports = require('knex')(localOption);
 } else if (process.env.LOCAL_JOHN) {
@@ -44,5 +41,3 @@ if (process.env.LOCAL) {
 } else {
   module.exports = require('knex')(remoteOption);
 }
-
-module.exports = knex;
