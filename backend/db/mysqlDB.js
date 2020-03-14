@@ -12,7 +12,7 @@ const localOption = {
   }
 }
 
-const johnLocalOption = {
+const johnLocalOption = { // I (John) have slightly different settings for local DB
   client: 'mysql',
   connection: {
     host: 'localhost',
@@ -34,10 +34,12 @@ const remoteOption = {
   }
 }
 
-if (process.env.LOCAL) {
-  module.exports = require('knex')(localOption);
-} else if (process.env.LOCAL_JOHN) {
+
+
+if (process.env.LOCAL_JOHN) {
   module.exports = require('knex')(johnLocalOption);
+} else if (process.env.LOCAL) {
+  module.exports = require('knex')(localOption);
 } else {
   module.exports = require('knex')(remoteOption);
 }
