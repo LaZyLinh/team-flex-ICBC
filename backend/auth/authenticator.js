@@ -7,6 +7,7 @@ const envfile = require('envfile')
 const sourcePath = '.env'
 
 
+
 // Get public keys from Microsoft
 getKeys = async () => {
   const { data } = await axios.get("https://login.microsoftonline.com/common/discovery/v2.0/keys");
@@ -31,7 +32,12 @@ async function getAndStoreMSADKey() {
 }
 
 async function writeKeyToENV(keys) {
-  let parsedFile = envfile.parseFileSync(sourcePath);
+  let parsedFile;
+  try {
+    parsedFile = envfile.parseFileSync(sourcePath);
+  } catch (e) {
+    parsedFile = {};
+  }
   parsedFile.AD_pub_key = JSON.stringify(keys);
   fs.writeFileSync(sourcePath, envfile.stringifySync(parsedFile))
 }
