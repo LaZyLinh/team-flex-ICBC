@@ -23,7 +23,6 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 import { withStyles } from "@material-ui/core/styles";
 import { confirmAlert } from "react-confirm-alert";
 
-
 const StyledTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -42,16 +41,6 @@ const StyledTableRow = withStyles(theme => ({
   }
 }))(TableRow);
 
-// const rows = [
-//   createData("North Vancouver", "NV4-03A", "2020-04-22", "2020-04-25", "Kobe Bryant", "Active"),
-//   createData("North Vancouver", "NV4-03B", "2020-04-21", "2020-04-23", "Kevin Wei", "Active"),
-//   createData("West Vancouver", "WV1-01D", "2020-04-12", "2020-04-15", "Ravina Gill", "Active"),
-//   createData("West Vancouver", "WV1-01E", "2020-03-12", "2020-03-15", "Lihn Phan", "Active"),
-//   createData("Richmond", "R4-05Z", "2020-05-11", "2020-05-12", "Charlie Chen", "Active"),
-//   createData("North Vancouver", "NV7-04T", "2020-07-01", "2020-07-03", "Srijon Saha", "Active"),
-//   createData("West Vancouver", "WV6-08R", "2020-04-18", "2020-04-20", "John Zou", "Active"),
-//   createData("North Vancouver", "NV5-03T", "2020-01-21", "2020-01-23", "Kevin Wei", "Inactive")
-// ];
 
 function descendingComparator(a, b, property) {
   if (b[property] < a[property]) {
@@ -65,8 +54,8 @@ function descendingComparator(a, b, property) {
 
 function getComparator(order, property) {
   return order == "desc"
-      ? (a, b) => descendingComparator(a, b, property)
-      : (a, b) => -descendingComparator(a, b, property);
+    ? (a, b) => descendingComparator(a, b, property)
+    : (a, b) => -descendingComparator(a, b, property);
 }
 function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);
@@ -92,45 +81,45 @@ function EnhancedTableHead(props) {
     onRequestSort(event, property);
   };
   return (
-      <TableHead>
-        <TableRow>
-          <TableCell />
-          {/*<TableCell padding="checkbox">*/}
-          {/*  <Checkbox*/}
-          {/*    style={{*/}
-          {/*      color: "#002D7D"*/}
-          {/*    }}*/}
-          {/*    indeterminate={numSelected > 0 && numSelected < rowCount}*/}
-          {/*    checked={rowCount > 0 && numSelected === rowCount}*/}
-          {/*    onChange={onSelectAllClick}*/}
-          {/*    inputProps={{ "aria-label": "select all desserts" }}*/}
-          {/*  />*/}
-          {/*</TableCell>*/}
-          {headCells.map(headCell => (
-              <TableCell
-                  className={`${classes.headText}`}
-                  key={headCell.id}
-                  align={headCell.numeric ? "right" : "left"}
-                  padding={headCell.disablePadding ? "none" : "default"}
-                  sortDirection={orderBy === headCell.id ? order : false}
-              >
-                <TableSortLabel
-                    active={orderBy === headCell.id}
-                    direction={orderBy === headCell.id ? order : "asc"}
-                    onClick={createSortHandler(headCell.id)}
-                >
-                  {headCell.label}
-                  {orderBy === headCell.id ? (
-                      <span className={classes.visuallyHidden}>
+    <TableHead>
+      <TableRow>
+        <TableCell />
+        {/*<TableCell padding="checkbox">*/}
+        {/*  <Checkbox*/}
+        {/*    style={{*/}
+        {/*      color: "#002D7D"*/}
+        {/*    }}*/}
+        {/*    indeterminate={numSelected > 0 && numSelected < rowCount}*/}
+        {/*    checked={rowCount > 0 && numSelected === rowCount}*/}
+        {/*    onChange={onSelectAllClick}*/}
+        {/*    inputProps={{ "aria-label": "select all desserts" }}*/}
+        {/*  />*/}
+        {/*</TableCell>*/}
+        {headCells.map(headCell => (
+          <TableCell
+            className={`${classes.headText}`}
+            key={headCell.id}
+            align={headCell.numeric ? "right" : "left"}
+            padding={headCell.disablePadding ? "none" : "default"}
+            sortDirection={orderBy === headCell.id ? order : false}
+          >
+            <TableSortLabel
+              active={orderBy === headCell.id}
+              direction={orderBy === headCell.id ? order : "asc"}
+              onClick={createSortHandler(headCell.id)}
+            >
+              {headCell.label}
+              {orderBy === headCell.id ? (
+                <span className={classes.visuallyHidden}>
                   {order === "desc" ? "sorted descending" : "sorted ascending"}
                 </span>
-                  ) : null}
-                </TableSortLabel>
-              </TableCell>
-          ))}
-          <TableCell className={`${classes.headText}`}>Delete</TableCell>
-        </TableRow>
-      </TableHead>
+              ) : null}
+            </TableSortLabel>
+          </TableCell>
+        ))}
+        <TableCell className={`${classes.headText}`}>Delete</TableCell>
+      </TableRow>
+    </TableHead>
   );
 }
 
@@ -150,15 +139,15 @@ const useToolbarStyles = makeStyles(theme => ({
     paddingRight: theme.spacing(4)
   },
   highlight:
-      theme.palette.type === "light"
-          ? {
-            color: theme.palette.secondary.main,
-            backgroundColor: lighten(theme.palette.secondary.light, 0.85)
-          }
-          : {
-            color: theme.palette.text.primary,
-            backgroundColor: theme.palette.secondary.dark
-          },
+    theme.palette.type === "light"
+      ? {
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+        }
+      : {
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark
+        },
   title: {
     flex: "1 1 100%"
   }
@@ -168,35 +157,35 @@ const EnhancedTableToolbar = props => {
   const { numSelected } = props;
 
   return (
-      <Toolbar
-          className={clsx(classes.root, {
-            [classes.highlight]: numSelected > 0
-          })}
-      >
-        {numSelected > 0 ? (
-            <Typography className={classes.title} color="inherit" variant="subtitle1">
-              {numSelected} selected
-            </Typography>
-        ) : (
-            <Typography className={classes.title} variant="h6" id="tableTitle">
-              Nutrition
-            </Typography>
-        )}
+    <Toolbar
+      className={clsx(classes.root, {
+        [classes.highlight]: numSelected > 0
+      })}
+    >
+      {numSelected > 0 ? (
+        <Typography className={classes.title} color="inherit" variant="subtitle1">
+          {numSelected} selected
+        </Typography>
+      ) : (
+        <Typography className={classes.title} variant="h6" id="tableTitle">
+          Nutrition
+        </Typography>
+      )}
 
-        {numSelected > 0 ? (
-            <Tooltip title="Delete">
-              <IconButton aria-label="delete">
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
-        ) : (
-            <Tooltip title="Filter list">
-              <IconButton aria-label="filter list">
-                <FilterListIcon />
-              </IconButton>
-            </Tooltip>
-        )}
-      </Toolbar>
+      {numSelected > 0 ? (
+        <Tooltip title="Delete">
+          <IconButton aria-label="delete">
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
+      ) : (
+        <Tooltip title="Filter list">
+          <IconButton aria-label="filter list">
+            <FilterListIcon />
+          </IconButton>
+        </Tooltip>
+      )}
+    </Toolbar>
   );
 };
 
@@ -246,20 +235,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function createData(officeLoc, WSId, sDate, eDate, officeOwner, status) {
-  if (status == 1) {
-    status = "confirmed";
-  } else {
-    status = "Unconfrimed";
-  }
-  return { officeLoc, WSId, sDate, eDate
-    , officeOwner, status };
+  return { officeLoc, WSId, sDate, eDate, officeOwner, status };
 }
-
-
 
 export default function ManageTables(props) {
   const rows = props.rows.map(r =>
-      createData(r.City, r.OwnerWorksapceId, r.BookingStartDate, r.BookingEndDate, r.OwnerFirstName, r.Confirmed)
+    createData(r.City, r.OwnerWorksapceId, r.BookingStartDate, r.BookingEndDate, r.OwnerFirstName, r.Confirmed)
   );
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
@@ -319,97 +300,96 @@ export default function ManageTables(props) {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
-      <div className={classes.root}>
-        <Paper className={classes.paper}>
-          {/*<EnhancedTableToolbar numSelected={selected.length} /> */}
-          <TableContainer>
-            <Table
-                className={classes.table}
-                aria-labelledby="tableTitle"
-                size={dense ? "small" : "medium"}
-                aria-label="enhanced table"
-            >
-              <EnhancedTableHead
-                  classes={classes}
-                  numSelected={selected.length}
-                  order={order}
-                  orderBy={orderBy}
-                  onSelectAllClick={handleSelectAllClick}
-                  onRequestSort={handleRequestSort}
-                  rowCount={rows.length}
-              />
-              <TableBody>
-                {stableSort(rows, getComparator(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, index) => {
-                      const isItemSelected = isSelected(row.name);
-                      const labelId = `enhanced-table-checkbox-${index}`;
+    <div className={classes.root}>
+      <Paper className={classes.paper}>
+        {/*<EnhancedTableToolbar numSelected={selected.length} /> */}
+        <TableContainer>
+          <Table
+            className={classes.table}
+            aria-labelledby="tableTitle"
+            size={dense ? "small" : "medium"}
+            aria-label="enhanced table"
+          >
+            <EnhancedTableHead
+              classes={classes}
+              numSelected={selected.length}
+              order={order}
+              orderBy={orderBy}
+              onSelectAllClick={handleSelectAllClick}
+              onRequestSort={handleRequestSort}
+              rowCount={rows.length}
+            />
+            <TableBody>
+              {stableSort(rows, getComparator(order, orderBy))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, index) => {
+                  const isItemSelected = isSelected(row.name);
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
-                      return (
-                          <StyledTableRow
-                              hover
-                              onClick={event => handleClick(event, row.name)}
-                              role="checkbox"
-                              aria-checked={isItemSelected}
-                              tabIndex={-1}
-                              // change here to make rows independent even with the same office name
-                              key={row.name}
-                              selected={isItemSelected}
-                              className={`${classes.headText}`}
-                          >
-                            {/*<TableCell padding="checkbox">*/}
-                            {/*  <Checkbox*/}
-                            {/*    style={{*/}
-                            {/*      color: "#002D7D"*/}
-                            {/*    }}*/}
-                            {/*    checked={isItemSelected}*/}
-                            {/*    inputProps={{ "aria-labelledby": labelId }}*/}
-                            {/*  />*/}
-                            {/*</TableCell>*/}
-                            <TableCell />
-                            <TableCell align="left" scope="row" className={`${classes.rowText}`}>
-                              {row.officeLoc}
-                            </TableCell>
-                            <TableCell align="center" className={`${classes.rowText}`} padding={"none"}>
-                              {row.WSId}
-                            </TableCell>
-                            <TableCell align="center" className={`${classes.rowText}`}>
-                              {row.sDate}
-                            </TableCell>
-                            <TableCell align="center" className={`${classes.rowText}`}>
-                              {row.eDate}
-                            </TableCell>
-                            <TableCell align="center" className={`${classes.rowText}`}>
-                              {row.officeOwner}
-                            </TableCell>
-                            <TableCell align="left" className={`${classes.rowText}`}>
-                              {row.status}
-                            </TableCell>
-                            <TableCell>
-                              <DeleteIcon />
-                            </TableCell>
-                          </StyledTableRow>
-                      );
-                    })}
-                {emptyRows > 0 && (
-                    <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-              rowsPerPageOptions={[5, 10]}
-              component="div"
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onChangePage={handleChangePage}
-              onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
-        </Paper>
-      </div>
+                  return (
+                    <StyledTableRow
+                      hover
+                      onClick={event => handleClick(event, row.name)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      // change here to make rows independent even with the same office name
+                      key={row.name}
+                      selected={isItemSelected}
+                      className={`${classes.headText}`}
+                    >
+                      {/*<TableCell padding="checkbox">*/}
+                      {/*  <Checkbox*/}
+                      {/*    style={{*/}
+                      {/*      color: "#002D7D"*/}
+                      {/*    }}*/}
+                      {/*    checked={isItemSelected}*/}
+                      {/*    inputProps={{ "aria-labelledby": labelId }}*/}
+                      {/*  />*/}
+                      {/*</TableCell>*/}
+                      <TableCell />
+                      <TableCell align="left" scope="row" className={`${classes.rowText}`}>
+                        {row.officeLoc}
+                      </TableCell>
+                      <TableCell align="center" className={`${classes.rowText}`} padding={"none"}>
+                        {row.WSId}
+                      </TableCell>
+                      <TableCell align="center" className={`${classes.rowText}`}>
+                        {row.sDate}
+                      </TableCell>
+                      <TableCell align="center" className={`${classes.rowText}`}>
+                        {row.eDate}
+                      </TableCell>
+                      <TableCell align="center" className={`${classes.rowText}`}>
+                        {row.officeOwner}
+                      </TableCell>
+                      <TableCell align="left" className={`${classes.rowText}`}>
+                        {row.status}
+                      </TableCell>
+                      <TableCell>
+                        <DeleteIcon />
+                      </TableCell>
+                    </StyledTableRow>
+                  );
+                })}
+              {emptyRows > 0 && (
+                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                  <TableCell colSpan={6} />
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </Paper>
+    </div>
   );
 }
-

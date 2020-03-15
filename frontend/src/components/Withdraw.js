@@ -52,21 +52,7 @@ class Withdraw extends React.Component {
             }
           }
         },
-        {
-          bookingId: 14,
-          startDate: "2020-04-10",
-          endDate: "2020-04-12",
-          workspace: {
-            workspaceId: "NV2-03B",
-            floor: {
-              city: "North Vancouver"
-            },
-            staff: {
-              firstName: "Lihn",
-              lastName: "Phan"
-            }
-          }
-        }
+
       ],
       error: null,
       showBookingCancelSuccess: false
@@ -82,7 +68,7 @@ class Withdraw extends React.Component {
     const staffId = 2;
     console.log("staffid :" + staffId);
     const data = await OfficeBookingApi.getBookingsByUserID(staffId);
-    this.setState({bookings: data});
+    this.setState({ bookings: data });
     // , (error, data) => {
     //   if (error) {
     //     console.log("Got an error from API call");
