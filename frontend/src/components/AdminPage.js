@@ -2,8 +2,15 @@ import React from "react";
 import { TextField, withStyles } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import OfficeBookingApi from "../api/OfficeBookingApi";
 
 class AdminPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      locations: OfficeBookingApi.getLocations()
+    };
+  }
   render() {
     const { classes } = this.props;
     return (

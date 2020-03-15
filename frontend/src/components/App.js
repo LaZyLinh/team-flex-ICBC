@@ -7,6 +7,7 @@ import Withdraw from "./Withdraw";
 import Admin from "./Admin";
 import ConfirmBooking from "./ConfirmBooking";
 import Finished from "./Finished";
+import AdminPage from "./AdminPage";
 
 function App(props) {
   const userInfo = props.userInfo;
@@ -32,6 +33,9 @@ function App(props) {
         </Route>
         <Route exact path="/admin">
           <Admin userInfo={userInfo} />
+        </Route>
+        <Route exact path="/adminPage">
+          <AdminPage userInfo={userInfo} />
         </Route>
         <Route exact path="/">
           <Home userInfo={userInfo} />
