@@ -3,7 +3,7 @@ CREATE TABLE `user` (
   `Email` varchar(255) NOT NULL,
   `FirstName` varchar(255) NOT NULL,
   `LastName` varchar(255) NOT NULL,
-  `Department` varchar(255) NOT NULL,
+  `Department` varchar(255),
   `Valid` boolean NOT NULL
 );
 

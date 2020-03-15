@@ -95,8 +95,8 @@ class OfficeBookingService {
 
           console.log(booking[0]);
           console.log(bookingInfo);
-          emailService.sendEmailDeleteBookingBooker(bookerEmail.Email, bookingInfo);
-          emailService.sendEmailDeleteBookingLender(workspaceOwnerEmail.Email, bookingInfo);
+          emailService.sendEmailConfirmBookingBooker(bookerEmail.Email, bookingInfo);
+          emailService.sendEmailConfirmBookingLender(workspaceOwnerEmail.Email, bookingInfo);
           // stop timer !!!
           resolve(bookingInfo);
         } catch (e) {
@@ -226,6 +226,7 @@ class OfficeBookingService {
       workspaceName,
       floorId,
       location,
+      features: [],
       bookings: []
     }
   }
@@ -266,12 +267,15 @@ class OfficeBookingService {
                         left join booking b
                         on a.AvailabilityId = b.AvailabilityId) ab
                         natural join workspace
+                        natural join workspaceFeature
+                        natural join feature
                         natural join floor
                         left join user u on BStaffId = u.StaffId
                         order by AvailabilityId`;
           const rows = (await knex.raw(query))[0];
-          // console.log(rows);
+          //console.log(rows);
           let currAvailabilityId = -1;
+          let currFeatureIds = [];
           const availabilities = [];
           for (const row of rows) {
             // The rows are in sorted AvailabilityId, so rows for the same availability are consecutive
@@ -281,6 +285,12 @@ class OfficeBookingService {
               // Push booking into current availability in response;
               const booking = OfficeBookingService.makeBooking(row);
               availabilities[availabilities.length - 1].bookings.push(booking);
+
+              // set up features
+              if (row.FeatureId !== null && !currFeatureIds.includes(row.FeatureId)) {
+                availabilities[availabilities.length - 1].features.push(row.FeatureName);
+                currFeatureIds.push(row.FeatureId);
+              }
             } else {
               // update index;
               currAvailabilityId = row.AvailabilityId;
@@ -290,6 +300,12 @@ class OfficeBookingService {
               if (row.BookingId != null) {
                 const booking = OfficeBookingService.makeBooking(row);
                 availabilities[availabilities.length - 1].bookings.push(booking);
+              }
+
+              // set up features
+              if (row.FeatureId !== null && !currFeatureIds.includes(row.FeatureId)) {
+                availabilities[availabilities.length - 1].features.push(row.FeatureName);
+                currFeatureIds.push(row.FeatureId);
               }
             }
           }

@@ -12,6 +12,17 @@ const localOption = {
   }
 }
 
+const johnLocalOption = { // I (John) have slightly different settings for local DB
+  client: 'mysql',
+  connection: {
+    host: 'localhost',
+    port: 3306,
+    user: 'rootbeer',
+    password: 'dara',
+    database: 'test'
+  }
+}
+
 const remoteOption = {
   client: 'mysql',
   connection: {
@@ -24,8 +35,11 @@ const remoteOption = {
 }
 
 
-// console.log("local? " + process.env.LOCAL);
 
-const knex = process.env.LOCAL ? require('knex')(localOption) : require('knex')(remoteOption);
-
-module.exports = knex;
+if (process.env.LOCAL_JOHN) {
+  module.exports = require('knex')(johnLocalOption);
+} else if (process.env.LOCAL) {
+  module.exports = require('knex')(localOption);
+} else {
+  module.exports = require('knex')(remoteOption);
+}

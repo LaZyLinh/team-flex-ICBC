@@ -13,6 +13,7 @@ import { ArrowForwardOutlined, YoutubeSearchedFor } from "@material-ui/icons";
 import Button from "@material-ui/core/Button"; // only needs to be imported once
 import EnhancedTable from "./Table.js";
 import OfficeBookingApi from "../api/OfficeBookingApi";
+import { createData } from "./Table";
 
 class Booking extends React.Component {
   constructor(props) {
@@ -28,26 +29,25 @@ class Booking extends React.Component {
   }
 
   async componentDidMount() {
-    const locs = await OfficeBookingApi.getLocations();
-    // TODO: get features from api
+    const proms = [
+      OfficeBookingApi.getLocations(),
+      OfficeBookingApi.getFeatures(),
+      OfficeBookingApi.getTopAvailabilities(20)
+    ];
+    const results = await Promise.all(proms);
+    const rows = [];
+    for (const avail of results[2]) {
+      rows.push(createData(avail.workspaceName, "TV", avail.startDate.toString(), avail.endDate.toString()));
+    }
     this.setState({
       selectedLocation: "",
-      locations: locs,
-      checkingFeatures: [
-        { name: "TV", checked: false },
-        { name: "Private", checked: false },
-        { name: "Conference Phone", checked: false }
-      ],
-      availabilities: [],
+      locations: results[0],
+      checkingFeatures: results[1].map(featureName => {
+        return { name: featureName, checked: false };
+      }),
+      availabilities: rows,
       hasAvail: true
     });
-
-    // Fake features:
-
-    // set whether page should dipslay table or no avail
-    // if (this.state.availabilities.length !== 0) {
-    //   this.setState({ hasAvail: true });
-    // }
   }
 
   availabilityItems() {
@@ -113,7 +113,7 @@ class Booking extends React.Component {
   // Populating the right panel based on this.state.hasAvail
   rightPanel(classes) {
     if (this.state.hasAvail) {
-      return <EnhancedTable />;
+      return <EnhancedTable rows={this.state.availabilities} />;
     } else {
       return (
         <React.Fragment>
@@ -161,7 +161,7 @@ class Booking extends React.Component {
             // for some reason making "width" a string makes it flexible
             width="flex"
             // but doesn't work for height, need to specify a pixel size
-            height={210}
+            height={300}
             minDate={new Date()}
             min={new Date()}
             selected={{

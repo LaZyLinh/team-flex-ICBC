@@ -8,7 +8,12 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const { OpenApiValidator } = require('express-openapi-validator');
 const openapiRouter = require('./utils/openapiRouter');
+const admin = require('./admin/adminApp');
+const auth = require('./auth/auth');
 const logger = require('./logger');
+const authenticator = require('./auth/authenticator');
+const fileUpload = require('express-fileupload');
+const AdminFloorService = require("./services/AdminFloorService");
 
 class ExpressServer {
   constructor(port, openApiYaml) {
@@ -23,13 +28,21 @@ class ExpressServer {
     // this.setupAllowedMedia();
     this.app.use(cors());
     this.app.use(bodyParser.json());
+    this.app.use(express.static("public"));
+    this.app.use(fileUpload());
+
+    // TODO: authenticate admin
+    // this.app.use("/admin", INSERT ADMIN MIDDLEWARE");
+    this.app.post("/admin/upload-floorplan-image", AdminFloorService.uploadFloorPlan);
+    this.app.post("/admin/upload-floor-data", AdminFloorService.uploadFloorData);
+
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(cookieParser());
-    this.app.use('/spec', express.static(path.join(__dirname, 'api')));
-    this.app.get('/hello', (req, res) => res.send('Hello World. path: '+this.openApiPath));
-    // this.app.get('/spec', express.static(this.openApiPath));
-    this.app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(this.schema));
+    this.app.use('/admin', admin);
+    // this.app.use(authenticator.authenticate());
+    this.app.get('/hello', (req, res) => res.send('Hello World. path: ' + this.openApiPath));
+    this.app.use('/auth', auth);
     this.app.get('/login-redirect', (req, res) => {
       res.status(200);
       res.json(req.query);
@@ -41,11 +54,11 @@ class ExpressServer {
     new OpenApiValidator({
       apiSpecPath: this.openApiPath,
     }).install(this.app);
+
+    // Middleware for authenticating JWT for Azure AD
+
     this.app.use(openapiRouter());
-    this.app.get('/', (req, res) => {
-      res.status(200);
-      res.end('Hello World');
-    });
+
   }
 
   addErrorHandler() {
