@@ -10,7 +10,10 @@ import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
 import ManageTable from "./Withdraw/ManageTable";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import Home from "./Home";
+=======
+>>>>>>> aebdc4d1808ad33ac1a7c13ec2df1b7f811250a0
 =======
 >>>>>>> aebdc4d1808ad33ac1a7c13ec2df1b7f811250a0
 import Link from "@material-ui/core/Link";
@@ -146,7 +149,12 @@ class Withdraw extends React.Component {
     return (
       <div>
         <Link href="/">
+<<<<<<< HEAD
           <HomeIcon className={`${classes.shapeFilter}`} /></Link>
+=======
+          <HomeIcon className={`${classes.shapeFilter}`} />
+        </Link>
+>>>>>>> aebdc4d1808ad33ac1a7c13ec2df1b7f811250a0
         <div className={`${classes.searchBar}`}> </div>
         <form onSubmit={this.onSubmitStaffId} className={`${classes.idSearch}`}>
           <TextField onkeyPress={e => this.setState({ staffId: e.target.value })} type="text" label="ID" name="staffId"  />
