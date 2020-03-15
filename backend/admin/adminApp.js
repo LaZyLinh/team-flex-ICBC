@@ -1,10 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const User = require('./User')
+const Validation = require('./validation')
 const userDB = require('../db/user')
 const workspaceDB = require('../db/workspace')
-// const bcrypt = require('bcrypt');
-// const jwt = require('jsonwebtoken');
 
 
 require('dotenv').config();
@@ -18,10 +16,17 @@ router.get('/', (req, res) => {
 /*
  admin login
 */
-// router.post('/login', (req, res) => {
-//   let pass = req.body.password;
-
-// })
+router.post('/login', (req, res) => {
+  let pass = req.body.password;
+  let adminValidate = new Validation();
+  try {
+    adminValidate.setPassword(pass);
+    res.json({ message: "ok" })
+  } catch (err) {
+    res.status(500)
+    res.json({ message: err })
+  }
+})
 
 // Admin Add User
 // /admin/user endpoint
