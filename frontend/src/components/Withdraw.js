@@ -75,27 +75,31 @@ class Withdraw extends React.Component {
     this.onSubmitStaffId = this.onSubmitStaffId.bind(this);
   }
 
-  onSubmitStaffId(event) {
+  async onSubmitStaffId(event) {
     console.log("onSubmitStaffId");
     console.log(event.target.value);
     event.preventDefault();
-    const staffId = this.state.staffId;
-    OfficeBookingApi.getBookingsByUserID(staffId, (error, data) => {
-      if (error) {
-        console.log("Got an error from API call");
-        this.setState({
-          error: error,
-          bookings: []
-        });
-        return;
-      }
-      if (data) {
-        this.setState({
-          error: null
-          // bookings: data
-        });
-      }
-    });
+    const staffId = 2;
+    console.log("staffid :" + staffId);
+    const data = await OfficeBookingApi.getBookingsByUserID(staffId);
+    this.setState({bookings: data});
+    // , (error, data) => {
+    //   if (error) {
+    //     console.log("Got an error from API call");
+    //     this.setState({
+    //       error: error,
+    //       bookings: []
+    //     });
+    //     return;
+    //   }
+    //   if (data) {
+    //     console.log(data);
+    //     this.setState({
+    //       error: null
+    //       // bookings: data
+    //     });
+    //   }
+    // });
   }
 
   onCancelBooking(id) {
@@ -123,9 +127,9 @@ class Withdraw extends React.Component {
     const bookings = this.state.bookings;
     return bookings.map(b => {
       return {
-        bookingId: b.bookingId,
-        startDate: b.startDate,
-        endDate: b.endDate,
+        bookingId: b.BookingId,
+        startDate: b.BookingStartDate,
+        endDate: b.BookingEndDate,
         city: b.workspace.floor.city,
         workspaceId: b.workspace.workspaceId,
         // TODO: Implement confirmation
@@ -152,12 +156,17 @@ class Withdraw extends React.Component {
         {/*</Link>*/}
         <div className={`${classes.searchBar}`}> </div>
         <form onSubmit={this.onSubmitStaffId} className={`${classes.idSearch}`}>
-          <TextField onkeyPress={e => this.setState({ staffId: e.target.value })} type="text" label="ID" name="staffId"  />
+          <TextField
+            onkeyPress={e => this.setState({ staffId: e.target.value })}
+            type="text"
+            label="ID"
+            name="staffId"
+          />
         </form>
         <SearchIcon className={`${classes.searchIcon}`} />
         <div className={`${classes.bookingTable}`}>
           {/*<BookingsTable onCancelBooking={this.onCancelBooking} rows={this.createTableRowData()}></BookingsTable>*/}
-          <ManageTable />
+          <ManageTable rows={this.state.bookings}/>
         </div>
         <confirmA />
       </div>

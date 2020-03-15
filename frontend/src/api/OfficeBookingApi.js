@@ -229,7 +229,6 @@ class OfficeBookingApi {
     if (staffId === undefined || staffId === null) {
       throw new Error("Missing the required parameter 'staffId' when calling getBookingsByUserID");
     }
-
     let pathParams = {
     };
     let queryParams = {
