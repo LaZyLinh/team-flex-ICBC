@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const Validation = require('./validation')
+const Validation = require('./validation');
+const adminValidate = new Validation();
 const userDB = require('../db/user')
 const workspaceDB = require('../db/workspace')
+const auth = require('./adminAuth');
 
 
 require('dotenv').config();
@@ -15,18 +17,33 @@ router.get('/', (req, res) => {
 
 /*
  admin login
+ default password: bestteam
+ Response:  200 OK, with ​token. The token will be included in the header of every admin request.
+                format: header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwiZXhwIjoxNTg5NTAyMDA0LCJpYXQiOjE1ODQzMTgwMDR9.PyJvSoQzOtjkKknE0FqrARp2_hsD06aoGzo98uM5WWc'
+            403 Forbidden: wrong pass
+
 */
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res, next) => {
   let pass = req.body.password;
-  let adminValidate = new Validation();
+
   try {
-    adminValidate.setPassword(pass);
-    res.json({ message: "ok" })
+    // adminValidate.setPassword(pass);
+    let result = await adminValidate.validatePassword(pass);
+    if (result) {
+      const token = adminValidate.generateJWT();
+      res.json({ message: 'success', token: token });
+    } else {
+      res.status(403).send({ message: "invalid password" })
+    }
   } catch (err) {
+    console.log(err);
     res.status(500)
     res.json({ message: err })
   }
 })
+
+// all endpoint below here requires admin login token
+router.use(auth.required)
 
 // Admin Add User
 // /admin/user endpoint
@@ -62,7 +79,7 @@ router.post('/user', (req, res) => {
     // new err;
     console.log(err);
     res.status(500);
-    res.json({ message: err });
+    res.json({ message: err.toString() });
   })
 })
 
