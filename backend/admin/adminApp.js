@@ -83,4 +83,20 @@ router.post('/user', (req, res) => {
   })
 })
 
+/*
+ * Get all workspaces info with specific floorId
+ * query example: http://localhost:8080/admin/workspaces?floorId=4
+ * Response:  200 OK: join of Workspace-User-Floor
+ * 401 Unauthorized ​(missing, wrong, or expired security token) – Front end will show admin login screen in response  
+*/
+router.get('/workspaces', (req, res) => {
+  workspaceDB.getWorkspaceByFloorId(req.query.floorId).then(obj => {
+    res.status(200);
+    res.json(obj[0]);
+  }).catch(err => {
+    res.status(500);
+    res.json({ message: err.toString() })
+  })
+})
+
 module.exports = router;
