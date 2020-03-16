@@ -39,9 +39,9 @@ class ExpressServer {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(cookieParser());
-    this.app.use(authenticator.authenticate());
-    this.app.get('/hello', (req, res) => res.send('Hello World. path: ' + this.openApiPath));
     this.app.use('/admin', admin);
+    // this.app.use(authenticator.authenticate());
+    this.app.get('/hello', (req, res) => res.send('Hello World. path: ' + this.openApiPath));
     this.app.use('/auth', auth);
     this.app.get('/login-redirect', (req, res) => {
       res.status(200);
