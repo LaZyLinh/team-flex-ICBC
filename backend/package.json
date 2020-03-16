@@ -8,8 +8,7 @@
     "test": "mocha",
     "gen": "node generateInsertDataScripts.js"
   },
-  "keywords": [
-  ],
+  "keywords": [],
   "license": "Unlicense",
   "private": true,
   "dependencies": {

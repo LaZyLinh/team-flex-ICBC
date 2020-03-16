@@ -17,7 +17,7 @@
 ### Backend
 - `npm install` to install all dependencies
 - `npm start` to start the Express server
-- `npm test` to run tests in /tests
+- `npm test` to run tests in /test
 - `npm run gen` to create up-to-date .sql script at /sql/generated/insert_data.sql (5000 employees & workspaces, 1000 availabilities & bookings)
 - accessible on http://localhost:8080/
 - openapi.yaml spec file is statically at http://localhost:8080/openapi.yaml
