@@ -2,7 +2,7 @@ const fs = require('fs')
 const promisify = require('util').promisify
 
 const knexOptions = require('../../db/noDBOption')
-const TEST_DB_NAME = 'flexworktest'
+const DEFAULT_TEST_DB_NAME = 'flexworktest'
 const CREATE_TABLES_PATH = './sql/insert_table.sql'
 const INSERT_TEST_DATA_PATH = './sql/generated/insert_data.sql'
 
@@ -26,24 +26,27 @@ async function insertTestData() {
 }
 
 /**
- * Drops the test DB, creates a new test DB, and inserts fake data (5000 employees & workspaces, 1000 bookings)
+ * Drops the test DB, creates a new test DB
  */
-async function init() {
-    await knex.raw(`DROP DATABASE IF EXISTS ${TEST_DB_NAME}`)
-    await knex.raw(`CREATE DATABASE ${TEST_DB_NAME}`)
+async function reset(shouldInsertData = false, testDBName = DEFAULT_TEST_DB_NAME) {
+    await knex.raw(`DROP DATABASE IF EXISTS ${testDBName}`)
+    await knex.raw(`CREATE DATABASE ${testDBName}`)
     console.log("Test DB created.")
     knex.destroy()
-    knexOptions.connection.database = TEST_DB_NAME
+    knexOptions.connection.database = testDBName
     knex = require('knex')(knexOptions)
     await createTables()
-    await insertTestData()
+    if (shouldInsertData) {
+        await insertTestData()
+    }
     return knex
 }
 
 
-function connect() {
-    knexOptions.connection.database = TEST_DB_NAME
+function connect(testDBName = DEFAULT_TEST_DB_NAME) {
+    knexOptions.connection.database = testDBName
     return require('knex')(knexOptions)
 }
 
-module.exports = { init, connect }
+
+module.exports = { reset, connect }
