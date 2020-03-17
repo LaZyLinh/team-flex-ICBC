@@ -9,6 +9,9 @@ import TextField from "@material-ui/core/TextField/TextField";
 import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
 import ManageTable from "./Withdraw/ManageTable";
+
+import Home from "./Home";
+
 import Link from "@material-ui/core/Link";
 
 class Withdraw extends React.Component {
@@ -73,6 +76,8 @@ class Withdraw extends React.Component {
   }
 
   onSubmitStaffId(event) {
+    console.log("onSubmitStaffId");
+    console.log(event.target.value);
     event.preventDefault();
     const staffId = this.state.staffId;
     OfficeBookingApi.getBookingsByUserID(staffId, (error, data) => {
@@ -140,11 +145,14 @@ class Withdraw extends React.Component {
     return (
       <div>
         <Link href="/">
-          <HomeIcon className={`${classes.shapeFilter}`} />
-        </Link>
+          <HomeIcon className={`${classes.shapeFilter}`} /></Link>
+        {/*</Link>*/}
+
+        {/*  <HomeIcon className={`${classes.shapeFilter}`} />*/}
+        {/*</Link>*/}
         <div className={`${classes.searchBar}`}> </div>
         <form onSubmit={this.onSubmitStaffId} className={`${classes.idSearch}`}>
-          <TextField onInput={e => this.setState({ staffId: e.target.value })} type="text" label="ID" name="staffId" />
+          <TextField onkeyPress={e => this.setState({ staffId: e.target.value })} type="text" label="ID" name="staffId"  />
         </form>
         <SearchIcon className={`${classes.searchIcon}`} />
         <div className={`${classes.bookingTable}`}>

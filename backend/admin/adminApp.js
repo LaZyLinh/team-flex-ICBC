@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const User = require('./User')
+const Validation = require('./validation');
+const adminValidate = new Validation();
 const userDB = require('../db/user')
 const workspaceDB = require('../db/workspace')
-// const bcrypt = require('bcrypt');
-// const jwt = require('jsonwebtoken');
+const auth = require('./adminAuth');
 
 
 require('dotenv').config();
@@ -17,11 +17,33 @@ router.get('/', (req, res) => {
 
 /*
  admin login
-*/
-// router.post('/login', (req, res) => {
-//   let pass = req.body.password;
+ default password: bestteam
+ Response:  200 OK, with ​token. The token will be included in the header of every admin request.
+                format: header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwiZXhwIjoxNTg5NTAyMDA0LCJpYXQiOjE1ODQzMTgwMDR9.PyJvSoQzOtjkKknE0FqrARp2_hsD06aoGzo98uM5WWc'
+            403 Forbidden: wrong pass
 
-// })
+*/
+router.post('/login', async (req, res, next) => {
+  let pass = req.body.password;
+
+  try {
+    // adminValidate.setPassword(pass);
+    let result = await adminValidate.validatePassword(pass);
+    if (result) {
+      const token = adminValidate.generateJWT();
+      res.json({ message: 'success', token: token });
+    } else {
+      res.status(403).send({ message: "invalid password" })
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500)
+    res.json({ message: err })
+  }
+})
+
+// all endpoint below here requires admin login token
+router.use(auth.required)
 
 // Admin Add User
 // /admin/user endpoint
@@ -57,7 +79,23 @@ router.post('/user', (req, res) => {
     // new err;
     console.log(err);
     res.status(500);
-    res.json({ message: err });
+    res.json({ message: err.toString() });
+  })
+})
+
+/*
+ * Get all workspaces info with specific floorId
+ * query example: http://localhost:8080/admin/workspaces?floorId=4
+ * Response:  200 OK: join of Workspace-User-Floor
+ * 401 Unauthorized ​(missing, wrong, or expired security token) – Front end will show admin login screen in response  
+*/
+router.get('/workspaces', (req, res) => {
+  workspaceDB.getWorkspaceByFloorId(req.query.floorId).then(obj => {
+    res.status(200);
+    res.json(obj[0]);
+  }).catch(err => {
+    res.status(500);
+    res.json({ message: err.toString() })
   })
 })
 

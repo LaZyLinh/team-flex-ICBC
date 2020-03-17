@@ -15,8 +15,11 @@
 - accessible on http://localhost:3000/
 
 ### Backend
+- `npm install` to install all dependencies
 - `npm start` to start the Express server
-- accessible on http://localhost:8080/ unless PORT environment variable specified
+- `npm test` to run tests in /test
+- `npm run gen` to create up-to-date .sql script at /sql/generated/insert_data.sql (5000 employees & workspaces, 1000 availabilities & bookings)
+- accessible on http://localhost:8080/
 - openapi.yaml spec file is statically at http://localhost:8080/openapi.yaml
 
 ### Shared

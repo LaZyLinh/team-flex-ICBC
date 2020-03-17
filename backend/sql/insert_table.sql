@@ -1,5 +1,6 @@
 CREATE TABLE `user` (
   `StaffId` int AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  `ICBCEmployeeId` varchar(30) NOT NULL,
   `Email` varchar(255) NOT NULL,
   `FirstName` varchar(255) NOT NULL,
   `LastName` varchar(255) NOT NULL,
@@ -27,7 +28,8 @@ CREATE TABLE `availability` (
   `AvailabilityId` int AUTO_INCREMENT PRIMARY KEY,
   `StartDate` date NOT NULL,
   `EndDate` date NOT NULL,
-  `WorkspaceId` varchar(10)
+  `WorkspaceId` varchar(10),
+  `Comment` varchar(255)
 );
 
 CREATE TABLE `workspaceFeature` (
