@@ -1,3 +1,8 @@
+const fontFamily = "Inter";
+const adminButtonColor = "#0A65FF";
+const adminButtonBorder = "1px solid rgba(10, 101, 255, 0.5)";
+const adminButtonHoverBorder = "1px solid rgba(10, 101, 255, 1)";
+
 export default {
   background: {
     position: "absolute",
@@ -16,16 +21,38 @@ export default {
     width: "18%"
   },
   adminButton: {
-    fontFamily: "Inter",
-    color: "#0A65FF",
-    border: "1px solid rgba(10, 101, 255, 0.5)",
+    fontFamily: fontFamily,
+    color: adminButtonColor,
+    border: adminButtonBorder,
     position: "absolute",
     right: "7%",
     top: "10%",
     boxShadow: "0px 1px 1px rgba(0, 0, 0, 0.2)",
     "&:hover": {
-      border: "1px solid rgba(10, 101, 255, 1)"
+      border: adminButtonHoverBorder
     }
+  },
+  dialogTitle: {
+    fontFamily: fontFamily,
+    fontSize: "1.5em",
+    fontWeight: "bold"
+  },
+  dialogContext: {
+    fontFamily: fontFamily
+  },
+  passwordField: {
+    fontFamily: fontFamily
+  },
+  dialogButtons: {
+    fontFamily: fontFamily,
+    color: adminButtonColor,
+    border: adminButtonBorder,
+    "&:hover": {
+      border: adminButtonHoverBorder
+    }
+  },
+  dialog: {
+    fontFamily: fontFamily
   },
   container: {
     justifyContent: "center",
@@ -52,7 +79,7 @@ export default {
     fontSize: "6em"
   },
   buttonText: {
-    fontFamily: "Inter",
+    fontFamily: fontFamily,
     fontSize: "1.2em"
   }
 };
