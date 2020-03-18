@@ -32,12 +32,16 @@ class Display_Square extends React.Component {
     console.log(this.state.Locations);
     return (
       <div>
-        <Button onClick={this.getLocations}> ShowLocations</Button>
+        <Button style={{ width: "100%" }} onClick={this.getLocations}>
+          {" "}
+          ShowLocations
+        </Button>
         {this.state.Locations.map(function(location, i) {
-          console.log("HEY");
           return (
-            <div className={`${classes.eachPart}`}>
-              <h1 style={{ fontSize: "20px" }}> {location}</h1>
+            <div className={`${classes.eachOne}`}>
+              <div className={`${classes.eachPart}`}>
+                <h1 style={{ fontSize: "20px", position: "relative", top: "50%", color: "white" }}>{location}</h1>
+              </div>
             </div>
           );
         })}
@@ -46,10 +50,16 @@ class Display_Square extends React.Component {
   }
 }
 const DisplayStyle = {
+  eachOne: {
+    width: "33%",
+    display: "inline-block",
+    marginLeft: "15%",
+    textAlign: "center"
+  },
   eachPart: {
     backgroundColor: "#002D7D",
-    width: "160px",
-    height: "160px"
+    width: "200px",
+    height: "200px"
   }
 };
 export default withStyles(DisplayStyle)(Display_Square);
