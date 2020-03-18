@@ -1,5 +1,5 @@
 const fontFamily = "Inter";
-const adminButtonColor = "#0A65FF";
+const adminColor = "#0A65FF";
 const adminButtonBorder = "1px solid rgba(10, 101, 255, 0.5)";
 const adminButtonHoverBorder = "1px solid rgba(10, 101, 255, 1)";
 
@@ -22,7 +22,7 @@ export default {
   },
   adminButton: {
     fontFamily: fontFamily,
-    color: adminButtonColor,
+    color: adminColor,
     border: adminButtonBorder,
     position: "absolute",
     right: "7%",
@@ -41,11 +41,12 @@ export default {
     fontFamily: fontFamily
   },
   passwordField: {
-    fontFamily: fontFamily
+    fontFamily: fontFamily,
+    color: adminColor
   },
   dialogButtons: {
     fontFamily: fontFamily,
-    color: adminButtonColor,
+    color: adminColor,
     border: adminButtonBorder,
     "&:hover": {
       border: adminButtonHoverBorder

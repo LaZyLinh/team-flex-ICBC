@@ -23,7 +23,7 @@ function App(props) {
         <Route exact path="/finished">
           <Finished userInfo={userInfo} />
         </Route>
-        <Route exact path="/bookings">
+        <Route exact path="/booking">
           <Booking userInfo={userInfo} />
         </Route>
         <Route exact path="/withdraw">

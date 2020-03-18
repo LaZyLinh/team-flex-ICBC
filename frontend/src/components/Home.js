@@ -2,6 +2,7 @@ import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import Slide from "@material-ui/core/Slide";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -9,36 +10,42 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { withStyles } from "@material-ui/core";
 import { GiCalendar, GiDesk, GiChecklist } from "react-icons/gi";
-import logo from "../assets/home_logo.png";
 import styles from "../styles/Home.styles";
+import logo from "../assets/home_logo.png";
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      openAdminDialog: false,
-      password: ""
+      openDialog: false,
+      password: "",
+      wrongPassword: false
     };
   }
 
   handlePasswordInput = event => {
     this.setState({
-      password: event.target.value
+      password: event.target.value,
+      wrongPassword: false
     });
   };
 
   handleAdminPortal = () => {
     this.setState(prevState => {
-      return { openAdminDialog: !prevState.openAdminDialog };
+      return { openDialog: !prevState.openDialog };
     });
   };
 
   handleAdminLogin = () => {
-    console.log("login");
+    // TODO: send request to verify password
+    // TODO: if request succeeds, redirect to admin portal
+    // TODO: if request fails...
+    this.setState({
+      wrongPassword: true
+    });
   };
 
   render = () => {
-    console.log(this.props.userInfo);
     const { classes } = this.props;
     return (
       <React.Fragment>
@@ -59,7 +66,7 @@ class Home extends React.Component {
             </Button>
           </Grid>
           <Grid className={classes.item} item xs={4}>
-            <Button href="/bookings" className={classes.button}>
+            <Button href="/booking" className={classes.button}>
               <div>
                 <GiDesk className={classes.icon} />
                 <div className={classes.buttonText}>Book Office</div>
@@ -75,7 +82,16 @@ class Home extends React.Component {
             </Button>
           </Grid>
         </Grid>
-        <Dialog open={this.state.openAdminDialog} onClose={this.handleAdminPortal}>
+        <Dialog
+          TransitionComponent={Transition}
+          open={this.state.openDialog}
+          onClose={this.handleAdminPortal}
+          PaperProps={{
+            style: {
+              backgroundColor: "#EBF2FF"
+            }
+          }}
+        >
           <DialogTitle className={classes.dialogTitle} disableTypography={true}>
             Admin Portal
           </DialogTitle>
@@ -92,14 +108,21 @@ class Home extends React.Component {
               fullWidth
               value={this.state.password}
               onChange={this.handlePasswordInput}
+              error={this.state.wrongPassword}
+              helperText={this.state.wrongPassword ? "Incorrect Password" : ""}
             />
           </DialogContent>
           <DialogActions>
+            <Button
+              className={classes.dialogButtons}
+              onClick={this.handleAdminLogin}
+              color="primary"
+              disabled={this.state.password === ""}
+            >
+              Login
+            </Button>
             <Button className={classes.dialogButtons} onClick={this.handleAdminPortal} color="primary">
               Cancel
-            </Button>
-            <Button className={classes.dialogButtons} onClick={this.handleAdminLogin} color="primary">
-              Login
             </Button>
           </DialogActions>
         </Dialog>
@@ -107,5 +130,9 @@ class Home extends React.Component {
     );
   };
 }
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export default withStyles(styles)(Home);
