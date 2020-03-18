@@ -2,9 +2,11 @@
 const Service = require('./Service');
 const Availabilities = require('../db/availabilities');
 const Booking = require('../db/bookings');
+const makePackages = require("./packagemaker/PackageMaker");
 
 // Added for direct usage of knex
 const knex = require("../db/mysqlDB");
+const knexHelper = async (query) => (await knex.raw(query))[0];
 // flexwork-common helper functions
 const FWC = require("flexwork-common");
 // How many availabilities in the DB to dig for open ones
@@ -107,6 +109,19 @@ class OfficeBookingService {
         }
       },
     );
+  }
+
+
+  static async getPackages({ startDate, endDate, location, floor, features }) {
+    try {
+      const packages = await makePackages(startDate, endDate, location, floor, features);
+      resolve(packages);
+    } catch (e) {
+      resolve(Service.rejectResponse(
+        e.message || 'Invalid input',
+        e.status || 405,
+      ));
+    }
   }
 
   /**
