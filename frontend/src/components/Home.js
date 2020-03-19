@@ -52,8 +52,11 @@ class Home extends React.Component {
         <div className={classes.background}></div>
         <div>
           <img className={classes.logo} src={logo} alt="Logo"></img>
-          <Button className={classes.adminButton} onClick={this.handleAdminPortal} variant="outlined" color="primary">
-            Admin Portal
+
+          <Button className={classes.adminButton} onClick={this.handleAdminPortal} variant="outlined" color="primary"/>
+
+          <Button className={classes.adminButton} href="/adminPage" variant="outlined" color="primary">
+
           </Button>
         </div>
         <Grid container className={classes.container} spacing={2}>

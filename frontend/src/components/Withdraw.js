@@ -1,6 +1,6 @@
 import React from "react";
 import OfficeBookingApi from "../api/OfficeBookingApi";
-import BookingsTable from "./Withdraw/BookingsTable";
+import OfficeLendingApi from "../api/OfficeLendingApi";
 
 import { withStyles } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
@@ -8,7 +8,7 @@ import FormControl from "@material-ui/core/FormControl";
 import TextField from "@material-ui/core/TextField/TextField";
 import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
-import ManageTable from "./Withdraw/ManageTable";
+import ManageTable from "./display/ManageTable";
 
 import Home from "./Home";
 
@@ -21,53 +21,7 @@ class Withdraw extends React.Component {
       staffId: -1,
       // bookings: [],
       // TEST:
-      bookings: [
-        {
-          bookingId: 8,
-          startDate: "2020-04-22",
-          endDate: "2020-04-30",
-          workspace: {
-            workspaceId: "NV4-03A",
-            floor: {
-              city: "North Vancouver"
-            },
-            staff: {
-              firstName: "Kobe",
-              lastName: "Bryant"
-            }
-          }
-        },
-        {
-          bookingId: 10,
-          startDate: "2020-04-12",
-          endDate: "2020-04-15",
-          workspace: {
-            workspaceId: "NV4-03B",
-            floor: {
-              city: "North Vancouver"
-            },
-            staff: {
-              firstName: "Kevin",
-              lastName: "Wei"
-            }
-          }
-        },
-        {
-          bookingId: 14,
-          startDate: "2020-04-10",
-          endDate: "2020-04-12",
-          workspace: {
-            workspaceId: "NV2-03B",
-            floor: {
-              city: "North Vancouver"
-            },
-            staff: {
-              firstName: "Lihn",
-              lastName: "Phan"
-            }
-          }
-        }
-      ],
+      bookings: [],
       error: null,
       showBookingCancelSuccess: false
     };
@@ -75,27 +29,31 @@ class Withdraw extends React.Component {
     this.onSubmitStaffId = this.onSubmitStaffId.bind(this);
   }
 
-  onSubmitStaffId(event) {
+  async onSubmitStaffId(event) {
     console.log("onSubmitStaffId");
     console.log(event.target.value);
     event.preventDefault();
-    const staffId = this.state.staffId;
-    OfficeBookingApi.getBookingsByUserID(staffId, (error, data) => {
-      if (error) {
-        console.log("Got an error from API call");
-        this.setState({
-          error: error,
-          bookings: []
-        });
-        return;
-      }
-      if (data) {
-        this.setState({
-          error: null
-          // bookings: data
-        });
-      }
-    });
+    const staffId = 2;
+    console.log("staffid :" + staffId);
+    const data = await OfficeBookingApi.getBookingsByUserID(staffId);
+    this.setState({ bookings: data });
+    // , (error, data) => {
+    //   if (error) {
+    //     console.log("Got an error from API call");
+    //     this.setState({
+    //       error: error,
+    //       bookings: []
+    //     });
+    //     return;
+    //   }
+    //   if (data) {
+    //     console.log(data);
+    //     this.setState({
+    //       error: null
+    //       // bookings: data
+    //     });
+    //   }
+    // });
   }
 
   onCancelBooking(id) {
@@ -123,9 +81,9 @@ class Withdraw extends React.Component {
     const bookings = this.state.bookings;
     return bookings.map(b => {
       return {
-        bookingId: b.bookingId,
-        startDate: b.startDate,
-        endDate: b.endDate,
+        bookingId: b.BookingId,
+        startDate: b.BookingStartDate,
+        endDate: b.BookingEndDate,
         city: b.workspace.floor.city,
         workspaceId: b.workspace.workspaceId,
         // TODO: Implement confirmation
@@ -152,12 +110,17 @@ class Withdraw extends React.Component {
         {/*</Link>*/}
         <div className={`${classes.searchBar}`}> </div>
         <form onSubmit={this.onSubmitStaffId} className={`${classes.idSearch}`}>
-          <TextField onkeyPress={e => this.setState({ staffId: e.target.value })} type="text" label="ID" name="staffId"  />
+          <TextField
+            onkeyPress={e => this.setState({ staffId: e.target.value })}
+            type="text"
+            label="ID"
+            name="staffId"
+          />
         </form>
         <SearchIcon className={`${classes.searchIcon}`} />
         <div className={`${classes.bookingTable}`}>
           {/*<BookingsTable onCancelBooking={this.onCancelBooking} rows={this.createTableRowData()}></BookingsTable>*/}
-          <ManageTable />
+          <ManageTable rows={this.state.bookings} />
         </div>
         <confirmA />
       </div>
