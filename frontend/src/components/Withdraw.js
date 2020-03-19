@@ -52,7 +52,6 @@ class Withdraw extends React.Component {
             }
           }
         },
-<<<<<<< HEAD
         {
           bookingId: 14,
           startDate: "2020-04-10",
@@ -68,9 +67,6 @@ class Withdraw extends React.Component {
             }
           }
         }
-=======
-
->>>>>>> parent of f1c6f28... without add location Admin Main page
       ],
       error: null,
       showBookingCancelSuccess: false
@@ -161,11 +157,7 @@ class Withdraw extends React.Component {
         <SearchIcon className={`${classes.searchIcon}`} />
         <div className={`${classes.bookingTable}`}>
           {/*<BookingsTable onCancelBooking={this.onCancelBooking} rows={this.createTableRowData()}></BookingsTable>*/}
-<<<<<<< HEAD
           <ManageTable />
-=======
-          <ManageTable rows={this.state.bookings}/>
->>>>>>> parent of f1c6f28... without add location Admin Main page
         </div>
         <confirmA />
       </div>

@@ -45,7 +45,6 @@ const StyledTableRow = withStyles(theme => ({
   }
 }))(TableRow);
 
-<<<<<<< HEAD:frontend/src/components/Withdraw/ManageTable.js
 const rows = [
   createData("North Vancouver", "NV4-03A", "2020-04-22", "2020-04-25", "Kobe Bryant", "Active"),
   createData("North Vancouver", "NV4-03B", "2020-04-21", "2020-04-23", "Kevin Wei", "Active"),
@@ -56,8 +55,6 @@ const rows = [
   createData("West Vancouver", "WV6-08R", "2020-04-18", "2020-04-20", "John Zou", "Active"),
   createData("North Vancouver", "NV5-03T", "2020-01-21", "2020-01-23", "Kevin Wei", "Inactive")
 ];
-=======
->>>>>>> parent of f1c6f28... without add location Admin Main page:frontend/src/components/display/ManageTable.js
 
 function descendingComparator(a, b, property) {
   if (b[property] < a[property]) {
@@ -250,19 +247,7 @@ const useStyles = makeStyles(theme => ({
     color: "#2E3B52"
   }
 }));
-<<<<<<< HEAD:frontend/src/components/Withdraw/ManageTable.js
 export default function ManageTables() {
-=======
-
-function createData(officeLoc, WSId, sDate, eDate, officeOwner, status) {
-  return { officeLoc, WSId, sDate, eDate, officeOwner, status };
-}
-
-export default function ManageTables(props) {
-  const rows = props.rows.map(r =>
-    createData(r.City, r.OwnerWorksapceId, r.BookingStartDate, r.BookingEndDate, r.OwnerFirstName, r.Confirmed)
-  );
->>>>>>> parent of f1c6f28... without add location Admin Main page:frontend/src/components/display/ManageTable.js
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
