@@ -41,7 +41,6 @@ const StyledTableRow = withStyles(theme => ({
   }
 }))(TableRow);
 
-
 function descendingComparator(a, b, property) {
   if (b[property] < a[property]) {
     return -1;
@@ -235,8 +234,20 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function createData(officeLoc, WSId, sDate, eDate, officeOwner, status) {
+  sDate = sDate.substring(0, 10);
+  eDate = eDate.substring(0, 10);
+  console.log(typeof status);
+  if (status == 1) {
+    status = "active";
+  } else {
+    status = "inactive";
+  }
   return { officeLoc, WSId, sDate, eDate, officeOwner, status };
 }
+
+//  function reformatDate(originalDate) {
+//   return originalDate.substring(0, 9);
+// }
 
 export default function ManageTables(props) {
   const rows = props.rows.map(r =>

@@ -3,13 +3,15 @@ import { TextField, withStyles } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import OfficeBookingApi from "../api/OfficeBookingApi";
-import Display_Square from "./Display_Square";
+import FormDialog from "./display/Popup_window";
+import Display_Square from "./display/Display_Square";
 
 class AdminPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      locations: []
+      locations: [],
+      windowOpen: false
     };
   }
   // getAllLoc() {
@@ -23,13 +25,6 @@ class AdminPage extends React.Component {
   // }
   render() {
     const { classes } = this.props;
-    // let allLoc;
-    // const allLocP = OfficeBookingApi.getLocations();
-    // Promise.all([allLocP]).then(messages => {
-    //   // console.log(messages);
-    //   allLoc = messages[0];
-    //   console.log(allLoc);
-    // });
     return (
       <React.Fragment>
         <div className={`${classes.headerStyle}`}>
@@ -42,13 +37,11 @@ class AdminPage extends React.Component {
           </div>
           <div className={`${classes.addLocationStyle}`}>
             <h1 style={{ color: "white", position: "absolute", left: "10%", top: "0%", fontSize: "30px" }}>Location</h1>
-            <AddCircleOutlineIcon
-              style={{ color: "white", position: "absolute", right: "10%", bottom: "10%", fontSize: "40px" }}
-            />
+            <FormDialog />
           </div>
         </div>
         <div className={`${classes.showLocationsStyle}`}>
-          <Display_Square/>
+          <Display_Square />
         </div>
       </React.Fragment>
     );

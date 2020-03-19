@@ -1,6 +1,6 @@
 import React from "react";
 import OfficeBookingApi from "../api/OfficeBookingApi";
-import BookingsTable from "./Withdraw/BookingsTable";
+import OfficeLendingApi from "../api/OfficeLendingApi";
 
 import { withStyles } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
@@ -8,7 +8,7 @@ import FormControl from "@material-ui/core/FormControl";
 import TextField from "@material-ui/core/TextField/TextField";
 import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
-import ManageTable from "./Withdraw/ManageTable";
+import ManageTable from "./display/ManageTable";
 
 import Home from "./Home";
 
@@ -21,39 +21,7 @@ class Withdraw extends React.Component {
       staffId: -1,
       // bookings: [],
       // TEST:
-      bookings: [
-        {
-          bookingId: 8,
-          startDate: "2020-04-22",
-          endDate: "2020-04-30",
-          workspace: {
-            workspaceId: "NV4-03A",
-            floor: {
-              city: "North Vancouver"
-            },
-            staff: {
-              firstName: "Kobe",
-              lastName: "Bryant"
-            }
-          }
-        },
-        {
-          bookingId: 10,
-          startDate: "2020-04-12",
-          endDate: "2020-04-15",
-          workspace: {
-            workspaceId: "NV4-03B",
-            floor: {
-              city: "North Vancouver"
-            },
-            staff: {
-              firstName: "Kevin",
-              lastName: "Wei"
-            }
-          }
-        },
-
-      ],
+      bookings: [],
       error: null,
       showBookingCancelSuccess: false
     };
@@ -152,7 +120,7 @@ class Withdraw extends React.Component {
         <SearchIcon className={`${classes.searchIcon}`} />
         <div className={`${classes.bookingTable}`}>
           {/*<BookingsTable onCancelBooking={this.onCancelBooking} rows={this.createTableRowData()}></BookingsTable>*/}
-          <ManageTable rows={this.state.bookings}/>
+          <ManageTable rows={this.state.bookings} />
         </div>
         <confirmA />
       </div>
