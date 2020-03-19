@@ -2,10 +2,39 @@ import React from "react";
 import { TextField, withStyles } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+<<<<<<< HEAD
 
 class AdminPage extends React.Component {
+=======
+import OfficeBookingApi from "../api/OfficeBookingApi";
+import Display_Square from "./Display_Square";
+
+class AdminPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      locations: []
+    };
+  }
+  // getAllLoc() {
+  //   console.log("hey");
+  //   let allLocationsP = OfficeBookingApi.getLocations();
+  //   let allLocation;
+  //   Promise.all([allLocationsP]).then(eachLoc => {
+  //     this.setState({ locations: eachLoc[0] });
+  //     console.log(this.state.locations);
+  //   });
+  // }
+>>>>>>> parent of f1c6f28... without add location Admin Main page
   render() {
     const { classes } = this.props;
+    // let allLoc;
+    // const allLocP = OfficeBookingApi.getLocations();
+    // Promise.all([allLocP]).then(messages => {
+    //   // console.log(messages);
+    //   allLoc = messages[0];
+    //   console.log(allLoc);
+    // });
     return (
       <React.Fragment>
         <div className={`${classes.headerStyle}`}>
@@ -23,6 +52,12 @@ class AdminPage extends React.Component {
             />
           </div>
         </div>
+<<<<<<< HEAD
+=======
+        <div className={`${classes.showLocationsStyle}`}>
+          <Display_Square/>
+        </div>
+>>>>>>> parent of f1c6f28... without add location Admin Main page
       </React.Fragment>
     );
   }
