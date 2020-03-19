@@ -2,7 +2,7 @@
 const Service = require('./Service');
 const Availabilities = require('../db/availabilities');
 const Booking = require('../db/bookings');
-const makePackages = require("./packagemaker/PackageMaker");
+const makePackages = require("./PackageMaker");
 
 // Added for direct usage of knex
 const knex = require("../db/mysqlDB");
@@ -111,10 +111,9 @@ class OfficeBookingService {
     );
   }
 
-
-  static async getPackages({ startDate, endDate, location, floor, features }) {
+  static async getPackages({ startDate, endDate, floorIds, features }) {
     try {
-      const packages = await makePackages(startDate, endDate, location, floor, features);
+      const packages = await makePackages({ startDate, endDate, desiredFloors: floorIds, requiredFeatures: features });
       resolve(packages);
     } catch (e) {
       resolve(Service.rejectResponse(
