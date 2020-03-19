@@ -28,3 +28,7 @@
 #backend logs
 /backend/combined.log
 /backend/*.log
+
+#ide
+/.vscode/*
+/.idea/*
