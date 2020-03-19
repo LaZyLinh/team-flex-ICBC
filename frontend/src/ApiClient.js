@@ -122,6 +122,7 @@ class ApiClient {
         }
 
         var url = this.basePath + path;
+
         // use API (operation, path) base path if defined
         if (apiBasePath !== null && apiBasePath !== undefined) {
             url = apiBasePath + path;
@@ -134,10 +135,10 @@ class ApiClient {
             } else {
                 value = fullMatch;
             }
-            console.log(encodeURIComponent(value));
+
             return encodeURIComponent(value);
         });
-        console.log("URL:"+url);
+
         return url;
     }
 
@@ -366,8 +367,6 @@ class ApiClient {
         returnType, apiBasePath, callback) {
 
         var url = this.buildUrl(path, pathParams, apiBasePath);
-        console.log(url);
-
         var request = superagent(httpMethod, url);
 
         if (this.plugins !== null) {
@@ -387,7 +386,6 @@ class ApiClient {
         }
 
         request.query(this.normalizeParams(queryParams));
-        // console.log(request);
 
         // set header parameters
         request.set(this.defaultHeaders).set(this.normalizeParams(headerParams));
@@ -475,20 +473,16 @@ class ApiClient {
                     if (error) {
                         reject(error);
                     }
-                    // let data;
-                    // try {
-                    //     resolve(data);
-                    //     // console.log(response);
-                    //
-                    //     data = this.deserialize(response, returnType);
-                    //     if (this.enableCookies && typeof window === 'undefined') {
-                    //         this.agent._saveCookies(response);
-                    //     }
-                    resolve(response.body);
-
-                    // } catch (err) {
-                    //     reject(err);
-                    // }
+                    let data;
+                    try {
+                        data = this.deserialize(response, returnType);
+                        if (this.enableCookies && typeof window === 'undefined') {
+                            this.agent._saveCookies(response);
+                        }
+                        resolve(data);
+                    } catch (err) {
+                        reject(err);
+                    }
                 });
             });
         }

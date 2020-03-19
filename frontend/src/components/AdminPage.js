@@ -2,27 +2,8 @@ import React from "react";
 import { TextField, withStyles } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import OfficeBookingApi from "../api/OfficeBookingApi";
-import FormDialog from "./display/Popup_window";
-import Display_Square from "./display/Display_Square";
 
 class AdminPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      locations: [],
-      windowOpen: false
-    };
-  }
-  // getAllLoc() {
-  //   console.log("hey");
-  //   let allLocationsP = OfficeBookingApi.getLocations();
-  //   let allLocation;
-  //   Promise.all([allLocationsP]).then(eachLoc => {
-  //     this.setState({ locations: eachLoc[0] });
-  //     console.log(this.state.locations);
-  //   });
-  // }
   render() {
     const { classes } = this.props;
     return (
@@ -37,11 +18,10 @@ class AdminPage extends React.Component {
           </div>
           <div className={`${classes.addLocationStyle}`}>
             <h1 style={{ color: "white", position: "absolute", left: "10%", top: "0%", fontSize: "30px" }}>Location</h1>
-            <FormDialog />
+            <AddCircleOutlineIcon
+              style={{ color: "white", position: "absolute", right: "10%", bottom: "10%", fontSize: "40px" }}
+            />
           </div>
-        </div>
-        <div className={`${classes.showLocationsStyle}`}>
-          <Display_Square />
         </div>
       </React.Fragment>
     );
@@ -81,10 +61,6 @@ const muiStyles = {
     height: "55px",
     top: "7px",
     borderRadius: "20px"
-  },
-  showLocationsStyle: {
-    position: "absolute",
-    top: "30%"
   }
 };
 

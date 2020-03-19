@@ -49,22 +49,22 @@ class Booking {
         if (data) {
             obj = obj || new Booking();
 
-            if (data.hasOwnProperty('BookingId')) {
+            if (data.hasOwnProperty('bookingId')) {
                 obj['bookingId'] = ApiClient.convertToType(data['bookingId'], 'Number');
             }
-            if (data.hasOwnProperty('StartDate')) {
+            if (data.hasOwnProperty('startDate')) {
                 obj['startDate'] = ApiClient.convertToType(data['startDate'], 'Date');
             }
-            if (data.hasOwnProperty('EndDate')) {
+            if (data.hasOwnProperty('endDate')) {
                 obj['endDate'] = ApiClient.convertToType(data['endDate'], 'Date');
             }
-            if (data.hasOwnProperty('User')) {
+            if (data.hasOwnProperty('user')) {
                 obj['user'] = User.constructFromObject(data['user']);
             }
-            if (data.hasOwnProperty('AvailabilityId')) {
+            if (data.hasOwnProperty('availabilityId')) {
                 obj['availabilityId'] = ApiClient.convertToType(data['availabilityId'], 'Number');
             }
-            if (data.hasOwnProperty('Workspace')) {
+            if (data.hasOwnProperty('workspace')) {
                 obj['workspace'] = Workspace.constructFromObject(data['workspace']);
             }
         }
