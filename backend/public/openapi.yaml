@@ -101,13 +101,13 @@ paths:
     delete:
       tags:
         - Admin
-      summary: Deletes availability and related bookings
+      summary: Deletes workspace and related availabilities and related bookings
       description: "All associated availabilities and their booking records are delete din availabilities and bookings table. Respective users will be emailed"
       operationId: adminDeleteWorkspace
       parameters:
         - name: id
           in: path
-          description: ID of the Availability to delete
+          description: ID of the Workspace to delete
           required: true
           explode: true
           schema:
