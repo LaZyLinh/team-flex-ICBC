@@ -111,8 +111,8 @@ paths:
           required: true
           explode: true
           schema:
-            type: integer
-          example: 23
+            type: string
+          example: "NC1-01D"
       responses:
         '200':
           description: Successful Operation
