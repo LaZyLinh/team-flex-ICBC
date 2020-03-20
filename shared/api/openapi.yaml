@@ -97,7 +97,7 @@ paths:
           description: Successful Operation
         '400':
           description: Bad Request
-  '/admin/deleteWorkspace/{id}':
+  /admin/deleteWorkspace:
     delete:
       tags:
         - Admin
