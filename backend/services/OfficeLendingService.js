@@ -29,7 +29,7 @@ class OfficeLendingService {
           for (const booking of bookings[0]) {
             console.log('booking #');
             console.log(booking.BookingId);
-            await OfficeBookingService.cancelBooking(booking.BookingId);
+            let result = await OfficeBookingService.cancelBooking({ id: booking.BookingId });
           }
 
           await Availabilities.deleteAvailability(id);
