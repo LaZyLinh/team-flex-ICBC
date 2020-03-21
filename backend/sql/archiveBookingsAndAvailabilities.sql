@@ -7,7 +7,7 @@ DROP EVENT IF EXISTS archive_bookings_and_availabilities_at_midnight|
 CREATE EVENT archive_bookings_and_availabilities_at_midnight
   ON SCHEDULE
     EVERY 1 DAY
-    STARTS '2020-03-19 15:57:00' ON COMPLETION PRESERVE ENABLE 
+    STARTS '2020-03-19 00:00:00' ON COMPLETION PRESERVE ENABLE 
   DO
   	BEGIN
 	    START TRANSACTION;
