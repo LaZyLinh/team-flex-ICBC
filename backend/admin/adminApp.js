@@ -11,7 +11,7 @@ const Bookings = require('../db/bookings');
 const Availabilities = require('../db/availabilities');
 const OfficeLendingService = require('../services/OfficeLendingService');
 const OfficeBookingService = require('../services/OfficeBookingService');
-const AdminFloorService = require("./services/AdminFloorService");
+const AdminFloorService = require("../services/AdminFloorService");
 const Service = require('../services/Service');
 
 require('dotenv').config();
