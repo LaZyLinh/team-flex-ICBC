@@ -32,9 +32,9 @@ class ApiClient {
         /**
          * The base URL against which to resolve every API call's (relative) path.
          * @type {String}
-         * @default http://34.224.250.122:8080
+         * @default https://34.224.250.122:8080
          */
-        this.basePath = 'http://34.224.250.122:8080'.replace(/\/+$/, '');
+        this.basePath = 'https://34.224.250.122:8080'.replace(/\/+$/, '');
 
         /**
          * The authentication methods to be included for all API calls.

@@ -4,7 +4,7 @@ info:
   description: 'This is the REST API Documentation for ICBC Flex Work, by Team Flex'
   version: 0.0.10
 servers:
-  - url: 'http://34.224.250.122:8080/'
+  - url: 'https://34.224.250.122:8080/'
 tags:
   - name: Office Booking
     description: 'As an ICBC employee, make a **Booking** on an office in any ICBC location'

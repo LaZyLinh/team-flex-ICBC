@@ -88,7 +88,7 @@ class ExpressServer {
         try {
           this.addErrorHandler();
           var httpsServer = https.createServer(options, this.app);
-          this.server = httpsServer.listen(this.port, () => {
+          this.server = await httpsServer.listen(this.port, () => {
             console.log(`server running on port ${this.port}`);
             resolve(this.server);
           });
