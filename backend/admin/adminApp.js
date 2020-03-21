@@ -11,6 +11,7 @@ const Bookings = require('../db/bookings');
 const Availabilities = require('../db/availabilities');
 const OfficeLendingService = require('../services/OfficeLendingService');
 const OfficeBookingService = require('../services/OfficeBookingService');
+const AdminFloorService = require("./services/AdminFloorService");
 const Service = require('../services/Service');
 
 require('dotenv').config();
@@ -166,5 +167,8 @@ router.delete('/deleteWorkspace', (req, res) => {
     res.json({ message: err.toString() });
   })
 })
+
+router.post("/upload-floorplan-image", AdminFloorService.uploadFloorPlan);
+router.post("/upload-floor-data", AdminFloorService.uploadFloorData);
 
 module.exports = router;
