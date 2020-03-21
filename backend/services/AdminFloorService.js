@@ -10,6 +10,11 @@ const EMPLOYEE_ID_COLUMN_NAME = "EmployeeID";
 const MANDATORY_COLUMN_NAMES = [OFFICE_ID_COLUMN_NAME, EMPLOYEE_ID_COLUMN_NAME];
 const CONSIDERED_NO = ["", "no", "n", "false", "f", "-"];
 
+const Workspaces = require('../db/workspaces');
+const Availabilities = require('../db/availabilities');
+const OfficeLendingService = require('./OfficeLendingService');
+
+
 /**
  * Helper function
  * @param {string} query 
@@ -200,6 +205,40 @@ function controllerWrapper(f) {
     }
   }
 };
+
+
+/**
+   * Deletes an Availability and its related bookings
+   *
+   * id Integer ID of the Availability to delete
+   **/
+async function adminDeleteWorkspace({ id }) {
+  return new Promise(
+    async (resolve) => {
+      try {
+        // check to see if workspace exists
+        let workspace = await Workspaces.getByWorkspaceId(id);
+        if (workspace[0].length === 0) {
+          throw { message: "ID doesn't exist", status: 403 }
+        }
+
+        // query all availabilities related to this workspace
+        let availabilities = await Availabilities.getByWorkspaceId(id);
+        availabilities[0].forEach((availability) => {
+          OfficeLendingService.cancelAvailability(availability.AvailabilityId);
+        });
+
+        await Workspaces.deleteWorkspace(id);
+        resolve('200');
+      } catch (e) {
+        resolve(Service.rejectResponse(
+          e.message || 'Invalid input',
+          e.status || 401,
+        ));
+      }
+    },
+  );
+}
 
 module.exports = {
   uploadFloorPlan: controllerWrapper(uploadFloorPlan),

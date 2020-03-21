@@ -27,28 +27,28 @@ ReactDOM.render(
 
   // Uncomment for AD:
   // <AzureAD provider={authProvider} forceLogin={true}>
-  //     {({ login, logout, authenticationState, error, accountInfo }) => {
-  //         switch (authenticationState) {
-  //             case AuthenticationState.Authenticated:
-  //                 return <App userInfo={accountInfo} />;
-  //             case AuthenticationState.Unauthenticated:
-  //                 return (
-  //                     <div>
-  //                         {error && (
-  //                             <p>
-  //                                 <span>An error occured during authentication, please try again!</span>
-  //                             </p>
-  //                         )}
-  //                         <p>
-  //                             <span>Hey stranger, you look new!</span>
-  //                             <button onClick={login}>Login</button>
-  //                         </p>
-  //                     </div>
-  //                 );
-  //             case AuthenticationState.InProgress:
-  //                 return <p>Authenticating...</p>;
-  //         }
-  //     }}
+  //   {({ login, logout, authenticationState, error, accountInfo }) => {
+  //     switch (authenticationState) {
+  //       case AuthenticationState.Authenticated:
+  //         return <App userInfo={accountInfo} />;
+  //       case AuthenticationState.Unauthenticated:
+  //         return (
+  //           <div>
+  //             {error && (
+  //               <p>
+  //                 <span>An error occured during authentication, please try again!</span>
+  //               </p>
+  //             )}
+  //             <p>
+  //               <span>Hey stranger, you look new!</span>
+  //               <button onClick={login}>Login</button>
+  //             </p>
+  //           </div>
+  //         );
+  //       case AuthenticationState.InProgress:
+  //         return <p>Authenticating...</p>;
+  //     }
+  //   }}
   // </AzureAD>,
   document.getElementById("root")
 );

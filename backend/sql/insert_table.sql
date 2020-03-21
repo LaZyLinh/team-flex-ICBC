@@ -1,6 +1,6 @@
 CREATE TABLE `user` (
   `StaffId` int AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  `ICBCEmployeeId` varchar(30) NOT NULL,
+  `ICBCEmployeeId` varchar(30),
   `Email` varchar(255) NOT NULL,
   `FirstName` varchar(255) NOT NULL,
   `LastName` varchar(255) NOT NULL,

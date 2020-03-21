@@ -40,7 +40,7 @@ function generate(sql, numEmployees = 5000) {
     Email = Email.toLowerCase()
 
     const Department = randomDepartment()
-    sql.script += `INSERT INTO user VALUES (${StaffId}, '${ICBCEmployeeId}', '${Email}', '${FirstName}', '${LastName}', '${Department}', 1);\n`
+    sql.script += `INSERT INTO user (StaffId, ICBCEmployeeId, Email,FirstName,LastName,Department,Valid) VALUES (${StaffId}, '${ICBCEmployeeId}', '${Email}', '${FirstName}', '${LastName}', '${Department}', 1);\n`
   }
 }
 
