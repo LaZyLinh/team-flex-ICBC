@@ -17,7 +17,7 @@ const https = require('https');
 const fs = require('fs');
 
 const options = {
-  key: fs.readFileSync('key.pem'),
+  key: fs.readFileSync('privkey.pem'),
   cert: fs.readFileSync('cert.pem')
 };
 class ExpressServer {
