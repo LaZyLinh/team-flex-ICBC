@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: Flex Work
   description: 'This is the REST API Documentation for ICBC Flex Work, by Team Flex'
-  version: 0.0.9
+  version: 0.0.10
 servers:
   - url: 'http://34.224.250.122:8080/'
 tags:
@@ -150,6 +150,46 @@ paths:
                 example:
                   - 'North Vancouver, BC'
                   - 'Vancouver, BC'
+  /packages:
+    get:
+      tags:
+        - Office Booking
+      summary: 'Finds Availabilities or Booking Suggestion Packages'
+      description: 'Finds Availabilities, filtered by start and end dates, optional location (desired floor IDs), and optional required features.
+      will use multiple eligible offices to suggest a booking package if a single desk is not available for the duration.'
+      operationId: getPackages
+      parameters:
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: floorIds
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: number
+        - name: features
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: number
+      responses:
+        '200':
+          description: Successful Operation
+        '400':
+          description: Bad Request
   '/availabilities/top/{amount}':
     get:
       tags:

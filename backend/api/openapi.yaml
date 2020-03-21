@@ -1,181 +1,294 @@
 openapi: 3.0.1
 info:
-  description: This is the REST API Documentation for ICBC Flex Work, by Team Flex
   title: Flex Work
-  version: 0.0.6
+  description: 'This is the REST API Documentation for ICBC Flex Work, by Team Flex'
+  version: 0.0.10
 servers:
-- url: http://34.224.250.122:8080/
+  - url: 'http://34.224.250.122:8080/'
 tags:
-- description: As an ICBC employee, make a **Booking** on an office in any ICBC location
-  name: Office Booking
-- description: As an ICBC office owner, create **Availabilities** for fellow employees
-  name: Office Lending
-- description: Operations for Facility Administrator (TODO)
-  name: Admin
+  - name: Office Booking
+    description: 'As an ICBC employee, make a **Booking** on an office in any ICBC location'
+  - name: Office Lending
+    description: 'As an ICBC office owner, create **Availabilities** for fellow employees'
+  - name: Admin
+    description: 'As an ICBC facility admin, manage locations and floor plans'
+    
 paths:
+  # Admin
+  /admin/upload-floor-data:
+    post:
+      summary:
+        Upload a CSV of a floor's workspaces
+      description:
+        Upload a CSV containing information about each workspace on a floor (owner and features)
+      tags:
+        - Admin
+      operationId: adminUploadFloorData
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                floorId:
+                  type: integer
+                floorData:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful Operation
+        '400':
+          description: Something went wrong
+          content:
+            text/plain:
+              schema:
+                type: string
+              example:
+                "Error: CSV was missing column: OfficeID"
+  /admin/upload-floorplan-image:
+    post:
+      summary:
+        Upload a JPG floor plan for a specific floor
+      tags:
+        - Admin
+      operationId: adminUploadFloorplanImage
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                floorId:
+                  type: integer
+                floorplanImage:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful Operation
+        '400':
+          description: Something went wrong
+          content:
+            text/plain:
+              schema:
+                type: string
+              example:
+                "Error: Floor with ID 9000 does not exist"
+  /admin/reset-features:
+    post:
+      tags:
+        - Admin
+      summary: Resets the list of features to a custom specified list
+      description: "Sets the list of features in the system. Previous features that do not exist in this list are deleted, and new features are added. Does not affect features that exist both previously and in this list"
+      operationId: adminResetFeatures
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: Successful Operation
+        '400':
+          description: Bad Request
+  
+  # Employee
   /features:
     get:
+      tags:
+        - Office Booking
+        - Office Lending
+      summary: 'Get features by availabilityId, workspaceId, or all features if no params'
       operationId: getFeatures
       parameters:
-      - example: 12
-        explode: true
-        in: query
-        name: availabilityId
-        required: false
-        schema:
-          type: number
-        style: form
-      - example: NV4-01D
-        explode: true
-        in: query
-        name: workspaceId
-        required: false
-        schema:
-          type: string
-        style: form
+        - name: availabilityId
+          in: query
+          required: false
+          schema:
+            type: number
+          example: 12
+        - name: workspaceId
+          in: query
+          required: false
+          schema:
+            type: string
+          example: "NV4-01D"
       responses:
-        "200":
+        '200':
+          description: Successful Operation
           content:
             application/json:
               schema:
-                example:
-                - Conference Phone
-                - Private
+                type: array
                 items:
                   type: string
-                type: array
-          description: Successful Operation
-      summary: Get features by availabilityId, workspaceId, or all features if no
-        params
-      tags:
-      - Office Booking
-      - Office Lending
-      x-openapi-router-controller: OfficeBookingController
-      x-openapi-router-service: OfficeBookingService
+                example:
+                  - 'Conference Phone'
+                  - 'Private'
   /locations:
     get:
+      tags:
+        - Office Booking
+        - Office Lending
+      summary: A list of all the location names
       operationId: getLocations
       responses:
-        "200":
+        '200':
+          description: Successful Operation
           content:
             application/json:
               schema:
-                example:
-                - North Vancouver, BC
-                - Vancouver, BC
+                type: array
                 items:
                   type: string
-                type: array
-          description: Successful Operation
-      summary: A list of all the location names
-      tags:
-      - Office Booking
-      - Office Lending
-      x-openapi-router-controller: OfficeBookingController
-      x-openapi-router-service: OfficeBookingService
-  /availabilities/top/{amount}:
+                example:
+                  - 'North Vancouver, BC'
+                  - 'Vancouver, BC'
+  /packages:
     get:
+      tags:
+        - Office Booking
+      summary: 'Finds Availabilities or Booking Suggestion Packages'
+      description: 'Finds Availabilities, filtered by start and end dates, optional location (desired floor IDs), and optional required features.
+      will use multiple eligible offices to suggest a booking package if a single desk is not available for the duration.'
+      operationId: getPackages
+      parameters:
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: floorIds
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: number
+        - name: features
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: number
+      responses:
+        '200':
+          description: Successful Operation
+        '400':
+          description: Bad Request
+  '/availabilities/top/{amount}':
+    get:
+      tags:
+        - Office Booking
+      summary: 'Finds top availabilities, not filtered'
       operationId: getTopAvailabilities
       parameters:
-      - example: 50
-        explode: false
-        in: path
-        name: amount
-        required: true
-        schema:
-          type: number
-        style: simple
+        - name: amount
+          in: path
+          required: true
+          schema:
+            type: number
+          example: 50
       responses:
-        "200":
+        '200':
+          description: Successful Operation
           content:
             application/json:
               schema:
+                type: array
                 items:
                   $ref: '#/components/schemas/Availability'
-                type: array
-          description: Successful Operation
-        "400":
-          content: {}
+        '400':
           description: Bad Request
-      summary: Finds top availabilities, not filtered
-      tags:
-      - Office Booking
-      x-openapi-router-controller: OfficeBookingController
-      x-openapi-router-service: OfficeBookingService
+          content: {}
   /availabilities:
     get:
+      tags:
+        - Office Booking
+      summary: 'Finds Availabilities, filtered by various properties, of which startDate and endDate are required'
       operationId: getAvailabilities
       parameters:
-      - description: The first date of the search range
-        example: 2020-02-14
-        explode: true
-        in: query
-        name: startDate
-        required: true
-        schema:
-          format: date
-          type: string
-        style: form
-      - description: The last date of the search range
-        example: 2020-02-16
-        explode: true
-        in: query
-        name: endDate
-        required: true
-        schema:
-          format: date
-          type: string
-        style: form
-      - description: Office building location
-        example: North Vancouver
-        explode: true
-        in: query
-        name: location
-        required: false
-        schema:
-          type: string
-        style: form
-      - description: Floor of building
-        example: NV4
-        explode: true
-        in: query
-        name: floor
-        required: false
-        schema:
-          type: string
-        style: form
-      - description: Features to filter by
-        example:
-        - TV
-        - Private
-        explode: true
-        in: query
-        name: features
-        required: false
-        schema:
-          items:
+        - name: startDate
+          in: query
+          description: The first date of the search range
+          required: true
+          style: form
+          explode: true
+          schema:
             type: string
-          type: array
-        style: form
+            format: date
+          example: '2020-02-14'
+        - name: endDate
+          in: query
+          description: The last date of the search range
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+            format: date
+          example: '2020-02-16'
+        - name: location
+          in: query
+          description: Office building location
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+          example: North Vancouver
+        - name: floor
+          in: query
+          description: Floor of building
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+          example: NV4
+        - name: features
+          in: query
+          description: Features to filter by
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+          example:
+            - TV
+            - Private
       responses:
-        "200":
+        '200':
+          description: Successful Operation
           content:
             application/json:
               schema:
+                type: array
                 items:
                   $ref: '#/components/schemas/Availability'
-                type: array
-          description: Successful Operation
-        "400":
-          content: {}
+        '400':
           description: Bad Request
-      summary: Finds Availabilities, filtered by various properties, of which startDate
-        and endDate are required
-      tags:
-      - Office Booking
-      x-openapi-router-controller: OfficeBookingController
-      x-openapi-router-service: OfficeBookingService
+          content: {}
     post:
+      tags:
+        - Office Lending
+      summary: Create an Availability (mark a workspace as available)
       operationId: createAvailability
       requestBody:
         content:
@@ -184,82 +297,73 @@ paths:
               $ref: '#/components/schemas/body'
         required: true
       responses:
-        "200":
+        '200':
+          description: Successful Operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Availability'
-          description: Successful Operation
-        "400":
-          content: {}
+        '400':
           description: Bad Request (Incorrect Request Body)
-        "403":
           content: {}
+        '403':
           description: Forbidden (Conflicting Dates)
-      summary: Create an Availability (mark a workspace as available)
-      tags:
-      - Office Lending
-      x-openapi-router-controller: OfficeLendingController
-      x-openapi-router-service: OfficeLendingService
+          content: {}
   /availabilities/owner:
     get:
-      description: The Availabilities of the Workspace(s) associated with the Staff
-        ID will be found.
+      tags:
+        - Office Lending
+      summary: Finds Availabilities by the Staff ID of the owner
+      description: The Availabilities of the Workspace(s) associated with the Staff ID will be found.
       operationId: getAvailabilitiesByOwnerID
       parameters:
-      - description: the Staff ID of the office owner
-        example: 8
-        explode: true
-        in: query
-        name: id
-        required: true
-        schema:
-          type: integer
-        style: form
+        - name: id
+          in: query
+          description: the Staff ID of the office owner
+          required: true
+          style: form
+          schema:
+            type: integer
+          example: 8
       responses:
-        "200":
+        '200':
+          description: Successful Operation
           content:
             application/json:
               schema:
+                type: array
                 items:
                   $ref: '#/components/schemas/Availability'
-                type: array
-          description: Successful Operation
-        "400":
-          content: {}
+        '400':
           description: Bad Request
-      summary: Finds Availabilities by the Staff ID of the owner
-      tags:
-      - Office Lending
-      x-openapi-router-controller: OfficeLendingController
-      x-openapi-router-service: OfficeLendingService
-  /availabilities/{id}:
+          content: {}
+  '/availabilities/{id}':
     delete:
+      tags:
+        - Office Lending
+      summary: Cancel an Availability
       operationId: cancelAvailability
       parameters:
-      - description: ID of the Availability to delete
-        example: 23
-        explode: true
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-        style: simple
+        - name: id
+          in: path
+          description: ID of the Availability to delete
+          required: true
+          explode: true
+          schema:
+            type: integer
+          example: 23
       responses:
-        "200":
-          content: {}
+        '200':
           description: Successful Operation
-        "400":
           content: {}
+        '400':
           description: Bad Request
-      summary: Cancel an Availability
-      tags:
-      - Office Lending
-      x-openapi-router-controller: OfficeLendingController
-      x-openapi-router-service: OfficeLendingService
+          content: {}
   /lockWorkspace:
     post:
+      tags:
+        - Office Booking
+      summary: Temporarily lock a Booking as the User enters confirmation page
       operationId: lockBooking
       requestBody:
         content:
@@ -268,81 +372,73 @@ paths:
               $ref: '#/components/schemas/body_1'
         required: true
       responses:
-        "200":
+        '200':
+          description: Successful Operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BookingSummary'
-          description: Successful Operation
-        "400":
-          content: {}
+        '400':
           description: Bad Request
-        "403":
           content: {}
+        '403':
           description: Locking of booking unsuccessful
-      summary: Temporarily lock a Booking as the User enters confirmation page
-      tags:
-      - Office Booking
-      x-openapi-router-controller: OfficeBookingController
-      x-openapi-router-service: OfficeBookingService
-  /lockWorkspace/{id}:
+          content: {}
+  '/lockWorkspace/{id}':
     delete:
-      description: For when the User navigates away from the confirmation page or
-        closes the browser tab.
-      operationId: unlockBooking
-      parameters:
-      - description: ID of the Booking to delete
-        example: 15
-        explode: true
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-        style: simple
-      responses:
-        "200":
-          content: {}
-          description: Successful Operation
-        "400":
-          content: {}
-          description: Bad Request
-      summary: Unlocks a Booking before the 20 minute automatic unlock
       tags:
-      - Office Booking
-      x-openapi-router-controller: OfficeBookingController
-      x-openapi-router-service: OfficeBookingService
+        - Office Booking
+      summary: Unlocks a Booking before the 20 minute automatic unlock
+      operationId: unlockBooking
+      description: For when the User navigates away from the confirmation page or closes the browser tab.
+      parameters:
+        - name: id
+          in: path
+          description: ID of the Booking to delete
+          explode: true
+          required: true
+          schema:
+            type: integer
+          example: 15
+      responses:
+        '200':
+          description: Successful Operation
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
   /bookings:
     get:
+      tags:
+        - Office Booking
+      summary: Finds Bookings by User ID
       operationId: getBookingsByUserID
       parameters:
-      - description: The ID of the User
-        example: 1234
-        explode: true
-        in: query
-        name: staffId
-        required: true
-        schema:
-          type: integer
-        style: form
+        - name: staffId
+          in: query
+          description: The ID of the User
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+          example: 1234
       responses:
-        "200":
+        '200':
+          description: Successful Operation
           content:
             application/json:
               schema:
+                type: array
                 items:
                   $ref: '#/components/schemas/Booking'
-                type: array
-          description: Successful Operation
-        "400":
-          content: {}
+        '400':
           description: Bad Request
-      summary: Finds Bookings by User ID
-      tags:
-      - Office Booking
-      x-openapi-router-controller: OfficeBookingController
-      x-openapi-router-service: OfficeBookingService
+          content: {}
     post:
+      tags:
+        - Office Booking
+      summary: Confirm a temporarily locked Booking
       operationId: createBooking
       requestBody:
         content:
@@ -351,305 +447,193 @@ paths:
               $ref: '#/components/schemas/body_2'
         required: true
       responses:
-        "200":
+        '200':
+          description: Successful Operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BookingSummary'
-          description: Successful Operation
-        "400":
-          content: {}
+        '400':
           description: Bad Request
-      summary: Confirm a temporarily locked Booking
-      tags:
-      - Office Booking
-      x-openapi-router-controller: OfficeBookingController
-      x-openapi-router-service: OfficeBookingService
-  /bookings/{id}:
+          content: {}
+  '/bookings/{id}':
     delete:
+      tags:
+        - Office Booking
+      summary: Cancel an upcoming Booking
       operationId: cancelBooking
       parameters:
-      - description: ID of the Booking to delete
-        example: 23
-        explode: true
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-        style: simple
+        - name: id
+          in: path
+          description: ID of the Booking to delete
+          explode: true
+          required: true
+          schema:
+            type: integer
+          example: 23
       responses:
-        "200":
-          content: {}
+        '200':
           description: Successful Operation
-        "400":
           content: {}
+        '400':
           description: Bad Request
-      summary: Cancel an upcoming Booking
-      tags:
-      - Office Booking
-      x-openapi-router-controller: OfficeBookingController
-      x-openapi-router-service: OfficeBookingService
+          content: {}
 components:
   schemas:
     Workspace:
-      example:
-        features:
-        - TV
-        - TV
-        staff:
-          valid: true
-          firstName: Kobe
-          lastName: Bryant
-          department: Customer Service
-          staffId: 8
-          email: employee@icbc.com
-        floor:
-          floorId: 24
-          floorPlanUri: nv4.png
-          city: North Vancouver
-          location: North Vancouver
-          floorName: NV4
-          building: ICBC North Vancouver Building 1
-        workspaceId: NV4-24B
+      type: object
       properties:
         workspaceId:
-          example: NV4-24B
           type: string
+          example: NV4-24B
         staff:
           $ref: '#/components/schemas/User'
         floor:
           $ref: '#/components/schemas/Floor'
         features:
-          items:
-            example: TV
-            type: string
           type: array
-      type: object
+          items:
+            type: string
+            example: TV
     Availability:
-      example:
-        floorId: 2
-        endDate: 2000-01-23
-        availabilityId: 2
-        workspaceName: NV4-24B
-        location: North Vancouver
-        bookings:
-        - endDate: 2000-01-23
-          user:
-            valid: true
-            firstName: Kobe
-            lastName: Bryant
-            department: Customer Service
-            staffId: 8
-            email: employee@icbc.com
-          bookingId: 8
-          startDate: 2000-01-23
-        - endDate: 2000-01-23
-          user:
-            valid: true
-            firstName: Kobe
-            lastName: Bryant
-            department: Customer Service
-            staffId: 8
-            email: employee@icbc.com
-          bookingId: 8
-          startDate: 2000-01-23
-        startDate: 2000-01-23
-        workspaceId: NV4-24B
+      type: object
       properties:
         availabilityId:
-          example: 2
           type: integer
+          example: 2
         startDate:
-          format: date
           type: string
+          format: date
         endDate:
+          type: string
           format: date
-          type: string
         workspaceId:
-          example: NV4-24B
           type: string
+          example: NV4-24B
         workspaceName:
+          type: string
           example: NV4-24B
-          type: string
         floorId:
-          example: 2
           type: integer
+          example: 2
         location:
-          example: North Vancouver
           type: string
+          example: North Vancouver
         bookings:
+          type: array
           items:
             $ref: '#/components/schemas/BookingSummary'
-          type: array
-      type: object
     BookingSummary:
-      example:
-        endDate: 2000-01-23
-        user:
-          valid: true
-          firstName: Kobe
-          lastName: Bryant
-          department: Customer Service
-          staffId: 8
-          email: employee@icbc.com
-        bookingId: 8
-        startDate: 2000-01-23
+      type: object
       properties:
         bookingId:
-          example: 8
           type: integer
+          example: 8
         startDate:
-          format: date
           type: string
+          format: date
         endDate:
-          format: date
           type: string
+          format: date
         user:
           $ref: '#/components/schemas/User'
-      type: object
     Booking:
-      example:
-        workspace:
-          features:
-          - TV
-          - TV
-          staff:
-            valid: true
-            firstName: Kobe
-            lastName: Bryant
-            department: Customer Service
-            staffId: 8
-            email: employee@icbc.com
-          floor:
-            floorId: 24
-            floorPlanUri: nv4.png
-            city: North Vancouver
-            location: North Vancouver
-            floorName: NV4
-            building: ICBC North Vancouver Building 1
-          workspaceId: NV4-24B
-        endDate: 2000-01-23
-        availabilityId: 2
-        user:
-          valid: true
-          firstName: Kobe
-          lastName: Bryant
-          department: Customer Service
-          staffId: 8
-          email: employee@icbc.com
-        bookingId: 8
-        startDate: 2000-01-23
+      type: object
       properties:
         bookingId:
-          example: 8
           type: integer
+          example: 8
         startDate:
-          format: date
           type: string
+          format: date
         endDate:
-          format: date
           type: string
+          format: date
         user:
           $ref: '#/components/schemas/User'
         availabilityId:
-          example: 2
           type: integer
+          example: 2
         workspace:
           $ref: '#/components/schemas/Workspace'
-      type: object
     Floor:
-      example:
-        floorId: 24
-        floorPlanUri: nv4.png
-        city: North Vancouver
-        location: North Vancouver
-        floorName: NV4
-        building: ICBC North Vancouver Building 1
+      type: object
       properties:
         floorId:
-          example: 24
           type: integer
+          example: 24
         floorName:
+          type: string
           example: NV4
-          type: string
         location:
-          example: North Vancouver
           type: string
+          example: North Vancouver
         city:
+          type: string
           example: North Vancouver
-          type: string
         building:
+          type: string
           example: ICBC North Vancouver Building 1
-          type: string
         floorPlanUri:
-          example: nv4.png
           type: string
-      type: object
+          example: nv4.png
     User:
-      example:
-        valid: true
-        firstName: Kobe
-        lastName: Bryant
-        department: Customer Service
-        staffId: 8
-        email: employee@icbc.com
+      type: object
       properties:
         staffId:
-          example: 8
           type: integer
+          example: 8
         email:
+          type: string
           example: employee@icbc.com
-          type: string
         firstName:
+          type: string
           example: Kobe
-          type: string
         lastName:
+          type: string
           example: Bryant
-          type: string
         department:
-          example: Customer Service
           type: string
+          example: Customer Service
         valid:
           type: boolean
-      type: object
     body:
+      required:
+        - endDate
+        - startDate
+        - workspaceId
+      type: object
       properties:
         startDate:
-          format: date
           type: string
+          format: date
         endDate:
-          format: date
           type: string
+          format: date
         workspaceId:
           type: string
-      required:
-      - endDate
-      - startDate
-      - workspaceId
-      type: object
     body_1:
+      required:
+        - availabilityId
+        - endDate
+        - staffId
+        - startDate
+      type: object
       properties:
         availabilityId:
           type: integer
         staffId:
           type: integer
         startDate:
-          format: date
           type: string
+          format: date
         endDate:
-          format: date
           type: string
-      required:
-      - availabilityId
-      - endDate
-      - staffId
-      - startDate
-      type: object
+          format: date
     body_2:
+      required:
+        - bookingId
+      type: object
       properties:
         bookingId:
           type: integer
-      required:
-      - bookingId
-      type: object

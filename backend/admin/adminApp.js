@@ -106,8 +106,8 @@ router.get('/workspaces', (req, res) => {
  * 401 Unauthorized ​(missing, wrong, or expired security token) – Front end will show admin login screen in response  
  * 403 Forbidden (workspace doesn’t exist)
 */
-router.delete('/deleteWorkspace', (req, res) => {
-  AdminFloorService.adminDeleteWorkspace(req.query.id).then(obj => {
+router.delete('/deleteWorkspace', async (req, res) => {
+  await AdminFloorService.adminDeleteWorkspace(req, res).then(obj => {
     res.status(200);
     res.json(obj[0]);
   }).catch(err => {
