@@ -5,8 +5,13 @@ const adminValidate = new Validation();
 const userDB = require('../db/user')
 const workspaceDB = require('../db/workspace')
 const auth = require('./adminAuth');
-const AdminFloorService = require('../services/AdminFloorService');
 
+const Workspaces = require('../db/workspace');
+const Bookings = require('../db/bookings');
+const Availabilities = require('../db/availabilities');
+const OfficeLendingService = require('../services/OfficeLendingService');
+const OfficeBookingService = require('../services/OfficeBookingService');
+const Service = require('../services/Service');
 
 require('dotenv').config();
 
@@ -99,6 +104,52 @@ router.get('/workspaces', (req, res) => {
   })
 })
 
+/**
+   * Deletes a Workspace and its related availabilities and bookings
+   *
+   * id Integer ID of the Workspace to delete
+   **/
+async function adminDeleteWorkspace(id) {
+  return new Promise(
+    async (resolve) => {
+      try {
+        // check to see if workspace exists
+        let workspace = await Workspaces.getByWorkspaceId(id);
+        console.log('workspace');
+        console.log(workspace[0]);
+        if (workspace[0].length === 0) {
+          console.log('workspace length is 0');
+          throw { message: "ID doesn't exist", status: 403 }
+        }
+
+        // query all availabilities related to this workspace
+        let availabilities = await Availabilities.getByWorkspaceId(id);
+        for (const availability of availabilities[0]) {
+          console.log('availability #');
+          console.log(availability.AvailabilityId);
+          await OfficeLendingService.cancelAvailability(availability.AvailabilityId);
+        }
+
+        // query all bookings related to this workspace
+        let bookings = await Bookings.getByWorkspaceId(id);
+        for (const booking of bookings[0]) {
+          console.log('booking #');
+          console.log(booking.BookingId);
+          await OfficeBookingService.cancelBooking(booking.BookingId);
+        }
+
+        await Workspaces.deleteWorkspace(id);
+        resolve('200');
+      } catch (e) {
+        resolve(Service.rejectResponse(
+          e.message || 'Invalid input',
+          e.status || 401,
+        ));
+      }
+    },
+  );
+}
+
 /*
  * Delete workspace with specified id
  * query example: http://localhost:8080/admin/deleteWorkspace?id=NC1-02D
@@ -107,9 +158,9 @@ router.get('/workspaces', (req, res) => {
  * 403 Forbidden (workspace doesn’t exist)
 */
 router.delete('/deleteWorkspace', (req, res) => {
-  AdminFloorService.adminDeleteWorkspace(req.query.id).then(obj => {
+  adminDeleteWorkspace(req.query.id).then(() => {
     res.status(200);
-    res.json(obj[0]);
+    //res.json(obj[0]);
   }).catch(err => {
     res.status(500);
     res.json({ message: err.toString() });
