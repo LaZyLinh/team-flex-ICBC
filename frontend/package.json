@@ -56,8 +56,8 @@
     "sinon": "^7.2.0"
   },
   "scripts": {
-    "start": "HTTPS=true react-scripts start",
-    "win-start": "set HTTPS=true && react-scripts start",
+    "start": "PORT=443 HTTPS=true react-scripts start",
+    "win-start": "set HTTPS=true && PORT=443 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
