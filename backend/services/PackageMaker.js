@@ -1,8 +1,8 @@
-const knex = require('../db/mysqlDB')
+const defaultKnex = require('../db/mysqlDB')
 
 const MILLIS_IN_DAY = 1000 * 60 * 60 * 24
 
-async function resultFromKnex(query) {
+async function resultFromKnex(query, knex) {
   return (await knex.raw(query))[0]
 }
 
@@ -16,27 +16,29 @@ function isNonEmptyArray(x) {
 function buildSubquery({ startDate, endDate, desiredFloors, requiredFeatures }) {
   // (1) Any date overlap:
   let query = `
-    (SELECT a.AvailabilityId
-    FROM availability a
+    (SELECT AvailabilityId
+    FROM availability
     WHERE (StartDate BETWEEN '${startDate}' AND '${endDate}'
-          OR EndDate BETWEEN '${startDate}' AND '${endDate}')
+          OR EndDate BETWEEN '${startDate}' AND '${endDate}'
+          OR '${startDate}' BETWEEN StartDate AND EndDate
+          OR '${endDate}' BETWEEN StartDate AND EndDate)
     `
   // (2) Desired floors:
   if (isNonEmptyArray(desiredFloors)) {
-    query += `AND (`
+    query += `AND AvailabilityId IN (SELECT AvailabilityId FROM availability NATURAL JOIN workspace WHERE `
     for (let i = 0; i < desiredFloors.length; ++i) {
       if (i > 0) {
         query += `
           OR `
       }
-      query += `(a.AvailabilityId IN (SELECT AvailabilityId FROM workspace WHERE FloorId = ${desiredFloors[i]}))`
+      query += `FloorId = ${desiredFloors[i]}`
     }
     query += `)
     `
   }
   // (3) Required features:
   if (isNonEmptyArray(requiredFeatures)) {
-    query += `AND (a.AvailabilityId IN (SELECT AvailabilityId FROM workspace WHERE `
+    query += `AND (AvailabilityId IN (SELECT AvailabilityId FROM availability WHERE `
     for (let i = 0; i < requiredFeatures.length; ++i) {
       if (i > 0) {
         query += `
@@ -51,13 +53,15 @@ function buildSubquery({ startDate, endDate, desiredFloors, requiredFeatures }) 
 }
 
 function makeAvailability(availabilityId, startDate, endDate, workspaceId, comment) {
+  startDate = startDate.toISOString().substring(0, 10)
+  endDate = endDate.toISOString().substring(0, 10)
   return { id: availabilityId, startDate, endDate, workspaceId, comment, bookings: [] }
 }
 
 /**
  * @returns map object (id -> availability) if any fall into conditions, null otherwise
  */
-async function getAvailabilities(conditions) {
+async function getAvailabilities(conditions, knex) {
   const subquery = buildSubquery(conditions)
   // StartDate, EndDate, WorkspaceId, Comment
   const availabilitiesQuery = `SELECT * FROM availability WHERE AvailabilityId IN ` + subquery
@@ -65,9 +69,10 @@ async function getAvailabilities(conditions) {
   const bookingsQuery = `SELECT a.AvailabilityId, b.StartDate, b.EndDate
                            FROM availability a
                            INNER JOIN booking b
+                           ON a.AvailabilityId = b.AvailabilityId
                            WHERE a.AvailabilityId IN ` + subquery
 
-  const results = await Promise.all([resultFromKnex(availabilitiesQuery), resultFromKnex(bookingsQuery)])
+  const results = await Promise.all([resultFromKnex(availabilitiesQuery, knex), resultFromKnex(bookingsQuery, knex)])
   const availabilitiesRows = results[0]
   if (availabilitiesRows.length === 0) {
     return null
@@ -84,7 +89,10 @@ async function getAvailabilities(conditions) {
       // availability got added between the two queries -- restart
       return await getAvailabilities(conditions)
     }
-    availabilities[id].bookings.push({ startDate: b.StartDate, endDate: b.EndDate });
+    availabilities[id].bookings.push({
+      startDate: b.StartDate.toISOString().substring(0, 10),
+      endDate: b.EndDate.toISOString().substring(0, 10)
+    });
   }
   return availabilities
 }
@@ -95,6 +103,15 @@ async function getAvailabilities(conditions) {
  */
 function isBefore(x, y) {
   return Date.parse(x) < Date.parse(y)
+}
+
+/**
+ * 
+ * @param {string} x "YYYY-MM-DD"
+ * @param {string} y "YYYY-MM-DD"
+ */
+function isSameOrBefore(x, y) {
+  return Date.parse(x) <= Date.parse(y)
 }
 
 /**
@@ -119,7 +136,7 @@ function hasConflict(bookings, startDate, endDate) {
 function getCompleteOverlapIDs(availabilities, startDate, endDate) {
   const ids = []
   Object.values(availabilities).forEach(a => {
-    if (!hasConflict(a.bookings, startDate, endDate)) {
+    if (isSameOrBefore(a.startDate, startDate) && isSameOrBefore(endDate, a.endDate) && !hasConflict(a.bookings, startDate, endDate)) {
       ids.push(a.id)
     }
   })
@@ -151,7 +168,7 @@ function makeBookingSuggestion(start, { availability, length }) {
   return {
     availabilityId: availability.id,
     startDate: unixDayToISO(start),
-    endDate: unixDayToISO(start + length),
+    endDate: unixDayToISO(start + length - 1),
     workspaceId: availability.workspaceId,
     comment: availability.comment
   }
@@ -165,10 +182,10 @@ function buildPackageFromMultipleAvailabilities(availabilities, startDate, endDa
   // Each range has head. That head knows its length
   // Each date in the tail knows the head (and therefore knows its own length)
   for (const availability of Object.values(availabilities)) {
-    const { aStart, aEnd } = getRange(availability.startDate, availability.endDate)
+    const { start: aStart, end: aEnd } = getRange(availability.startDate, availability.endDate)
     const unavailable = {}
     for (const booking of availability.bookings) {
-      const { bStart, bEnd } = getRange(booking.startDate, booking.endDate)
+      const { start: bStart, end: bEnd } = getRange(booking.startDate, booking.endDate)
       for (let i = bStart; i <= bEnd; ++i) {
         unavailable[i] = true
       }
@@ -189,7 +206,7 @@ function buildPackageFromMultipleAvailabilities(availabilities, startDate, endDa
           // update its length
           ++daysInSingleAvailability[head].length
         }
-        daysInSingleAvailability[i] = (day)
+        daysInSingleAvailability[i] = day
       }
     }
     for (const i in daysInSingleAvailability) {
@@ -234,12 +251,17 @@ function buildPackages(availabilities, completeOverlapIDs, startDate, endDate) {
     return packages
   } else {
     // Plan B: build the best package from open dates
-    return [buildPackageFromMultipleAvailabilities(availabilities, startDate, endDate)]
+    const package = buildPackageFromMultipleAvailabilities(availabilities, startDate, endDate)
+    if (package.length === 0) {
+      return []
+    } else {
+      return [package]
+    }
   }
 }
 
-async function makePackages(conditions) {
-  const availabilities = await getAvailabilities(conditions)
+async function makePackages(conditions, knex = defaultKnex) {
+  const availabilities = await getAvailabilities(conditions, knex)
   if (!availabilities) {
     return []
   }
