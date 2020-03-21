@@ -25,6 +25,10 @@ class OfficeBookingController {
     await Controller.handleRequest(request, response, this.service.getLocations);
   }
 
+  async getPackages(request, response) {
+    await Controller.handleRequest(request, response, this.service.getPackages);
+  }
+
   async getTopAvailabilities(request, response) {
     await Controller.handleRequest(request, response, this.service.getTopAvailabilities);
   }
