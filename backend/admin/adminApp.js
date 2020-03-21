@@ -5,6 +5,7 @@ const adminValidate = new Validation();
 const userDB = require('../db/user')
 const workspaceDB = require('../db/workspace')
 const auth = require('./adminAuth');
+const AdminFloorService = require('../services/AdminFloorService');
 
 
 require('dotenv').config();
@@ -92,10 +93,26 @@ router.post('/user', (req, res) => {
 router.get('/workspaces', (req, res) => {
   workspaceDB.getWorkspaceByFloorId(req.query.floorId).then(obj => {
     res.status(200);
-    res.json(obj[0]);
   }).catch(err => {
     res.status(500);
     res.json({ message: err.toString() })
+  })
+})
+
+/*
+ * Delete workspace with specified id
+ * query example: http://localhost:8080/admin/deleteWorkspace?id=NC1-02D
+ * Response:  200 OK
+ * 401 Unauthorized ​(missing, wrong, or expired security token) – Front end will show admin login screen in response  
+ * 403 Forbidden (workspace doesn’t exist)
+*/
+router.delete('/deleteWorkspace', (req, res) => {
+  AdminFloorService.adminDeleteWorkspace(req.query.id).then(obj => {
+    res.status(200);
+    res.json(obj[0]);
+  }).catch(err => {
+    res.status(500);
+    res.json({ message: err.toString() });
   })
 })
 

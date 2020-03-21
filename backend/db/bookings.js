@@ -5,6 +5,10 @@ module.exports = {
     return knex.raw("select * from booking b, user u where u.StaffId = b.StaffId and b.AvailabilityId = ?", [avail_id]);
   },
 
+  getByWorkspaceId: function (workspaceId) {
+    return knex.raw("select * from booking b, user u where u.StaffId = b.StaffId and b.WorkspaceId = ?", [workspaceId]);
+  },
+
   getByStaffId: function (staffId) {
     return knex.raw("select b.Confirmed as Confirmed, b.BookingId as BookingId, b.StartDate as BookingStartDate, b.EndDate as BookingEndDate, b.StaffId as BookingStaffId, b.AvailabilityId as AvailabilityId,"
       + " w.WorkspaceId as OwnerWorksapceId, w.WorkspaceName as OwnerWorkspaceName, w.StaffId as OwnerStaffId, f.FloorId as FloorId, f.FloorNo as FloorNo, "

@@ -10,9 +10,12 @@ const EMPLOYEE_ID_COLUMN_NAME = "EmployeeID";
 const MANDATORY_COLUMN_NAMES = [OFFICE_ID_COLUMN_NAME, EMPLOYEE_ID_COLUMN_NAME];
 const CONSIDERED_NO = ["", "no", "n", "false", "f", "-"];
 
-const Workspaces = require('../db/workspaces');
+const Workspaces = require('../db/workspace');
+const Bookings = require('../db/bookings');
 const Availabilities = require('../db/availabilities');
 const OfficeLendingService = require('./OfficeLendingService');
+const OfficeBookingService = require('./OfficeBookingService');
+const Service = require('./Service');
 
 
 /**
@@ -195,38 +198,39 @@ async function uploadFloorPlan(req, res) {
   file.mv(path);
 }
 
-function controllerWrapper(f) {
-  return async (req, res) => {
-    try {
-      await f(req, res);
-      res.sendStatus(200);
-    } catch (err) {
-      res.status(400).send(err.message);
-    }
-  }
-};
-
-
 /**
-   * Deletes an Availability and its related bookings
+   * Deletes a Workspace and its related availabilities and bookings
    *
-   * id Integer ID of the Availability to delete
+   * id Integer ID of the Workspace to delete
    **/
-async function adminDeleteWorkspace({ id }) {
+async function adminDeleteWorkspace(id) {
   return new Promise(
     async (resolve) => {
       try {
         // check to see if workspace exists
         let workspace = await Workspaces.getByWorkspaceId(id);
+        console.log('workspace');
+        console.log(workspace[0]);
         if (workspace[0].length === 0) {
+          console.log('workspace length is 0');
           throw { message: "ID doesn't exist", status: 403 }
         }
 
         // query all availabilities related to this workspace
         let availabilities = await Availabilities.getByWorkspaceId(id);
-        availabilities[0].forEach((availability) => {
-          OfficeLendingService.cancelAvailability(availability.AvailabilityId);
-        });
+        for (const availability of availabilities[0]) {
+          console.log('availability #');
+          console.log(availability.AvailabilityId);
+          await OfficeLendingService.cancelAvailability(availability.AvailabilityId);
+        }
+
+        // query all bookings related to this workspace
+        let bookings = await Bookings.getByWorkspaceId(id);
+        for (const booking of bookings[0]) {
+          console.log('booking #');
+          console.log(booking.BookingId);
+          await OfficeBookingService.cancelBooking(booking.BookingId);
+        }
 
         await Workspaces.deleteWorkspace(id);
         resolve('200');
@@ -240,7 +244,19 @@ async function adminDeleteWorkspace({ id }) {
   );
 }
 
+function controllerWrapper(f) {
+  return async (req, res) => {
+    try {
+      await f(req, res);
+      res.sendStatus(200);
+    } catch (err) {
+      res.status(400).send(err.message);
+    }
+  }
+};
+
 module.exports = {
   uploadFloorPlan: controllerWrapper(uploadFloorPlan),
-  uploadFloorData: controllerWrapper(uploadFloorData)
+  uploadFloorData: controllerWrapper(uploadFloorData),
+  adminDeleteWorkspace: controllerWrapper(adminDeleteWorkspace)
 };
