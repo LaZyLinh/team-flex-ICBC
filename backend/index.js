@@ -9,7 +9,7 @@ const express = require('express')
 const path = require('path');
 const http = require('http');
 
-const oas3Tools = require('oas3-tools');
+const oas3Tools = require('./oas3-tools-no-logging/dist');
 
 // get Azure AD publc key
 authenticator.getAndStoreMSADKey()
