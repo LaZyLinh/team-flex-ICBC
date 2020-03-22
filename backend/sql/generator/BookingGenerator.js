@@ -34,8 +34,8 @@ function generate(sql, workspaces, maxStaffId, quantity, toTestArchiving) {
         const bookingDays = Math.floor(Math.random() * 3)
         const bookingEndDateMillis = curr + daysToMillis((i % 60) + bookingDays)
         const BookingEndDate = dateString(bookingEndDateMillis)
-        sql.script += `INSERT INTO availability VALUES (${AvailabilityId}, ${StartDate}, ${AvailabilityEndDate}, ${WorkspaceId}, ${Comment});\n`
-        sql.script += `INSERT INTO booking VALUES (1, ${BookingId}, ${StartDate}, ${BookingEndDate}, ${StaffId}, ${AvailabilityId}, ${WorkspaceId});\n`
+        sql.script += `INSERT INTO availability(AvailabilityId, StartDate, EndDate, WorkspaceId, Comment) VALUES (${AvailabilityId}, ${StartDate}, ${AvailabilityEndDate}, ${WorkspaceId}, ${Comment});\n`
+        sql.script += `INSERT INTO booking(Confirmed, BookingId, StartDate, EndDate, StaffId, AvailabilityId, WorkspaceId) VALUES (1, ${BookingId}, ${StartDate}, ${BookingEndDate}, ${StaffId}, ${AvailabilityId}, ${WorkspaceId});\n`
     }
 }
 

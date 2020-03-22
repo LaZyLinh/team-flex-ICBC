@@ -2,9 +2,11 @@
 const Service = require('./Service');
 const Availabilities = require('../db/availabilities');
 const Booking = require('../db/bookings');
+const makePackages = require("./PackageMaker");
 
 // Added for direct usage of knex
 const knex = require("../db/mysqlDB");
+const knexHelper = async (query) => (await knex.raw(query))[0];
 // flexwork-common helper functions
 const FWC = require("flexwork-common");
 // How many availabilities in the DB to dig for open ones
@@ -29,10 +31,17 @@ class OfficeBookingService {
             console.log("/bookings DELETE -> cancelBooking -> 400 ID doesn't exist");
             throw { message: "ID doesn't exist", status: 400 }
           }
-          let bookerEmail = Object.values(JSON.parse(JSON.stringify(booker)))[0][0];
+          let bookerEmail = booker[0][0];
 
           let workspaceOwner = await Booking.getOwnerEmail(id);
-          let workspaceOwnerEmail = Object.values(JSON.parse(JSON.stringify(workspaceOwner)))[0][0];
+          let shouldEmailOwner = true;
+          if (workspaceOwner[0].length === 0) {
+            shouldEmailOwner = false;
+          }
+          let workspaceOwnerEmail;
+          if (shouldEmailOwner) {
+            workspaceOwnerEmail = Object.values(JSON.parse(JSON.stringify(workspaceOwner)))[0][0];
+          }
 
           const EmailService = require("./EmailService");
           const emailService = new EmailService();
@@ -44,10 +53,10 @@ class OfficeBookingService {
             workspaceId: booking.WorkspaceId
           };
 
-          console.log(booking[0]);
-          console.log(bookingInfo);
           emailService.sendEmailDeleteBookingBooker(bookerEmail.Email, bookingInfo);
-          emailService.sendEmailDeleteBookingLender(workspaceOwnerEmail.Email, bookingInfo);
+          if (shouldEmailOwner) {
+            emailService.sendEmailDeleteBookingLender(workspaceOwnerEmail.Email, bookingInfo);
+          }
 
           await Booking.deleteBooking(id);
           resolve('200');
@@ -107,6 +116,18 @@ class OfficeBookingService {
         }
       },
     );
+  }
+
+  static async getPackages({ startDate, endDate, floorIds, features }) {
+    try {
+      const packages = await makePackages({ startDate, endDate, desiredFloors: floorIds, requiredFeatures: features });
+      resolve(packages);
+    } catch (e) {
+      resolve(Service.rejectResponse(
+        e.message || 'Invalid input',
+        e.status || 405,
+      ));
+    }
   }
 
   /**

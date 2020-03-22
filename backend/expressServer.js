@@ -13,7 +13,6 @@ const auth = require('./auth/auth');
 const logger = require('./logger');
 const authenticator = require('./auth/authenticator');
 const fileUpload = require('express-fileupload');
-const AdminFloorService = require("./services/AdminFloorService");
 
 class ExpressServer {
   constructor(port, openApiYaml) {
@@ -36,8 +35,7 @@ class ExpressServer {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
 
-    this.app.post("/admin/upload-floorplan-image", AdminFloorService.uploadFloorPlan);
-    this.app.post("/admin/upload-floor-data", AdminFloorService.uploadFloorData);
+
     this.app.use(cookieParser());
     this.app.use('/admin', admin);
     this.app.get('/hello', (req, res) => res.send('Hello World. path: ' + this.openApiPath));

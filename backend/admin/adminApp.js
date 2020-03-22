@@ -6,6 +6,13 @@ const userDB = require('../db/user')
 const workspaceDB = require('../db/workspace')
 const auth = require('./adminAuth');
 
+const Workspaces = require('../db/workspace');
+const Bookings = require('../db/bookings');
+const Availabilities = require('../db/availabilities');
+const OfficeLendingService = require('../services/OfficeLendingService');
+const OfficeBookingService = require('../services/OfficeBookingService');
+const AdminFloorService = require("../services/AdminFloorService");
+const Service = require('../services/Service');
 
 require('dotenv').config();
 
@@ -92,11 +99,57 @@ router.post('/user', (req, res) => {
 router.get('/workspaces', (req, res) => {
   workspaceDB.getWorkspaceByFloorId(req.query.floorId).then(obj => {
     res.status(200);
-    res.json(obj[0]);
   }).catch(err => {
     res.status(500);
     res.json({ message: err.toString() })
   })
 })
+
+/**
+   * Deletes a Workspace and its related availabilities and bookings
+   *
+   * id Integer ID of the Workspace to delete
+   **/
+async function adminDeleteWorkspace(id) {
+  try {
+    // check to see if workspace exists
+    let workspace = await Workspaces.getByWorkspaceId(id);
+    if (workspace[0].length === 0) {
+      throw { message: "ID doesn't exist", status: 403 }
+    }
+
+    // query all availabilities related to this workspace
+    let availabilities = await Availabilities.getByWorkspaceId(id);
+    for (const availability of availabilities[0]) {
+      let result = await OfficeLendingService.cancelAvailability({ id: availability.AvailabilityId });
+    }
+
+    result = await Workspaces.deleteWorkspace(id);
+    return;
+  } catch (e) {
+    console.log(e.message)
+    return;
+  }
+}
+
+/*
+ * Delete workspace with specified id
+ * query example: http://localhost:8080/admin/deleteWorkspace?id=NC1-02D
+ * Response:  200 OK
+ * 401 Unauthorized ​(missing, wrong, or expired security token) – Front end will show admin login screen in response  
+ * 403 Forbidden (workspace doesn’t exist)
+*/
+router.delete('/deleteWorkspace', (req, res) => {
+  adminDeleteWorkspace(req.query.id).then(() => {
+    res.status(200);
+    res.send(200);
+  }).catch(err => {
+    res.status(500);
+    res.json({ message: err.toString() });
+  })
+})
+
+router.post("/upload-floorplan-image", AdminFloorService.uploadFloorPlan);
+router.post("/upload-floor-data", AdminFloorService.uploadFloorData);
 
 module.exports = router;

@@ -14,7 +14,7 @@ class OfficeLendingService {
      * id Integer ID of the Availability to delete
      * no response value expected for this operation
      **/
-  static cancelAvailability({ id }) {
+  static async cancelAvailability({ id }) {
     return new Promise(
       async (resolve) => {
         try {
@@ -22,9 +22,16 @@ class OfficeLendingService {
           let bookings = await Bookings.getByAvailabilityId(id);
           console.log('bookings');
           console.log(bookings);
-          bookings[0].forEach((booking) => {
-            OfficeBookingService.cancelBooking(booking.BookingId);
-          });
+          // bookings[0].forEach((booking) => {
+          //   OfficeBookingService.cancelBooking(booking.BookingId);
+          // });
+
+          for (const booking of bookings[0]) {
+            console.log('booking #');
+            console.log(booking.BookingId);
+            let result = await OfficeBookingService.cancelBooking({ id: booking.BookingId });
+          }
+
           await Availabilities.deleteAvailability(id);
           resolve('200');
         } catch (e) {

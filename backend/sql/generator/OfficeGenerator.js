@@ -14,7 +14,7 @@ function generate(sql, cities, numFeatures = 3, buildingsPerCity = 2, floorsPerB
         const City = `'${city.name}'`
         const Building = `'${b}'`
         const FloorPlanUrl = `NULL`
-        sql.script += `INSERT INTO floor VALUES (${FloorId}, ${FloorNo}, ${Location}, ${City}, ${Building}, ${FloorPlanUrl});\n`
+        sql.script += `INSERT INTO floor(FloorId, FloorNo, Location, City, Building, FloorPlanUrl) VALUES (${FloorId}, ${FloorNo}, ${Location}, ${City}, ${Building}, ${FloorPlanUrl});\n`
         for (let w = 1; w <= workspacesPerFloor; ++w) {
           // Workspace
           const StaffId = staffId <= numEmployees ? staffId++ : `NULL`
@@ -27,7 +27,7 @@ function generate(sql, cities, numFeatures = 3, buildingsPerCity = 2, floorsPerB
           }
           const WorkspaceId = `'${b}${city.initials}${FloorNo}-${leadingZeroesStr}${w}'`
           const WorkspaceName = WorkspaceId
-          sql.script += `INSERT INTO workspace VALUES (${WorkspaceId}, ${WorkspaceName}, ${StaffId}, ${FloorId});\n`
+          sql.script += `INSERT INTO workspace(WorkspaceId, WorkspaceName, StaffId, FloorId) VALUES (${WorkspaceId}, ${WorkspaceName}, ${StaffId}, ${FloorId});\n`
           workspaces.push(WorkspaceId)
           // Features (arbitrary deterministic assigning of features)
           // Workspaces ending in 0 will have no features
@@ -37,7 +37,7 @@ function generate(sql, cities, numFeatures = 3, buildingsPerCity = 2, floorsPerB
           // Otherwise, a workspace has a feature iff w % featureId = 0
           for (let i = 1; i <= numFeatures; ++i) {
             if (w % i === 0) {
-              sql.script += `INSERT INTO workspacefeature VALUES (${WorkspaceId}, ${i});\n`
+              sql.script += `INSERT INTO workspaceFature(WorkspaceId, FeatureId) VALUES (${WorkspaceId}, ${i});\n`
             }
           }
         }
