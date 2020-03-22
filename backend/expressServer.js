@@ -1,3 +1,5 @@
+// Unused; moved into index.js
+
 // const { Middleware } = require('swagger-express-middleware');
 const path = require('path');
 const swaggerUI = require('swagger-ui-express');

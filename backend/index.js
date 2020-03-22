@@ -1,19 +1,41 @@
-const config = require('./config');
-const logger = require('./logger');
-const ExpressServer = require('./expressServer');
-const authenticator = require('./auth/authenticator')
+'use strict';
 
-const launchServer = async () => {
-  try {
-    this.expressServer = new ExpressServer(config.URL_PORT, config.OPENAPI_YAML);
-    await this.expressServer.launch();
-    logger.info('Express server running');
-  } catch (error) {
-    logger.error(error);
-    await this.close();
-  }
+const config = require('./config')
+const authenticator = require('./auth/authenticator')
+const admin = require('./admin/adminApp')
+const auth = require('./auth/auth')
+const fileUpload = require('express-fileupload')
+const express = require('express')
+const path = require('path');
+const http = require('http');
+
+const oas3Tools = require('oas3-tools');
+
+// get Azure AD publc key
+authenticator.getAndStoreMSADKey()
+
+// swaggerRouter configuration
+const options = {
+  controllers: path.join(__dirname, './controllers')
 };
 
-authenticator.getAndStoreMSADKey();
+const expressAppConfig = oas3Tools.expressAppConfig(path.join(__dirname, 'api/openapi.yaml'), options);
+expressAppConfig.addValidator();
+const app = expressAppConfig.getApp();
 
-launchServer().catch(e => logger.error(e));
+app.use(fileUpload());
+
+// Overrides:
+app.use(express.static("public"));
+app.use('/admin', admin);
+app.use('/auth', auth);
+
+
+// Initialize the Swagger middleware
+
+const serverPort = config.URL_PORT
+
+http.createServer(app).listen(serverPort, function () {
+  console.log('Flex Work Back End is listening on port %d (http://localhost:%d)', serverPort, serverPort);
+  console.log('API Doc is available on http://localhost:%d/docs', serverPort);
+});
