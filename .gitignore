@@ -2,7 +2,7 @@
 
 # dependencies
 **/node_modules
-!/backend/oas3-tools-no-logging/node_modules
+!/backend/oas3-tools-no-logging/**/node_modules/
 **/.pnp
 **.pnp.js
 
