@@ -5,8 +5,9 @@ class Service {
     return { error, code };
   }
 
+  // change made to adapt swagger
   static successResponse(payload, code = 200) {
-    return { payload, code };
+    return payload;
   }
 
   static makeBookingPromise(obj) {

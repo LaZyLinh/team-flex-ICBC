@@ -1,3 +1,5 @@
+// Unused; moved into index.js
+
 // const { Middleware } = require('swagger-express-middleware');
 const path = require('path');
 const swaggerUI = require('swagger-ui-express');
@@ -13,7 +15,15 @@ const auth = require('./auth/auth');
 const logger = require('./logger');
 const authenticator = require('./auth/authenticator');
 const fileUpload = require('express-fileupload');
+const https = require('https');
+const fs = require('fs');
 
+const options = {
+  key: fs.readFileSync('privkey.pem'),
+  cert: fs.readFileSync('cert.pem')
+};
+
+// no longer in user
 class ExpressServer {
   constructor(port, openApiYaml) {
     this.port = port;
@@ -81,7 +91,8 @@ class ExpressServer {
       async (resolve, reject) => {
         try {
           this.addErrorHandler();
-          this.server = await this.app.listen(this.port, () => {
+          var httpsServer = https.createServer(options, this.app);
+          this.server = await httpsServer.listen(this.port, () => {
             console.log(`server running on port ${this.port}`);
             resolve(this.server);
           });
