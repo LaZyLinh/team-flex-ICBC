@@ -8,7 +8,13 @@ const fileUpload = require('express-fileupload')
 const express = require('express')
 const path = require('path');
 const http = require('http');
+const https = require('https');
+const fs = require('fs');
 
+const httpsOptions = {
+  key: fs.readFileSync('privkey.pem'),
+  cert: fs.readFileSync('cert.pem')
+};
 const oas3Tools = require('./oas3-tools-no-logging/dist');
 
 // get Azure AD publc key
@@ -35,7 +41,13 @@ app.use('/auth', auth);
 
 const serverPort = config.URL_PORT
 
-http.createServer(app).listen(serverPort, function () {
-  console.log('Flex Work Back End is listening on port %d (http://localhost:%d)', serverPort, serverPort);
-  console.log('API Doc is available on http://localhost:%d/docs', serverPort);
+// this is old http server start script
+// http.createServer(app).listen(serverPort, function () {
+//   console.log('Flex Work Back End is listening on port %d (https://localhost:%d)', serverPort, serverPort);
+//   console.log('API Doc is available on https://localhost:%d/docs', serverPort);
+// });
+
+https.createServer(httpsOptions, app).listen(serverPort, function () {
+  console.log('Flex Work Back End is listening on port %d (https://localhost:%d)', serverPort, serverPort);
+  console.log('API Doc is available on https://localhost:%d/docs', serverPort);
 });

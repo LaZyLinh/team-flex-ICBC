@@ -44,6 +44,7 @@
     "openapi-sampler": "^1.0.0-beta.15",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
+    "path-to-regexp": "^6.1.0",
     "sendmail": "^1.6.1",
     "swagger-express-middleware": "^2.0.2",
     "swagger-tools": "^0.10.4",

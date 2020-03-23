@@ -22,6 +22,8 @@ const options = {
   key: fs.readFileSync('privkey.pem'),
   cert: fs.readFileSync('cert.pem')
 };
+
+// no longer in user
 class ExpressServer {
   constructor(port, openApiYaml) {
     this.port = port;
