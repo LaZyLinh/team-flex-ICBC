@@ -206,7 +206,8 @@ class OfficeBookingService {
           const cities = queryResults.map(rdp => rdp.city);
           // console.log(cities);
           console.log("locations /GET -> getLocations -> 200 OK");
-          resolve(Service.successResponse(cities));
+          // resolve(Service.successResponse(cities));
+          resolve(cities);
         } catch (e) {
           console.error("ERROR: locations /GET -> getLocations");
           resolve(Service.rejectResponse(
@@ -340,7 +341,8 @@ class OfficeBookingService {
             }
           }
           console.log(`getAvailabilities/top/${amount} GET -> getTopAvaliabilities -> 200 OK`);
-          resolve(Service.successResponse(response));
+          // resolve(Service.successResponse(response));
+          resolve(response);
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
