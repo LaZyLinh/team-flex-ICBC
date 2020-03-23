@@ -10,6 +10,7 @@ const path = require('path');
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
+const cors = require('cors');
 
 const httpsOptions = {
   key: fs.readFileSync('privkey.pem'),
@@ -28,6 +29,8 @@ const options = {
 const expressAppConfig = oas3Tools.expressAppConfig(path.join(__dirname, 'api/openapi.yaml'), options);
 expressAppConfig.addValidator();
 const app = expressAppConfig.getApp();
+
+app.use(cors())
 
 app.use(fileUpload());
 
