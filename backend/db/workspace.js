@@ -21,4 +21,10 @@ module.exports = {
     return knex.raw('delete from workspace where WorkspaceId = ?', [id]);
   },
 
+  updateWorkspace: function (id, workspaceName, staffId, floorId) {
+    let queryRun = knex.raw("update `workspace` set WorkspaceName = ?, StaffId = ?, FloorId = ? " +
+      "where WorkspaceId = ?;", [workspaceName, staffId, floorId, id]);
+    return queryRun;
+  },
+
 }

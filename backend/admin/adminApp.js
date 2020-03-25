@@ -132,6 +132,7 @@ async function adminDeleteWorkspace(id) {
   }
 }
 
+
 /*
  * Delete workspace with specified id
  * query example: http://localhost:8080/admin/deleteWorkspace?id=NC1-02D
@@ -143,6 +144,46 @@ router.delete('/deleteWorkspace', (req, res) => {
   adminDeleteWorkspace(req.query.id).then(() => {
     res.status(200);
     res.send(200);
+  }).catch(err => {
+    res.status(500);
+    res.json({ message: err.toString() });
+  })
+})
+
+/**
+   * Updates a Workspace's name, staffId, or floorId
+
+   * id Integer ID of the Workspace to update
+   **/
+async function adminUpdateWorkspace(id, workspaceName, staffId, floorId) {
+  try {
+    // check to see if workspace exists
+    let workspace = await Workspaces.getByWorkspaceId(id);
+    if (workspace[0].length === 0) {
+      throw { message: "ID doesn't exist", status: 403 }
+    }
+
+    // update workspace with new information
+    result = await Workspaces.updateWorkspace(id, workspaceName, staffId, floorId);
+    return;
+  } catch (e) {
+    throw { message: "Unauthorized", status: 401 }
+    return;
+  }
+}
+
+/*
+ * Update workspace with specified id
+ * query example: https://localhost:8080/admin/workspaces?id=NC1-02D&name=Vancouver, Building 1, 1st floor, 01D&staffId=2&floorId=4
+ * Response:  200 OK
+ * 401 Unauthorized ​(missing, wrong, or expired security token) – Front end will show admin login screen in response  
+ * 403 Forbidden (workspace doesn’t exist)
+*/
+router.put('/workspaces', (req, res) => {
+  let params = req.body;
+  adminUpdateWorkspace(req.query.id, params.workspaceName, params.staffId, params.floorId).then(() => {
+    res.status(200);
+    res.sendStatus(200);
   }).catch(err => {
     res.status(500);
     res.json({ message: err.toString() });
