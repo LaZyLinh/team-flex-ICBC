@@ -1,6 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
-import { withStyles, Grid } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
 import TextField from "@material-ui/core/TextField";
 import Slide from "@material-ui/core/Slide";
@@ -21,6 +22,7 @@ import { DateRange } from "react-date-range";
 import OfficeLendingApi from "../api/OfficeLendingApi";
 import styles from "../styles/Lending.styles";
 import logo from "../assets/home_logo.png";
+import { getUserInfo } from "./../api/authentication";
 
 class Lending extends React.Component {
   constructor(props) {
@@ -41,6 +43,8 @@ class Lending extends React.Component {
 
   componentDidMount = async () => {
     // TODO: API request to get following user info
+    const res = await getUserInfo(this.props.userInfo.account.userName, this.props.userInfo.jwtIdToken);
+    console.log(res);
     console.log(this.props.userInfo);
     this.setState({
       staffId: "4321",

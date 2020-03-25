@@ -1,15 +1,9 @@
-import { authProvider } from '../authProvider';
+import axios from "axios";
 
-export const request = async (url) => {
-  // const token = await authProvider.getAccessToken();
-  const token = 'fake token'
-  console.log("access token is " + token.accessToken);
-  return fetch(url, {
-    method: 'GET',
-    headers: {
-      Authorization: 'Bearer ' + token.accessToken,
-      'Content-Type': 'application/json',
-    }
-  })
+export const getUserInfo = async (email, token) => {
+  axios.post("https://icbcflexwork.me/auth/user", {
+    Email: email
+  }, {
+    headers: { "Authorization": "Bearer " + token }
+  });
 }
-
