@@ -72,7 +72,7 @@ class Lending extends React.Component {
     const { classes } = this.props;
 
     return (
-      <div style={{ position: "relative" }}>
+      <div>
         <div className={`${classes.bg}`}></div>
         <div className={classes.header}>
           <Link href="/">
@@ -81,7 +81,7 @@ class Lending extends React.Component {
           <div className={classes.title}>Lend Office</div>
           <GiCalendar className={classes.icon} />
         </div>
-        {/* <DateRange
+        <DateRange
           scroll={{ enabled: true, monthHeight: 300 }}
           className={`${classes.calendar}`}
           direction="vertical"
@@ -90,14 +90,14 @@ class Lending extends React.Component {
           onChange={this.handleDateChange}
           moveRangeOnFirstSelection={false}
           ranges={[this.state]}
-        /> */}
-        <Grid className={`${classes.box}`} direction="column" container spacing={3}>
+        />
+        <Grid className={`${classes.box}`} direction="column" container spacing={1}>
           <Grid item xs={12}>
             <TextField
               label="Staff ID"
-              margin="normal"
               variant="filled"
-              className={`${classes.f}`}
+              margin="none"
+              className={`${classes.field} ${classes.field1}`}
               InputProps={{
                 readOnly: true,
                 startAdornment: (
@@ -113,7 +113,8 @@ class Lending extends React.Component {
             <TextField
               label="Location"
               variant="filled"
-              className={`${classes.field}`}
+              margin="none"
+              className={`${classes.field} ${classes.field2}`}
               InputProps={{
                 readOnly: true,
                 startAdornment: (
@@ -129,6 +130,7 @@ class Lending extends React.Component {
             <TextField
               label="Workspace"
               variant="filled"
+              margin="none"
               className={`${classes.field} ${classes.field3}`}
               InputProps={{
                 readOnly: true,
@@ -141,10 +143,11 @@ class Lending extends React.Component {
               value={this.state.workspace}
             />
           </Grid>
-          <Grid>
+          <Grid item xs={12}>
             <TextField
               label="Features"
               variant="filled"
+              margin="none"
               className={`${classes.field} ${classes.field4}`}
               InputProps={{
                 readOnly: true,
@@ -163,23 +166,28 @@ class Lending extends React.Component {
               }, "")}
             />
           </Grid>
-          <Grid>
+          <Grid item xs={12}>
             <TextField
               label="Comment"
               variant="filled"
+              margin="none"
               className={`${classes.field} ${classes.field5}`}
               multiline
               rows="4"
-              // InputProps={{
-              //   startAdornment: (
-              //     <InputAdornment position="start">
-              //       <TextsmsRoundedIcon />
-              //     </InputAdornment>
-              //   )
-              // }}
               value={this.state.comment}
               onChange={this.handleCommentChange}
             />
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              onClick={this.handleConfirmAvailability}
+              className={`${classes.label} ${classes.btn} ${classes.btn1}`}
+              variant="contained"
+              href="/finished"
+              endIcon={<ArrowForwardOutlined></ArrowForwardOutlined>}
+            >
+              Confirm Availability
+            </Button>
           </Grid>
         </Grid>
       </div>
