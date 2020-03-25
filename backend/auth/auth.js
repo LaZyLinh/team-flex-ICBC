@@ -1,5 +1,6 @@
 const express = require('express');
 const userDB = require("../db/user")
+const workspaceDB = require("../db/workspace");
 const router = express.Router();
 const cookieParser = require("cookie-parser")
 // router.use(cookieParser())
@@ -19,8 +20,23 @@ router.post("/user", (req, res) => {
   userDB.findUserByEmail(email).then(obj => {
     if (obj[0]) {
       let sid = obj[0].StaffId;
-      res.status(200);
-      res.json({ StaffId: sid })
+      workspaceDB.getWorkspaceByStaffId(sid).then(wsp => {
+        if (wsp[0]) {
+          let tmp = wsp[0];
+          console.log(tmp[0].WorkspaceId)
+          workspaceDB.getFeaturesByWorkspaceId(tmp[0].WorkspaceId).then(feas => {
+            console.log(feas[0]);
+            let rtemp = tmp[0];
+            rtemp.features = feas[0];
+            res.status(200);
+            res.json(rtemp);
+          })
+        } else {
+          res.status(200);
+          res.json({ StaffId: sid })
+        }
+      })
+
     } else {
       // No user found with that email, create a new one.
       const insertObj = req.body;
