@@ -64,30 +64,6 @@ paths:
                 x-content-type: text/plain
               example: "Error: Floor with ID 9000 does not exist"
       x-swagger-router-controller: Admin
-  /admin/reset-features:
-    post:
-      tags:
-        - Admin
-      summary: Resets the list of features to a custom specified list
-      description:
-        Sets the list of features in the system. Previous features that
-        do not exist in this list are deleted, and new features are added. Does not
-        affect features that exist both previously and in this list
-      operationId: adminResetFeatures
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: array
-              items:
-                type: string
-        required: true
-      responses:
-        "200":
-          description: Successful Operation
-        "400":
-          description: Bad Request
-      x-swagger-router-controller: Admin
   /features:
     get:
       tags:
