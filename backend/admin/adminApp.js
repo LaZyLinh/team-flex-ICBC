@@ -196,9 +196,6 @@ router.put('/workspaces', (req, res) => {
    **/
 async function adminResetFeatures(featureList) {
   try {
-    console.log('featureList: ');
-    console.log(featureList);
-
     // get all old features
     let allOldFeatureIds = await Features.selectAllFeatureIds();
 
@@ -213,8 +210,6 @@ async function adminResetFeatures(featureList) {
     }
     // insert new features
     for (const feature of featureList) {
-      //console.log("FEATURE: ");
-      //console.log(feature);
       await Features.insertFeature(feature);
     }
     return;
@@ -231,13 +226,11 @@ async function adminResetFeatures(featureList) {
 */
 router.post('/reset-features', (req, res) => {
   let params = req.body;
-  console.log("params.featureList");
-  console.log(params.featureList);
-  // let featureList = [];
-  // for (i = 0; i < params.featureList.length; i++) {
-  //   featureList.push(params.featureList[i]);
-  // }
-  adminResetFeatures(params.featureList).then(() => {
+  let featureList = params.featureList.split(",").map(function (feature) {
+    return feature.trim();
+  });
+
+  adminResetFeatures(featureList).then(() => {
     res.status(200);
     res.sendStatus(200);
   }).catch(err => {
