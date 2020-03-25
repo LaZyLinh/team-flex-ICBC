@@ -1,22 +1,26 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
 import { withStyles, Grid } from "@material-ui/core";
-import AppBar from "@material-ui/core/AppBar";
-import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import TextField from "@material-ui/core/TextField";
-import HomeTwoToneIcon from "@material-ui/icons/HomeTwoTone";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import styles from "../styles/Lending.styles";
-import logo from "../assets/home_logo.png";
+import Slide from "@material-ui/core/Slide";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
-import { GiCalendar } from "react-icons/gi";
-import { ArrowForwardOutlined } from "@material-ui/icons";
-import OfficeLendingApi from "../api/OfficeLendingApi";
-import { DateRange } from "react-date-range";
+import InputAdornment from "@material-ui/core/InputAdornment";
 import PermIdentityRoundedIcon from "@material-ui/icons/PermIdentityRounded";
 import RoomRoundedIcon from "@material-ui/icons/RoomRounded";
 import EventSeatRoundedIcon from "@material-ui/icons/EventSeatRounded";
 import TvRoundedIcon from "@material-ui/icons/TvRounded";
+import ArrowForwardOutlinedIcon from "@material-ui/icons/ArrowForwardOutlined";
+import { GiCalendar } from "react-icons/gi";
+import { DateRange } from "react-date-range";
+import OfficeLendingApi from "../api/OfficeLendingApi";
+import styles from "../styles/Lending.styles";
+import logo from "../assets/home_logo.png";
 
 class Lending extends React.Component {
   constructor(props) {
@@ -29,12 +33,15 @@ class Lending extends React.Component {
       comment: "",
       startDate: new Date(),
       endDate: new Date(),
-      key: "selection"
+      key: "selection",
+      openDialog: false,
+      redirectHome: false
     };
   }
 
   componentDidMount = async () => {
     // TODO: API request to get following user info
+    console.log(this.props.userInfo);
     this.setState({
       staffId: "4321",
       location: "North Vancouver",
@@ -61,15 +68,26 @@ class Lending extends React.Component {
     const edStr = this.state.endDate.toISOString().slice(0, 10);
     const workspaceId = this.state.workspaceId;
     try {
-      await OfficeLendingApi.createAvailability(sdStr, edStr, workspaceId);
+      // await OfficeLendingApi.createAvailability(sdStr, edStr, workspaceId);
       console.log("createAvailability: 200 OK!");
+      this.setState({ openDialog: true });
     } catch (err) {
       console.error("createAvalability: " + err);
     }
   };
 
+  redirectHome = () => {
+    this.setState({
+      redirectHome: true
+    });
+  };
+
   render = () => {
     const { classes } = this.props;
+
+    if (this.state.redirectHome) {
+      return <Redirect to="/" />;
+    }
 
     return (
       <div>
@@ -183,16 +201,43 @@ class Lending extends React.Component {
               onClick={this.handleConfirmAvailability}
               className={`${classes.label} ${classes.btn} ${classes.btn1}`}
               variant="contained"
-              href="/finished"
-              endIcon={<ArrowForwardOutlined></ArrowForwardOutlined>}
+              endIcon={<ArrowForwardOutlinedIcon></ArrowForwardOutlinedIcon>}
             >
               Confirm Availability
             </Button>
           </Grid>
         </Grid>
+        <Dialog
+          TransitionComponent={Transition}
+          open={this.state.openDialog}
+          onClose={this.redirectHome}
+          PaperProps={{
+            style: {
+              backgroundColor: "#EBF2FF"
+            }
+          }}
+        >
+          <DialogTitle className={classes.dialogTitle} disableTypography={true}>
+            Lend Office
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText className={classes.dialogContext}>
+              The office availability has been created.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.redirectHome} className={classes.dialogButtons} color="primary">
+              Ok
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   };
 }
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export default withStyles(styles)(Lending);

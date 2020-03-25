@@ -100,5 +100,18 @@ export default {
     fontWeight: "600",
     fontSize: "18px",
     color: "#FFFFFF"
+  },
+  dialogTitle: {
+    fontFamily: fontFamily,
+    fontSize: "1.5em",
+    fontWeight: "bold"
+  },
+  dialogContext: {
+    fontFamily: fontFamily
+  },
+  dialogButtons: {
+    fontFamily: fontFamily,
+    color: "rgba(0, 72, 168, 0.85)",
+    border: "rgba(0, 72, 168, 0.85)"
   }
 };
