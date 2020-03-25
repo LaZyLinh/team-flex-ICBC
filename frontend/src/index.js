@@ -10,10 +10,6 @@ import { AzureAD, AuthenticationState } from "react-aad-msal";
 // Import the provider created in a different file
 import { authProvider } from "./authProvider";
 
-// Clear local storage to prevent any issues with react-aad-msal storing
-// "login in progress" which prevents authentication
-localStorage.clear();
-
 ReactDOM.render(
   // WITHOUT AD
   // <App
