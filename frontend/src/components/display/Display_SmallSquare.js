@@ -15,10 +15,10 @@ class Display_SmallSquare extends React.Component {
     const lendingHistory = OfficeLending.getAvailabilitiesByOwnerID(2);
     let Lend;
     await Promise.all([lendingHistory]).then(messages => {
-      console.log(messages);
+      console.log(messages.length);
       Lend = messages[0];
     });
-
+    console.log(Lend);
     this.setState({ Lending: Lend });
     console.log(this.processLending(this.state.Lending[0]));
   }

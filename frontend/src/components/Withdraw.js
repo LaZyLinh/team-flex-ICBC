@@ -32,12 +32,11 @@ class Withdraw extends React.Component {
 
   async onSubmitStaffId(event) {
     console.log("onSubmitStaffId");
-    console.log(event.target.value);
     event.preventDefault();
     const staffId = 2;
-    console.log("staffid :" + staffId);
     const data = await OfficeBookingApi.getBookingsByUserID(staffId);
     this.setState({ bookings: data });
+    console.log(data);
     // , (error, data) => {
     //   if (error) {
     //     console.log("Got an error from API call");
@@ -78,21 +77,21 @@ class Withdraw extends React.Component {
     this.setState({ showBookingCancelSuccess: false });
   }
 
-  createTableRowData() {
-    const bookings = this.state.bookings;
-    return bookings.map(b => {
-      return {
-        bookingId: b.BookingId,
-        startDate: b.BookingStartDate,
-        endDate: b.BookingEndDate,
-        city: b.workspace.floor.city,
-        workspaceId: b.workspace.workspaceId,
-        // TODO: Implement confirmation
-        status: "Confirmed",
-        officeOwner: b.workspace.staff.firstName + " " + b.workspace.staff.lastName
-      };
-    });
-  }
+  // createTableRowData() {
+  //   const bookings = this.state.bookings;
+  //   return bookings.map(b => {
+  //     return {
+  //       bookingId: b.BookingId,
+  //       startDate: b.BookingStartDate,
+  //       endDate: b.BookingEndDate,
+  //       city: b.workspace.floor.city,
+  //       workspaceId: b.workspace.workspaceId,
+  //       // TODO: Implement confirmation
+  //       status: "Confirmed",
+  //       officeOwner: b.workspace.staff.firstName + " " + b.workspace.staff.lastName
+  //     };
+  //   });
+  // }
 
   render() {
     const { classes } = this.props;
