@@ -23,6 +23,7 @@ import OfficeLendingApi from "../api/OfficeLendingApi";
 import styles from "../styles/Lending.styles";
 import logo from "../assets/home_logo.png";
 import { getUserInfo } from "./../api/authentication";
+import ApiClient from "../ApiClient";
 
 class Lending extends React.Component {
   constructor(props) {
@@ -43,6 +44,9 @@ class Lending extends React.Component {
 
   componentDidMount = async () => {
     // TODO: API request to get following user info
+    // const res = await ApiClient.instance.callApi("/auth/user", "POST", {}, {},
+    // { "Authorization": "Bearer " + this.props.userInfo.jwtIdToken },
+    // { 'Email': this.props.userInfo.account.userName }, [], ['application/x-www-form-urlencoded'], ['application/json'], null, (data) => { console.log("got data: " +  data)});
     const res = await getUserInfo(this.props.userInfo.account.userName, this.props.userInfo.jwtIdToken);
     console.log(res);
     console.log(this.props.userInfo);
