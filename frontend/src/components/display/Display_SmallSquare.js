@@ -34,7 +34,7 @@ class Display_SmallSquare extends React.Component {
         <Button variant="outlined" style={{ width: "100%" }} onClick={this.getLending}>
           Show My Lending history
         </Button>
-        {this.state.Lending.map(function(eachLend, i) {
+        {this.state.Lending.map(function (eachLend, i) {
           return (
             <div className={`${classes.eachOne}`}>
               <div className={`${classes.eachPart}`}>

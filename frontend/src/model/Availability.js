@@ -50,24 +50,42 @@ class Availability {
 
             if (data.hasOwnProperty('availabilityId')) {
                 obj['availabilityId'] = ApiClient.convertToType(data['availabilityId'], 'Number');
+            } else if (data.hasOwnProperty('AvailabilityId')) {
+                obj['availabilityId'] = ApiClient.convertToType(data['AvailabilityId'], 'Number');
             }
+
             if (data.hasOwnProperty('startDate')) {
                 obj['startDate'] = ApiClient.convertToType(data['startDate'], 'Date');
+            } else if (data.hasOwnProperty('StartDate')) {
+                obj['startDate'] = ApiClient.convertToType(data['StartDate'], 'Date');
             }
+
             if (data.hasOwnProperty('endDate')) {
                 obj['endDate'] = ApiClient.convertToType(data['endDate'], 'Date');
-            }
+            } else if (data.hasOwnProperty('EndDate')) {
+                obj['endDate'] = ApiClient.convertToType(data['EndDate'], 'Date');
+            } 
+
             if (data.hasOwnProperty('workspaceId')) {
                 obj['workspaceId'] = ApiClient.convertToType(data['workspaceId'], 'String');
+            } else if (data.hasOwnProperty('WorkspaceId')) {
+                obj['workspaceId'] = ApiClient.convertToType(data['WorkspaceId'], 'String');
             }
+
             if (data.hasOwnProperty('workspaceName')) {
                 obj['workspaceName'] = ApiClient.convertToType(data['workspaceName'], 'String');
+            } else if (data.hasOwnProperty('WorkspaceName')) {
+                obj['workspaceName'] = ApiClient.convertToType(data['WorkspaceName'], 'String');
             }
             if (data.hasOwnProperty('floorId')) {
                 obj['floorId'] = ApiClient.convertToType(data['floorId'], 'Number');
+            } else if (data.hasOwnProperty('FloorId')) {
+                obj['floorId'] = ApiClient.convertToType(data['FloorId'], 'Number');
             }
             if (data.hasOwnProperty('location')) {
                 obj['location'] = ApiClient.convertToType(data['location'], 'String');
+            }else if (data.hasOwnProperty('Location')) {
+                obj['location'] = ApiClient.convertToType(data['Location'], 'String');
             }
             if (data.hasOwnProperty('bookings')) {
                 obj['bookings'] = ApiClient.convertToType(data['bookings'], [BookingSummary]);
