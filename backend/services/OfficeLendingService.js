@@ -52,21 +52,10 @@ class OfficeLendingService {
    * workspaceId String 
    * returns Availability
    **/
-  static createAvailability({ startDate, endDate, workspaceId }) {
+  static createAvailability({ startDate, endDate, workspaceId, comment }) {
     return new Promise(
       async (resolve, reject) => {
         try {
-          // Availabilities.getExistingConflictingAvailabilities(startDate, endDate, workspaceId).then(obj => {
-          //   if (obj[0].length !== 0) {
-          //     reject(new Error(403));
-          //   } else {
-          //     Availabilities.insertAvailability(startDate, endDate, workspaceId).then(() => {
-          //       Availabilities.getByStartEndDateAndWorkspaceId(startDate, endDate, workspaceId).then(obj => {
-          //         resolve(obj[0]);
-          //       });
-          //     });
-          //   }
-          // })
           if (endDate < startDate) {
             console.log("/availability POST -> createAvailability -> Response: 403 End Date before Start Date");
             throw { message: "End Date before Start Date", status: 403 };
@@ -78,7 +67,7 @@ class OfficeLendingService {
           } else {
             // console.log("createAvailability: no conflict. About to insert.");
             try {
-              await Availabilities.insertAvailability(startDate, endDate, workspaceId);
+              await Availabilities.insertAvailability(startDate, endDate, workspaceId, comment);
               const createdAvailability = (await Availabilities.getByStartEndDateAndWorkspaceId(startDate, endDate, workspaceId))[0];
               // console.log("createAvailability: successful.");
               // console.log("newly created availability: ");
