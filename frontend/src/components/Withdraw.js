@@ -1,3 +1,4 @@
+
 import React from "react";
 import OfficeBookingApi from "../api/OfficeBookingApi";
 import OfficeLendingApi from "../api/OfficeLendingApi";
@@ -126,8 +127,6 @@ class Withdraw extends React.Component {
           {/*<BookingsTable onCancelBooking={this.onCancelBooking} rows={this.createTableRowData()}></BookingsTable>*/}
           <ManageTable rows={this.state.bookings} />
         </div>
-        <confirmA />
-      </div>
     );
   }
 }

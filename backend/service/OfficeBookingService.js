@@ -12,9 +12,6 @@ exports.cancelBooking = function (id) {
   return OfficeBookingService.cancelBooking({ id })
 }
 
-exports.getFloors = function (floorId, location) {
-  return OfficeBookingService.getFloors({ floorId, location });
-}
 
 /**
  * Confirm a temporarily locked Booking
@@ -22,8 +19,8 @@ exports.getFloors = function (floorId, location) {
  * bookingId Integer 
  * returns BookingSummary
  **/
-exports.createBooking = function (bookingId) {
-  return OfficeBookingService.createBooking({ bookingId })
+exports.createBooking = function (body) {
+  return OfficeBookingService.createBooking(body)
 }
 
 
@@ -110,8 +107,8 @@ exports.getTopAvailabilities = function (amount) {
  * endDate date 
  * returns BookingSummary
  **/
-exports.lockBooking = function (availabilityId, staffId, startDate, endDate) {
-  return OfficeBookingService.lockBooking({ availabilityId, staffId, startDate, endDate })
+exports.lockBooking = function (body) {
+  return OfficeBookingService.lockBooking(body)
 }
 
 
