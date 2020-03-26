@@ -36,8 +36,8 @@ module.exports = {
     return knex.raw('delete from availability where AvailabilityId = ?', [id]);
   },
 
-  insertAvailability: function (startDate, endDate, workspaceId) {
-    return knex('availability').insert({ StartDate: startDate, EndDate: endDate, WorkspaceId: workspaceId });
+  insertAvailability: function (startDate, endDate, workspaceId, comment) {
+    return knex('availability').insert({ StartDate: startDate, EndDate: endDate, WorkspaceId: workspaceId, Comment: comment });
   },
 
   getByStartEndDateAndWorkspaceId: function (startDate, endDate, workspaceId) {
