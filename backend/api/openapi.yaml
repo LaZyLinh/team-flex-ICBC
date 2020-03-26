@@ -4,15 +4,40 @@ info:
   description: This is the REST API Documentation for ICBC Flex Work, by Team Flex
   version: 0.0.11
 servers:
-  - url: http://34.224.250.122:8080/
+  - url: https://icbcflexwork.me:8080/
 tags:
   - name: OfficeBooking
     description: As an ICBC employee, make a **Booking** on an office in any ICBC location
   - name: OfficeLending
     description: As an ICBC office owner, create **Availabilities** for fellow employees
   - name: Admin
-    description: As an ICBC facility admin, manage locations and floor plans
+    description: As an ICBC facility admin, manage locations and floor plans (There are end points not listed here, to be added)
 paths:
+  /floors:
+    get:
+      tags:
+        - OfficeBooking
+      summary: Get either floor information of all floors, floorId, or by location
+      operationId: getFloors
+      parameters:
+        - name: floorId
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: number
+        - name: location
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful Operation
+      x-swagger-router-controller: OfficeBooking
   /admin/upload-floor-data:
     post:
       tags:

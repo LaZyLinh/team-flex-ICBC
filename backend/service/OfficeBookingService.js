@@ -12,6 +12,9 @@ exports.cancelBooking = function (id) {
   return OfficeBookingService.cancelBooking({ id })
 }
 
+exports.getFloors = function (floorId, location) {
+  return OfficeBookingService.getFloors({ floorId, location });
+}
 
 /**
  * Confirm a temporarily locked Booking
