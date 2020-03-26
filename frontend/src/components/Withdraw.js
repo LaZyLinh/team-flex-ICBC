@@ -1,4 +1,3 @@
-
 import React from "react";
 import OfficeBookingApi from "../api/OfficeBookingApi";
 import BookingsTable from "./Withdraw/BookingsTable";
@@ -144,24 +143,24 @@ class Withdraw extends React.Component {
     // Show successfully canceled booking if this.state.showBookingCancelSuccess
     // Otherwise, show this.state.bookings in dynamically generated list
     return (
-        <div>
-          <Link href="/">
-            <HomeIcon className={`${classes.shapeFilter}`} /></Link>
-          {/*</Link>*/}
+      <div>
+        <Link href="/">
+          <HomeIcon className={`${classes.shapeFilter}`} /></Link>
+        {/*</Link>*/}
 
-          {/*  <HomeIcon className={`${classes.shapeFilter}`} />*/}
-          {/*</Link>*/}
-          <div className={`${classes.searchBar}`}> </div>
-          <form onSubmit={this.onSubmitStaffId} className={`${classes.idSearch}`}>
-            <TextField onkeyPress={e => this.setState({ staffId: e.target.value })} type="text" label="ID" name="staffId"  />
-          </form>
-          <SearchIcon className={`${classes.searchIcon}`} />
-          <div className={`${classes.bookingTable}`}>
-            {/*<BookingsTable onCancelBooking={this.onCancelBooking} rows={this.createTableRowData()}></BookingsTable>*/}
-            <ManageTable />
-          </div>
-          <confirmA />
+        {/*  <HomeIcon className={`${classes.shapeFilter}`} />*/}
+        {/*</Link>*/}
+        <div className={`${classes.searchBar}`}> </div>
+        <form onSubmit={this.onSubmitStaffId} className={`${classes.idSearch}`}>
+          <TextField onkeyPress={e => this.setState({ staffId: e.target.value })} type="text" label="ID" name="staffId"  />
+        </form>
+        <SearchIcon className={`${classes.searchIcon}`} />
+        <div className={`${classes.bookingTable}`}>
+          {/*<BookingsTable onCancelBooking={this.onCancelBooking} rows={this.createTableRowData()}></BookingsTable>*/}
+          <ManageTable />
         </div>
+        <confirmA />
+      </div>
     );
   }
 }
