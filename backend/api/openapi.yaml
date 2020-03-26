@@ -1,10 +1,10 @@
 openapi: 3.0.1
 info:
-  title: Flex Work
-  description: This is the REST API Documentation for ICBC Flex Work, by Team Flex
-  version: 0.0.12
+  title: ICBC Flex Work
+  description: ICBC Flex Work REST Back End
+  version: 0.0.13
 servers:
-  - url: http://34.224.250.122:8080/
+  - url: https://icbcflexwork.me:8080/
 tags:
   - name: OfficeBooking
     description: As an ICBC employee, make a **Booking** on an office in any ICBC location
