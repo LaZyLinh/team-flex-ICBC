@@ -49,8 +49,9 @@ export default {
   calendar: {
     position: "absolute",
     top: boxTop,
-    left: "8%",
-    boxShadow: "0px 6px 8px 0px rgba(0,0,0,.2)"
+    left: "5%",
+    boxShadow: "0px 6px 8px 0px rgba(0,0,0,.2)",
+    fontSize: "15px"
   },
   box: {
     position: "absolute",
