@@ -21,7 +21,7 @@ router.post("/user", (req, res) => {
     if (obj[0]) {
       let sid = obj[0].StaffId;
       workspaceDB.getWorkspaceByStaffId(sid).then(wsp => {
-        if (wsp[0]) {
+        if (wsp[0][0]) {
           let tmp = wsp[0];
           console.log(tmp[0].WorkspaceId)
           workspaceDB.getFeaturesByWorkspaceId(tmp[0].WorkspaceId).then(feas => {

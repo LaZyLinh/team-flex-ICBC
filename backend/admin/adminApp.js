@@ -10,9 +10,8 @@ const Workspaces = require('../db/workspace');
 const Bookings = require('../db/bookings');
 const Availabilities = require('../db/availabilities');
 const OfficeLendingService = require('../services/OfficeLendingService');
-const OfficeBookingService = require('../services/OfficeBookingService');
 const AdminFloorService = require("../services/AdminFloorService");
-const Service = require('../services/Service');
+const Features = require('../db/features');
 
 require('dotenv').config();
 
@@ -189,6 +188,58 @@ router.put('/workspaces', (req, res) => {
     res.json({ message: err.toString() });
   })
 })
+
+/**
+   * Resets all features to those only in featureList
+
+   * featureList array of strings (feature names)
+   **/
+async function adminResetFeatures(featureList) {
+  try {
+    // get all old features
+    let allOldFeatureIds = await Features.selectAllFeatureIds();
+
+    // delete all workspaceFeatures with feature id in oldFeatures
+    if (allOldFeatureIds.length !== 0) {
+      await Features.deleteWorkspaceFeaturesByFeatureId(allOldFeatureIds);
+    }
+
+    // delete all old features
+    if (allOldFeatureIds.length !== 0) {
+      await Features.clearAllFeatures();
+    }
+    // insert new features
+    for (const feature of featureList) {
+      await Features.insertFeature(feature);
+    }
+    return;
+  } catch (e) {
+    throw { message: "Unauthorized", status: 401 }
+  }
+}
+
+/*
+ * resets features to those only in featureList
+ * query example: https://localhost:8080/admin/reset-features
+ * Response:  200 OK
+ * 401 Unauthorized ​ 
+*/
+router.post('/reset-features', (req, res) => {
+  let params = req.body;
+  let featureList = params.featureList.split(",").map(function (feature) {
+    return feature.trim();
+  });
+
+  adminResetFeatures(featureList).then(() => {
+    res.status(200);
+    res.sendStatus(200);
+  }).catch(err => {
+    res.status(500);
+    res.json({ message: err.toString() });
+  })
+})
+
+
 
 router.post("/upload-floorplan-image", AdminFloorService.uploadFloorPlan);
 router.post("/upload-floor-data", AdminFloorService.uploadFloorData);
