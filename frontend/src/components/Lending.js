@@ -134,7 +134,7 @@ class Lending extends React.Component {
           <Link href="/">
             <img className={classes.logo} src={logo} alt="Logo"></img>
           </Link>
-          <div className={classes.title}>Lend Office</div>
+          <div className={classes.title}>LENDING</div>
           <GiCalendar className={classes.icon} />
         </div>
         <DateRange
