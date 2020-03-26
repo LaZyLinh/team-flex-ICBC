@@ -101,8 +101,9 @@ class Lending extends React.Component {
     const sdStr = this.state.startDate.toISOString().slice(0, 10);
     const edStr = this.state.endDate.toISOString().slice(0, 10);
     const workspaceId = this.state.workspace;
+    const comment = this.state.comment;
     try {
-      await OfficeLendingApi.createAvailability(sdStr, edStr, workspaceId);
+      await OfficeLendingApi.createAvailability(sdStr, edStr, workspaceId, comment);
       this.setState({ openDialog: true });
     } catch (err) {
       console.error("createAvailability: " + err);
