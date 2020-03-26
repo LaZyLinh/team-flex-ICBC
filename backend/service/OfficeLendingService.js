@@ -21,8 +21,8 @@ exports.cancelAvailability = function (id) {
  * workspaceId String 
  * returns Availability
  **/
-exports.createAvailability = function (body) {
-  return OfficeLendingService.createAvailability(body)
+exports.createAvailability = function (startDate, endDate, workspaceId) {
+  return OfficeLendingService.createAvailability({ startDate, endDate, workspaceId })
 }
 
 

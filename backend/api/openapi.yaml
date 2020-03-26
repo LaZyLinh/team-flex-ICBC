@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: Flex Work
   description: This is the REST API Documentation for ICBC Flex Work, by Team Flex
-  version: 0.0.12
+  version: 0.0.11
 servers:
   - url: http://34.224.250.122:8080/
 tags:
@@ -447,7 +447,7 @@ paths:
       x-swagger-router-controller: OfficeBooking
     post:
       tags:
-        - OfficeBooking
+        - Office Booking
       summary: Confirm a temporarily locked Booking
       operationId: createBooking
       requestBody:
@@ -714,8 +714,6 @@ components:
           type: string
           format: date
         workspaceId:
-          type: string
-        comment:
           type: string
     body_1:
       required:

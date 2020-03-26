@@ -8,26 +8,29 @@ import ConfirmBooking from "./ConfirmBooking";
 import Finished from "./Finished";
 
 function App(props) {
+  const userInfo = props.userInfo;
+  // TODO make request to backend with email, then store staffId
+  // request("http://localhost:8080/auth/user?email=" + userInfo.account.userName);
   return (
     <Router>
       <div>
         <Route exact path="/lending">
-          <Lending accountInfo={props.accountInfo} />
+          <Lending userInfo={userInfo} />
         </Route>
         <Route exact path="/confirm">
-          <ConfirmBooking accountInfo={props.accountInfo} />
+          <ConfirmBooking userInfo={userInfo} />
         </Route>
         <Route exact path="/finished">
-          <Finished accountInfo={props.accountInfo} />
+          <Finished userInfo={userInfo} />
         </Route>
         <Route exact path="/booking">
-          <Booking accountInfo={props.accountInfo} />
+          <Booking userInfo={userInfo} />
         </Route>
         <Route exact path="/withdraw">
-          <Withdraw accountInfo={props.accountInfo} />
+          <Withdraw userInfo={userInfo} />
         </Route>
         <Route exact path="/">
-          <Home accountInfo={props.accountInfo} />
+          <Home userInfo={userInfo} />
         </Route>
       </div>
     </Router>

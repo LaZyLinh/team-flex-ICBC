@@ -1,7 +1,6 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
-import { withStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
+import { withStyles, Grid } from "@material-ui/core";
 import Link from "@material-ui/core/Link";
 import TextField from "@material-ui/core/TextField";
 import Slide from "@material-ui/core/Slide";
@@ -11,8 +10,6 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
-import Snackbar from "@material-ui/core/Snackbar";
-import Alert from "@material-ui/lab/Alert";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import PermIdentityRoundedIcon from "@material-ui/icons/PermIdentityRounded";
 import RoomRoundedIcon from "@material-ui/icons/RoomRounded";
@@ -24,7 +21,6 @@ import { DateRange } from "react-date-range";
 import OfficeLendingApi from "../api/OfficeLendingApi";
 import styles from "../styles/Lending.styles";
 import logo from "../assets/home_logo.png";
-import ApiClient from "../ApiClient";
 
 class Lending extends React.Component {
   constructor(props) {
@@ -37,51 +33,21 @@ class Lending extends React.Component {
       comment: "",
       startDate: new Date(),
       endDate: new Date(),
+      key: "selection",
       openDialog: false,
-      redirectHome: false,
-      hasNoWorkspace: true,
-      error: false,
-      warning: false
+      redirectHome: false
     };
   }
 
   componentDidMount = async () => {
-    const userInfo = await ApiClient.instance.callApi(
-      "/auth/user",
-      "POST",
-      {},
-      {},
-      { Authorization: "Bearer " + this.props.accountInfo.jwtIdToken },
-      { Email: this.props.accountInfo.account.userName },
-      null,
-      [],
-      ["application/x-www-form-urlencoded"],
-      ["application/json"],
-      Object,
-      null
-    );
+    // TODO: API request to get following user info
+    console.log(this.props.userInfo);
     this.setState({
-      staffId: userInfo.StaffId,
-      location: userInfo.Location || "N/A",
-      workspace: userInfo.WorkspaceId || "N/A",
-      features: userInfo.features || [],
-      hasNoWorkspace: !userInfo.WorkspaceId,
-      warning: !userInfo.WorkspaceId
+      staffId: "4321",
+      location: "North Vancouver",
+      workspace: "X12",
+      features: ["TV", "Private", "iPad"]
     });
-  };
-
-  getFeatures = () => {
-    if (this.state.features.length > 0) {
-      this.state.features.reduce((str, feature, i) => {
-        if (i === 0) {
-          return feature;
-        } else {
-          return `${str}, ${feature}`;
-        }
-      }, "");
-    } else {
-      return "N/A";
-    }
   };
 
   handleDateChange = dateRange => {
@@ -100,26 +66,14 @@ class Lending extends React.Component {
   handleConfirmAvailability = async () => {
     const sdStr = this.state.startDate.toISOString().slice(0, 10);
     const edStr = this.state.endDate.toISOString().slice(0, 10);
-    const workspaceId = this.state.workspace;
+    const workspaceId = this.state.workspaceId;
     try {
-      await OfficeLendingApi.createAvailability(sdStr, edStr, workspaceId);
+      // await OfficeLendingApi.createAvailability(sdStr, edStr, workspaceId);
+      console.log("createAvailability: 200 OK!");
       this.setState({ openDialog: true });
     } catch (err) {
-      console.error("createAvailability: " + err);
-      this.setState({ error: true });
+      console.error("createAvalability: " + err);
     }
-  };
-
-  handleCloseAlert = () => {
-    this.setState({
-      error: false
-    });
-  };
-
-  handleCloseWarning = () => {
-    this.setState({
-      warning: false
-    });
   };
 
   redirectHome = () => {
@@ -142,7 +96,7 @@ class Lending extends React.Component {
           <Link href="/">
             <img className={classes.logo} src={logo} alt="Logo"></img>
           </Link>
-          <div className={classes.title}>LENDING</div>
+          <div className={classes.title}>Lend Office</div>
           <GiCalendar className={classes.icon} />
         </div>
         <DateRange
@@ -153,15 +107,7 @@ class Lending extends React.Component {
           editableDateInputs={false}
           onChange={this.handleDateChange}
           moveRangeOnFirstSelection={false}
-          minDate={new Date()}
-          ranges={[
-            {
-              startDate: this.state.startDate,
-              endDate: this.state.endDate,
-              key: "selection",
-              color: "#0048a8d9"
-            }
-          ]}
+          ranges={[this.state]}
         />
         <Grid className={`${classes.box}`} direction="column" container spacing={1}>
           <Grid item xs={12}>
@@ -229,7 +175,13 @@ class Lending extends React.Component {
                   </InputAdornment>
                 )
               }}
-              value={this.getFeatures()}
+              value={this.state.features.reduce((str, feature, i) => {
+                if (i === 0) {
+                  return feature;
+                } else {
+                  return `${str}, ${feature}`;
+                }
+              }, "")}
             />
           </Grid>
           <Grid item xs={12}>
@@ -246,7 +198,6 @@ class Lending extends React.Component {
           </Grid>
           <Grid item xs={12}>
             <Button
-              disabled={this.state.hasNoWorkspace}
               onClick={this.handleConfirmAvailability}
               className={`${classes.label} ${classes.btn} ${classes.btn1}`}
               variant="contained"
@@ -256,47 +207,31 @@ class Lending extends React.Component {
             </Button>
           </Grid>
         </Grid>
-        {this.renderConfirmationDailog(classes)}
-        <Snackbar open={this.state.error} autoHideDuration={6000} onClose={this.handleCloseAlert}>
-          <Alert severity="error" onClose={this.handleCloseAlert}>
-            There was an error confirming your availability.
-          </Alert>
-        </Snackbar>
-        <Snackbar open={this.state.warning} autoHideDuration={6000} onClose={this.handleCloseWarning}>
-          <Alert severity="warning" onClose={this.handleCloseWarning}>
-            You have no workspace assigned. Cannot lending office.
-          </Alert>
-        </Snackbar>
+        <Dialog
+          TransitionComponent={Transition}
+          open={this.state.openDialog}
+          onClose={this.redirectHome}
+          PaperProps={{
+            style: {
+              backgroundColor: "#EBF2FF"
+            }
+          }}
+        >
+          <DialogTitle className={classes.dialogTitle} disableTypography={true}>
+            Lend Office
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText className={classes.dialogContext}>
+              The office availability has been created.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.redirectHome} className={classes.dialogButtons} color="primary">
+              Ok
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
-    );
-  };
-
-  renderConfirmationDailog = classes => {
-    return (
-      <Dialog
-        TransitionComponent={Transition}
-        open={this.state.openDialog}
-        onClose={this.redirectHome}
-        PaperProps={{
-          style: {
-            backgroundColor: "#EBF2FF"
-          }
-        }}
-      >
-        <DialogTitle className={classes.dialogTitle} disableTypography={true}>
-          Lend Office
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText className={classes.dialogContext}>
-            The office availability has been created.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.redirectHome} className={classes.dialogButtons} color="primary">
-            Ok
-          </Button>
-        </DialogActions>
-      </Dialog>
     );
   };
 }

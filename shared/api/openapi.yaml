@@ -1,218 +1,164 @@
 openapi: 3.0.1
 info:
   title: Flex Work
-  description: This is the REST API Documentation for ICBC Flex Work, by Team Flex
-  version: 0.0.12
+  description: 'This is the REST API Documentation for ICBC Flex Work, by Team Flex'
+  version: 0.0.10
 servers:
-  - url: https://icbcflexwork.me:8080/
+  - url: 'http://34.224.250.122:8080/'
 tags:
-  - name: OfficeBooking
-    description: As an ICBC employee, make a **Booking** on an office in any ICBC location
-  - name: OfficeLending
-    description: As an ICBC office owner, create **Availabilities** for fellow employees
+  - name: Office Booking
+    description: 'As an ICBC employee, make a **Booking** on an office in any ICBC location'
+  - name: Office Lending
+    description: 'As an ICBC office owner, create **Availabilities** for fellow employees'
   - name: Admin
-    description: As an ICBC facility admin, manage locations and floor plans
+    description: 'As an ICBC facility admin, manage locations and floor plans'
+    
 paths:
+  # Admin
   /admin/upload-floor-data:
     post:
+      summary:
+        Upload a CSV of a floor's workspaces
+      description:
+        Upload a CSV containing information about each workspace on a floor (owner and features)
       tags:
         - Admin
-      summary: Upload a CSV of a floor's workspaces
-      description:
-        Upload a CSV containing information about each workspace on a floor
-        (owner and features)
       operationId: adminUploadFloorData
       requestBody:
+        required: true
         content:
           multipart/form-data:
             schema:
-              $ref: "#/components/schemas/body_3"
-        required: true
+              type: object
+              properties:
+                floorId:
+                  type: integer
+                floorData:
+                  type: string
+                  format: binary
       responses:
-        "200":
+        '200':
           description: Successful Operation
-        "400":
+        '400':
           description: Something went wrong
           content:
             text/plain:
               schema:
                 type: string
-                x-content-type: text/plain
-              example: "Error: CSV was missing column: OfficeID"
-      x-swagger-router-controller: Admin
+              example:
+                "Error: CSV was missing column: OfficeID"
   /admin/upload-floorplan-image:
     post:
+      summary:
+        Upload a JPG floor plan for a specific floor
       tags:
         - Admin
-      summary: Upload a JPG floor plan for a specific floor
       operationId: adminUploadFloorplanImage
       requestBody:
+        required: true
         content:
           multipart/form-data:
             schema:
-              $ref: "#/components/schemas/body_4"
-        required: true
+              type: object
+              properties:
+                floorId:
+                  type: integer
+                floorplanImage:
+                  type: string
+                  format: binary
       responses:
-        "200":
+        '200':
           description: Successful Operation
-        "400":
+        '400':
           description: Something went wrong
           content:
             text/plain:
               schema:
                 type: string
-                x-content-type: text/plain
-              example: "Error: Floor with ID 9000 does not exist"
-      x-swagger-router-controller: Admin
+              example:
+                "Error: Floor with ID 9000 does not exist"
+  # Employee
   /features:
     get:
       tags:
-        - OfficeBooking
-        - OfficeLending
-      summary:
-        Get features by availabilityId, workspaceId, or all features if no
-        params
+        - Office Booking
+        - Office Lending
+      summary: 'Get features by availabilityId, workspaceId, or all features if no params'
       operationId: getFeatures
       parameters:
         - name: availabilityId
           in: query
           required: false
-          style: form
-          explode: true
           schema:
             type: number
           example: 12
         - name: workspaceId
           in: query
           required: false
-          style: form
-          explode: true
           schema:
             type: string
-          example: NV4-01D
+          example: "NV4-01D"
       responses:
-        "200":
+        '200':
           description: Successful Operation
           content:
             application/json:
               schema:
                 type: array
-                example:
-                  - Conference Phone
-                  - Private
                 items:
                   type: string
-                x-content-type: application/json
-      x-swagger-router-controller: OfficeBooking
+                example:
+                  - 'Conference Phone'
+                  - 'Private'
   /locations:
     get:
       tags:
-        - OfficeBooking
-        - OfficeLending
+        - Office Booking
+        - Office Lending
       summary: A list of all the location names
       operationId: getLocations
       responses:
-        "200":
+        '200':
           description: Successful Operation
           content:
             application/json:
               schema:
                 type: array
-                example:
-                  - North Vancouver, BC
-                  - Vancouver, BC
                 items:
                   type: string
-                x-content-type: application/json
-      x-swagger-router-controller: OfficeBooking
-  /packages:
+                example:
+                  - 'North Vancouver, BC'
+                  - 'Vancouver, BC'
+  '/availabilities/top/{amount}':
     get:
       tags:
-        - OfficeBooking
-      summary: Finds Availabilities or Booking Suggestion Packages
-      description:
-        Finds Availabilities, filtered by start and end dates, optional
-        location (desired floor IDs), and optional required features. will use multiple
-        eligible offices to suggest a booking package if a single desk is not available
-        for the duration.
-      operationId: getPackages
-      parameters:
-        - name: startDate
-          in: query
-          required: true
-          style: form
-          explode: true
-          schema:
-            type: string
-            format: date
-        - name: endDate
-          in: query
-          required: true
-          style: form
-          explode: true
-          schema:
-            type: string
-            format: date
-        - name: floorIds
-          in: query
-          required: false
-          style: form
-          explode: true
-          schema:
-            type: array
-            items:
-              type: number
-        - name: features
-          in: query
-          required: false
-          style: form
-          explode: true
-          schema:
-            type: array
-            items:
-              type: number
-      responses:
-        "200":
-          description: Successful Operation
-        "400":
-          description: Bad Request
-      x-swagger-router-controller: OfficeBooking
-  /availabilities/top/{amount}:
-    get:
-      tags:
-        - OfficeBooking
-      summary: Finds top availabilities, not filtered
+        - Office Booking
+      summary: 'Finds top availabilities, not filtered'
       operationId: getTopAvailabilities
       parameters:
         - name: amount
           in: path
           required: true
-          style: simple
-          explode: false
           schema:
             type: number
           example: 50
       responses:
-        "200":
+        '200':
           description: Successful Operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Availability"
-                x-content-type: application/json
-        "400":
+                  $ref: '#/components/schemas/Availability'
+        '400':
           description: Bad Request
           content: {}
-      x-swagger-router-controller: OfficeBooking
   /availabilities:
     get:
       tags:
-        - OfficeBooking
-      summary:
-        Finds Availabilities, filtered by various properties, of which startDate
-        and endDate are required
+        - Office Booking
+      summary: 'Finds Availabilities, filtered by various properties, of which startDate and endDate are required'
       operationId: getAvailabilities
       parameters:
         - name: startDate
@@ -224,7 +170,7 @@ paths:
           schema:
             type: string
             format: date
-          example: 2020-02-14
+          example: '2020-02-14'
         - name: endDate
           in: query
           description: The last date of the search range
@@ -234,7 +180,7 @@ paths:
           schema:
             type: string
             format: date
-          example: 2020-02-16
+          example: '2020-02-16'
         - name: location
           in: query
           description: Office building location
@@ -267,52 +213,47 @@ paths:
             - TV
             - Private
       responses:
-        "200":
+        '200':
           description: Successful Operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Availability"
-                x-content-type: application/json
-        "400":
+                  $ref: '#/components/schemas/Availability'
+        '400':
           description: Bad Request
           content: {}
-      x-swagger-router-controller: OfficeBooking
     post:
       tags:
-        - OfficeLending
+        - Office Lending
       summary: Create an Availability (mark a workspace as available)
       operationId: createAvailability
       requestBody:
         content:
           application/x-www-form-urlencoded:
             schema:
-              $ref: "#/components/schemas/body"
+              $ref: '#/components/schemas/body'
         required: true
       responses:
-        "200":
+        '200':
           description: Successful Operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Availability"
-        "400":
+                $ref: '#/components/schemas/Availability'
+        '400':
           description: Bad Request (Incorrect Request Body)
           content: {}
-        "403":
+        '403':
           description: Forbidden (Conflicting Dates)
           content: {}
-      x-swagger-router-controller: OfficeLending
   /availabilities/owner:
     get:
       tags:
-        - OfficeLending
+        - Office Lending
       summary: Finds Availabilities by the Staff ID of the owner
-      description:
-        The Availabilities of the Workspace(s) associated with the Staff
-        ID will be found.
+      description: The Availabilities of the Workspace(s) associated with the Staff ID will be found.
       operationId: getAvailabilitiesByOwnerID
       parameters:
         - name: id
@@ -320,28 +261,25 @@ paths:
           description: the Staff ID of the office owner
           required: true
           style: form
-          explode: true
           schema:
             type: integer
           example: 8
       responses:
-        "200":
+        '200':
           description: Successful Operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Availability"
-                x-content-type: application/json
-        "400":
+                  $ref: '#/components/schemas/Availability'
+        '400':
           description: Bad Request
           content: {}
-      x-swagger-router-controller: OfficeLending
-  /availabilities/{id}:
+  '/availabilities/{id}':
     delete:
       tags:
-        - OfficeLending
+        - Office Lending
       summary: Cancel an Availability
       operationId: cancelAvailability
       parameters:
@@ -349,76 +287,69 @@ paths:
           in: path
           description: ID of the Availability to delete
           required: true
-          style: simple
           explode: true
           schema:
             type: integer
           example: 23
       responses:
-        "200":
+        '200':
           description: Successful Operation
           content: {}
-        "400":
+        '400':
           description: Bad Request
           content: {}
-      x-swagger-router-controller: OfficeLending
   /lockWorkspace:
     post:
       tags:
-        - OfficeBooking
+        - Office Booking
       summary: Temporarily lock a Booking as the User enters confirmation page
       operationId: lockBooking
       requestBody:
         content:
           application/x-www-form-urlencoded:
             schema:
-              $ref: "#/components/schemas/body_1"
+              $ref: '#/components/schemas/body_1'
         required: true
       responses:
-        "200":
+        '200':
           description: Successful Operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BookingSummary"
-        "400":
+                $ref: '#/components/schemas/BookingSummary'
+        '400':
           description: Bad Request
           content: {}
-        "403":
+        '403':
           description: Locking of booking unsuccessful
           content: {}
-      x-swagger-router-controller: OfficeBooking
-  /lockWorkspace/{id}:
+  '/lockWorkspace/{id}':
     delete:
       tags:
-        - OfficeBooking
+        - Office Booking
       summary: Unlocks a Booking before the 20 minute automatic unlock
-      description:
-        For when the User navigates away from the confirmation page or
-        closes the browser tab.
       operationId: unlockBooking
+      description: For when the User navigates away from the confirmation page or closes the browser tab.
       parameters:
         - name: id
           in: path
           description: ID of the Booking to delete
-          required: true
-          style: simple
           explode: true
+          required: true
           schema:
             type: integer
           example: 15
       responses:
-        "200":
+        '200':
           description: Successful Operation
           content: {}
-        "400":
+        '400':
           description: Bad Request
           content: {}
-      x-swagger-router-controller: OfficeBooking
   /bookings:
     get:
       tags:
-        - OfficeBooking
+        - Office Booking
       summary: Finds Bookings by User ID
       operationId: getBookingsByUserID
       parameters:
@@ -432,65 +363,60 @@ paths:
             type: integer
           example: 1234
       responses:
-        "200":
+        '200':
           description: Successful Operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Booking"
-                x-content-type: application/json
-        "400":
+                  $ref: '#/components/schemas/Booking'
+        '400':
           description: Bad Request
           content: {}
-      x-swagger-router-controller: OfficeBooking
     post:
       tags:
-        - OfficeBooking
+        - Office Booking
       summary: Confirm a temporarily locked Booking
       operationId: createBooking
       requestBody:
         content:
           application/x-www-form-urlencoded:
             schema:
-              $ref: "#/components/schemas/body_2"
+              $ref: '#/components/schemas/body_2'
         required: true
       responses:
-        "200":
+        '200':
           description: Successful Operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BookingSummary"
-        "400":
+                $ref: '#/components/schemas/BookingSummary'
+        '400':
           description: Bad Request
           content: {}
-      x-swagger-router-controller: OfficeBooking
-  /bookings/{id}:
+  '/bookings/{id}':
     delete:
       tags:
-        - OfficeBooking
+        - Office Booking
       summary: Cancel an upcoming Booking
       operationId: cancelBooking
       parameters:
         - name: id
           in: path
           description: ID of the Booking to delete
-          required: true
-          style: simple
           explode: true
+          required: true
           schema:
             type: integer
           example: 23
       responses:
-        "200":
+        '200':
           description: Successful Operation
           content: {}
-        "400":
+        '400':
           description: Bad Request
           content: {}
-      x-swagger-router-controller: OfficeBooking
 components:
   schemas:
     Workspace:
@@ -500,26 +426,14 @@ components:
           type: string
           example: NV4-24B
         staff:
-          $ref: "#/components/schemas/User"
+          $ref: '#/components/schemas/User'
         floor:
-          $ref: "#/components/schemas/Floor"
+          $ref: '#/components/schemas/Floor'
         features:
           type: array
           items:
             type: string
             example: TV
-      example:
-        features:
-          - TV
-          - TV
-        floor:
-          floorId: 24
-          floorPlanUri: nv4.png
-          city: North Vancouver
-          location: North Vancouver
-          floorName: NV4
-          building: ICBC North Vancouver Building 1
-        workspaceId: NV4-24B
     Availability:
       type: object
       properties:
@@ -547,36 +461,7 @@ components:
         bookings:
           type: array
           items:
-            $ref: "#/components/schemas/BookingSummary"
-      example:
-        floorId: 2
-        endDate: 2000-01-23
-        availabilityId: 2
-        workspaceName: NV4-24B
-        location: North Vancouver
-        bookings:
-          - endDate: 2000-01-23
-            user:
-              valid: true
-              firstName: Kobe
-              lastName: Bryant
-              department: Customer Service
-              staffId: 8
-              email: employee@icbc.com
-            bookingId: 8
-            startDate: 2000-01-23
-          - endDate: 2000-01-23
-            user:
-              valid: true
-              firstName: Kobe
-              lastName: Bryant
-              department: Customer Service
-              staffId: 8
-              email: employee@icbc.com
-            bookingId: 8
-            startDate: 2000-01-23
-        startDate: 2000-01-23
-        workspaceId: NV4-24B
+            $ref: '#/components/schemas/BookingSummary'
     BookingSummary:
       type: object
       properties:
@@ -590,18 +475,7 @@ components:
           type: string
           format: date
         user:
-          $ref: "#/components/schemas/User"
-      example:
-        endDate: 2000-01-23
-        user:
-          valid: true
-          firstName: Kobe
-          lastName: Bryant
-          department: Customer Service
-          staffId: 8
-          email: employee@icbc.com
-        bookingId: 8
-        startDate: 2000-01-23
+          $ref: '#/components/schemas/User'
     Booking:
       type: object
       properties:
@@ -615,36 +489,12 @@ components:
           type: string
           format: date
         user:
-          $ref: "#/components/schemas/User"
+          $ref: '#/components/schemas/User'
         availabilityId:
           type: integer
           example: 2
         workspace:
-          $ref: "#/components/schemas/Workspace"
-      example:
-        workspace:
-          features:
-            - TV
-            - TV
-          floor:
-            floorId: 24
-            floorPlanUri: nv4.png
-            city: North Vancouver
-            location: North Vancouver
-            floorName: NV4
-            building: ICBC North Vancouver Building 1
-          workspaceId: NV4-24B
-        endDate: 2000-01-23
-        availabilityId: 2
-        user:
-          valid: true
-          firstName: Kobe
-          lastName: Bryant
-          department: Customer Service
-          staffId: 8
-          email: employee@icbc.com
-        bookingId: 8
-        startDate: 2000-01-23
+          $ref: '#/components/schemas/Workspace'
     Floor:
       type: object
       properties:
@@ -666,13 +516,6 @@ components:
         floorPlanUri:
           type: string
           example: nv4.png
-      example:
-        floorId: 24
-        floorPlanUri: nv4.png
-        city: North Vancouver
-        location: North Vancouver
-        floorName: NV4
-        building: ICBC North Vancouver Building 1
     User:
       type: object
       properties:
@@ -693,13 +536,6 @@ components:
           example: Customer Service
         valid:
           type: boolean
-      example:
-        valid: true
-        firstName: Kobe
-        lastName: Bryant
-        department: Customer Service
-        staffId: 8
-        email: employee@icbc.com
     body:
       required:
         - endDate
@@ -714,8 +550,6 @@ components:
           type: string
           format: date
         workspaceId:
-          type: string
-        comment:
           type: string
     body_1:
       required:
@@ -742,19 +576,3 @@ components:
       properties:
         bookingId:
           type: integer
-    body_3:
-      type: object
-      properties:
-        floorId:
-          type: integer
-        floorData:
-          type: string
-          format: binary
-    body_4:
-      type: object
-      properties:
-        floorId:
-          type: integer
-        floorplanImage:
-          type: string
-          format: binary

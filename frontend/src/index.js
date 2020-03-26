@@ -26,7 +26,7 @@ ReactDOM.render(
     {({ login, logout, authenticationState, error, accountInfo }) => {
       switch (authenticationState) {
         case AuthenticationState.Authenticated:
-          return <App accountInfo={accountInfo} />;
+          return <App userInfo={accountInfo} />;
         case AuthenticationState.Unauthenticated:
           return (
             <div>
