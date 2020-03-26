@@ -31,5 +31,4 @@
 /backend/*.log
 
 #ide
-/.vscode/*
 /.idea/*
