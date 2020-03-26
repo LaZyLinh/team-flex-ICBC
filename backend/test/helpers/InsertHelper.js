@@ -16,8 +16,8 @@ async function insertUser(staffId, icbcEmployeeId, email) {
   await knex.raw(`INSERT INTO user VALUES (${staffId}, '${icbcEmployeeId}', '${email}', 'test', 'test', 'test', 1);`)
 }
 
-async function insertFloor(floorId, floorNo = floorId) {
-  await knex.raw(`INSERT INTO floor VALUES (${floorId}, ${floorNo}, 'test', 'test', '1', NULL);`)
+async function insertFloor(floorId, floorNo = floorId, location = 'testLocation', city = 'testcity', building = 1) {
+  await knex.raw(`INSERT INTO floor VALUES (${floorId}, ${floorNo}, '${location}', '${city}', '${building}', NULL);`)
 }
 
 async function insertWorkspace(workspaceId, floorId, staffId = 1) {
