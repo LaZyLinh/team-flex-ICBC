@@ -11,6 +11,7 @@ const Bookings = require('../db/bookings');
 const Availabilities = require('../db/availabilities');
 const OfficeLendingService = require('../services/OfficeLendingService');
 const AdminFloorService = require("../services/AdminFloorService");
+const Helper = require('./helper')
 const Features = require('../db/features');
 
 require('dotenv').config();
@@ -189,34 +190,17 @@ router.put('/workspaces', (req, res) => {
   })
 })
 
-/**
-   * Resets all features to those only in featureList
 
-   * featureList array of strings (feature names)
-   **/
-async function adminResetFeatures(featureList) {
-  try {
-    // get all old features
-    let allOldFeatureIds = await Features.selectAllFeatureIds();
-
-    // delete all workspaceFeatures with feature id in oldFeatures
-    if (allOldFeatureIds.length !== 0) {
-      await Features.deleteWorkspaceFeaturesByFeatureId(allOldFeatureIds);
+function isNotInOldFeatures(lowercaseFeatureName, rows) {
+  for (const { FeatureName } of rows) {
+    if (lowercaseFeatureName === FeatureName.toLowerCase()) {
+      return false
     }
-
-    // delete all old features
-    if (allOldFeatureIds.length !== 0) {
-      await Features.clearAllFeatures();
-    }
-    // insert new features
-    for (const feature of featureList) {
-      await Features.insertFeature(feature);
-    }
-    return;
-  } catch (e) {
-    throw { message: "Unauthorized", status: 401 }
   }
+  return true
 }
+
+
 
 /*
  * resets features to those only in featureList
@@ -230,7 +214,7 @@ router.post('/reset-features', (req, res) => {
     return feature.trim();
   });
 
-  adminResetFeatures(featureList).then(() => {
+  Helper.adminResetFeatures(featureList).then(() => {
     res.status(200);
     res.sendStatus(200);
   }).catch(err => {
