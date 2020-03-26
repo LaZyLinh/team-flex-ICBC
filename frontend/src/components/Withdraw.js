@@ -111,7 +111,7 @@ class Withdraw extends React.Component {
         <SearchIcon className={`${classes.searchIcon}`} />
         <form onSubmit={this.onSubmitStaffId} className={`${classes.idSearch}`}>
           <TextField
-            onkeyPress={e => this.setState({ staffId: e.target.value })}
+            onKeyPress={e => this.setState({ staffId: e.target.value })}
             type="text"
             label="ID"
             name="staffId"
