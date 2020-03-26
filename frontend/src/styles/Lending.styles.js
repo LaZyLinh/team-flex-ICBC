@@ -24,11 +24,11 @@ export default {
     textAlign: "center"
   },
   logo: {
-    width: "100px",
-    height: "45px",
+    width: "95px",
+    height: "40px",
     position: "absolute",
-    left: "2%",
-    top: "8%"
+    left: "1%",
+    top: "10%"
   },
   icon: {
     color: "#ffffff",
@@ -38,7 +38,7 @@ export default {
     top: "20%"
   },
   title: {
-    paddingTop: "10px",
+    paddingTop: "8px",
     fontSize: "34px",
     fontFamily: fontFamily,
     fontWeight: "bold",
