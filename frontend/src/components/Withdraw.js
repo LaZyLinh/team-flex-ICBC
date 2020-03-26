@@ -1,4 +1,3 @@
-
 import React from "react";
 import OfficeBookingApi from "../api/OfficeBookingApi";
 import OfficeLendingApi from "../api/OfficeLendingApi";
@@ -107,10 +106,6 @@ class Withdraw extends React.Component {
         <Link href="/">
           <HomeIcon className={`${classes.shapeFilter}`} />
         </Link>
-        {/*</Link>*/}
-
-        {/*  <HomeIcon className={`${classes.shapeFilter}`} />*/}
-        {/*</Link>*/}
         <div className={`${classes.lendingHistory}`}>
           <Display_SmallSquare />
         </div>
@@ -124,9 +119,9 @@ class Withdraw extends React.Component {
           />
         </form>
         <div className={`${classes.bookingTable}`}>
-          {/*<BookingsTable onCancelBooking={this.onCancelBooking} rows={this.createTableRowData()}></BookingsTable>*/}
           <ManageTable rows={this.state.bookings} />
         </div>
+      </div>
     );
   }
 }
