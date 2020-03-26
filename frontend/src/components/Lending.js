@@ -40,7 +40,8 @@ class Lending extends React.Component {
       openDialog: false,
       redirectHome: false,
       hasNoWorkspace: true,
-      error: false
+      error: false,
+      warning: false
     };
   }
 
@@ -61,10 +62,11 @@ class Lending extends React.Component {
     );
     this.setState({
       staffId: userInfo.StaffId,
-      location: userInfo.Location || "",
-      workspace: userInfo.WorkspaceId || "",
+      location: userInfo.Location || "N/A",
+      workspace: userInfo.WorkspaceId || "N/A",
       features: userInfo.features || [],
-      hasNoWorkspace: !userInfo.WorkspaceId
+      hasNoWorkspace: !userInfo.WorkspaceId,
+      warning: !userInfo.WorkspaceId
     });
   };
 
@@ -78,7 +80,7 @@ class Lending extends React.Component {
         }
       }, "");
     } else {
-      return "No features";
+      return "N/A";
     }
   };
 
@@ -111,6 +113,12 @@ class Lending extends React.Component {
   handleCloseAlert = () => {
     this.setState({
       error: false
+    });
+  };
+
+  handleCloseWarning = () => {
+    this.setState({
+      warning: false
     });
   };
 
@@ -252,6 +260,11 @@ class Lending extends React.Component {
         <Snackbar open={this.state.error} autoHideDuration={6000} onClose={this.handleCloseAlert}>
           <Alert severity="error" onClose={this.handleCloseAlert}>
             There was an error confirming your availability.
+          </Alert>
+        </Snackbar>
+        <Snackbar open={this.state.warning} autoHideDuration={6000} onClose={this.handleCloseWarning}>
+          <Alert severity="warning" onClose={this.handleCloseWarning}>
+            You have no workspace assigned. Cannot lending office.
           </Alert>
         </Snackbar>
       </div>
