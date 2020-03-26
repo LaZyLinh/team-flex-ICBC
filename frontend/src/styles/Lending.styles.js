@@ -39,16 +39,18 @@ export default {
   },
   title: {
     paddingTop: "10px",
-    fontSize: "30px",
+    fontSize: "34px",
     fontFamily: fontFamily,
     fontWeight: "bold",
     color: "#ffffff",
-    textShadow: "0px 1px 2px #ffffff70"
+    textShadow: "0px 0px 4px #ffffff70",
+    letterSpacing: "3px"
   },
   calendar: {
     position: "absolute",
     top: boxTop,
-    left: "8%"
+    left: "8%",
+    boxShadow: "0px 6px 8px 0px rgba(0,0,0,.2)"
   },
   box: {
     position: "absolute",
@@ -56,18 +58,17 @@ export default {
     width: "50%",
     top: boxTop,
     height: "530px",
-    background: "rgba(0,18,49,0.6)",
+    background: "#FFFFFF",
     mixBlendMode: "normal",
-    border: "1px solid #FFFFFF",
     boxSizing: "border-box",
-    borderRadius: "15px"
+    boxShadow: "0px 6px 8px 0px rgba(0,0,0,.2)"
   },
   field: {
     position: "absolute",
     left: "5%",
     right: "5%",
-    background: "#F4F7FC",
-    borderRadius: "5px",
+    background: "#f8f8f8",
+    borderRadius: "2px",
     margin: "10px 10px"
   },
   field1: {
@@ -87,10 +88,10 @@ export default {
   },
   btn: {
     position: "absolute",
-    right: "5%",
+    right: "6%",
     top: (firstFieldTop + 5 * fieldOffset + 13).toString() + "%",
-    background: "#0048A8",
-    borderRadius: "20px",
+    background: "#0048a8d9",
+    borderRadius: "6px",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.2)",
     textAlign: "center"
   },
