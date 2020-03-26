@@ -15,22 +15,6 @@ const LIMIT = 500;
 
 class OfficeBookingService {
 
-  static makeFloor(floorId, floorNo, prefix, city, building) {
-    return { floorId, floorNo, prefix, city, building };
-  }
-
-  static async getFloors({ floorId, location }, _knex = knex) {
-    let query;
-    if (floorId) {
-      query = `SELECT * from floor WHERE FloorId=${floorId}`
-    } else if (location) {
-      query = `SELECT * from floor WHERE City='${location}'`
-    } else {
-      query = `SELECT * from floor`
-    }
-    return (await _knex.raw(query))[0].map(f => OfficeBookingService.makeFloor(f.FloorId, f.FloorNo, f.Location, f.City, f.Building))
-  }
-
   /**
       * Cancel an upcoming Booking
       *
