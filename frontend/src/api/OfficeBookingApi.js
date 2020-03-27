@@ -382,7 +382,7 @@ class OfficeBookingApi {
     let authNames = [];
     let contentTypes = [];
     let accepts = [];
-    let returnType = null;
+    let returnType = Object; // manually changed
     return this.apiClient.callApi(
       '/packages', 'GET',
       pathParams, queryParams, headerParams, formParams, postBody,
