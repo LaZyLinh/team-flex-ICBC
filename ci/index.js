@@ -14,7 +14,7 @@ app.get('/echo', function (req, res) {
 
 app.post('/ci', function (req, res) {
   let cache = [];
-  echo = JSON.stringify(circ, function (key, value) {
+  echo = JSON.stringify(req, function (key, value) {
     if (typeof value === 'object' && value !== null) {
       if (cache.indexOf(value) !== -1) {
         // Duplicate reference found, discard key
