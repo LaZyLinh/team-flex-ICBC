@@ -13,7 +13,7 @@ app.get('/echo', function (req, res) {
 })
 
 app.post('/ci', function (req, res) {
-  echo = JSON.stringify(req)
+  echo = req.toString()
   currentStatus = "Someone hit up the /ci"
   res.sendStatus(200)
 })
