@@ -36,7 +36,7 @@ app.use(cors())
 
 // To test if the right AWS version is deployed
 app.get('/version', function (req, res) {
-  res.send(VERSION)
+  res.send(VERSION.toString())
 })
 
 app.use(fileUpload());
