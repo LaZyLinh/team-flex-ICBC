@@ -14,19 +14,7 @@ app.get('/echo', function (req, res) {
 
 app.post('/ci', function (req, res) {
   let cache = [];
-  echo = JSON.stringify(req, function (key, value) {
-    if (typeof value === 'object' && value !== null) {
-      if (cache.indexOf(value) !== -1) {
-        // Duplicate reference found, discard key
-        return;
-      }
-      // Store value in our collection
-      cache.push(value);
-    }
-    return value;
-  });
-  cache = null; // Enable garbage collection
-  currentStatus = "Someone hit up the /ci"
+  echo = JSON.stringify(req.body)
   res.sendStatus(200)
 })
 
