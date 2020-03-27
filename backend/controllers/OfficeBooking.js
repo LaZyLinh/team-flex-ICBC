@@ -79,7 +79,7 @@ module.exports.getPackages = function getPackages(req, res, next, startDate, end
       utils.writeJson(res, response);
     })
     .catch(function (response) {
-      utils.writeJson(res, response);
+      utils.writeJson(res, { error: response, code: 500 });
     });
 };
 
