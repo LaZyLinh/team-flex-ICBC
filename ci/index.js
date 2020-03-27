@@ -13,7 +13,19 @@ app.get('/echo', function (req, res) {
 })
 
 app.post('/ci', function (req, res) {
-  echo = req.toString()
+  let cache = [];
+  echo = JSON.stringify(circ, function (key, value) {
+    if (typeof value === 'object' && value !== null) {
+      if (cache.indexOf(value) !== -1) {
+        // Duplicate reference found, discard key
+        return;
+      }
+      // Store value in our collection
+      cache.push(value);
+    }
+    return value;
+  });
+  cache = null; // Enable garbage collection
   currentStatus = "Someone hit up the /ci"
   res.sendStatus(200)
 })
