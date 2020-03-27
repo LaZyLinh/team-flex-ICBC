@@ -4,6 +4,22 @@ function setKnex(_knex) {
   knex = _knex
 }
 
+async function resetFeatureTables() {
+  await knex.raw(`DROP TABLE workspacefeature`)
+  await knex.raw(`DROP TABLE feature`)
+  await knex.raw(`CREATE TABLE workspaceFeature(
+    WorkspaceId varchar(10),
+    FeatureId int,
+    PRIMARY KEY(WorkspaceId, FeatureId)
+  );`)
+  await knex.raw(`CREATE TABLE feature(
+    FeatureId int AUTO_INCREMENT PRIMARY KEY,
+    FeatureName varchar(255) NOT NULL
+  );`)
+  await knex.raw(`ALTER TABLE workspacefeature ADD FOREIGN KEY (WorkspaceId) REFERENCES workspace (WorkspaceId);`)
+  await knex.raw(`ALTER TABLE workspacefeature ADD FOREIGN KEY (FeatureId) REFERENCES feature (FeatureId);`)
+}
+
 async function insertFeature(featureId, featureName) {
   await knex.raw(`INSERT INTO feature VALUES (${featureId}, '${featureName}');`)
 }
@@ -32,4 +48,4 @@ async function insertBooking(bookingId, startDate, endDate, staffId, availabilit
   await knex.raw(`INSERT INTO booking VALUES (1, ${bookingId}, '${startDate}', '${endDate}', ${staffId}, ${availabilityId}, '${workspaceId}');`)
 }
 
-module.exports = { setKnex, insertFeature, insertWorkspaceFeature, insertUser, insertWorkspace, insertFloor, insertAvailability, insertBooking }
+module.exports = { setKnex, resetFeatureTables, insertFeature, insertWorkspaceFeature, insertUser, insertWorkspace, insertFloor, insertAvailability, insertBooking }
