@@ -12,10 +12,10 @@ app.get('/echo', function (req, res) {
   res.send(echo)
 })
 
-app.get('/ci', function (req, res) {
+app.post('/ci', function (req, res) {
   echo = JSON.stringify(req)
   currentStatus = "Someone hit up the /ci"
   res.sendStatus(200)
 })
 
-app.listen(8081)
+app.listen(8081, () => console.log("Live"))
