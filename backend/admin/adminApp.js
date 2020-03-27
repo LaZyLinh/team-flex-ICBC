@@ -191,14 +191,7 @@ router.put('/workspaces', (req, res) => {
 })
 
 
-function isNotInOldFeatures(lowercaseFeatureName, rows) {
-  for (const { FeatureName } of rows) {
-    if (lowercaseFeatureName === FeatureName.toLowerCase()) {
-      return false
-    }
-  }
-  return true
-}
+
 
 
 

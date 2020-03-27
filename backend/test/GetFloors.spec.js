@@ -14,6 +14,7 @@ describe('OfficeBookingService.getFloors', function () {
     await Ins.insertFloor(3, 1, "ABC", "CITY2", 1);
   })
 
+
   it('returns all the floors if empty params', async function () {
     const floors = await OfficeBookingService.getFloors({ floorId: undefined, location: undefined }, knex)
     expect(floors).to.have.length(3)
@@ -33,4 +34,6 @@ describe('OfficeBookingService.getFloors', function () {
     const f = floors[0]
     expect(f.floorId).to.equal(1)
   })
+
+
 })

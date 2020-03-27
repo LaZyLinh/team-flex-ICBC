@@ -158,9 +158,6 @@ describe('makePackages, from multiple availabilities', function () {
     await Ins.insertWorkspace("TEST1", 1, 1)
   })
 
-  after(function () {
-    knex.destroy()
-  })
 
   it('returns 1 package correctly from 2 availabilities with no bookings in them', async function () {
     await Ins.insertAvailability(1, "2020-04-01", "2020-04-03", "TEST1", "abc")
