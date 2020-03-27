@@ -90,6 +90,7 @@ class Availability {
             if (data.hasOwnProperty('bookings')) {
                 obj['bookings'] = ApiClient.convertToType(data['bookings'], [BookingSummary]);
             }
+
         }
         return obj;
     }
