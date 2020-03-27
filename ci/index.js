@@ -1,6 +1,12 @@
 const express = require('express')
 const app = express()
 
+const bodyParser = require('body-parser')
+app.use(bodyParser.json());       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
+
 let currentStatus = "Standby"
 let echo = ""
 
@@ -13,7 +19,7 @@ app.get('/echo', function (req, res) {
 })
 
 app.post('/ci', function (req, res) {
-  let cache = [];
+
   echo = JSON.stringify(req.body)
   res.sendStatus(200)
 })
