@@ -1,5 +1,7 @@
 'use strict';
 
+const VERSION = 1
+
 const config = require('./config')
 const authenticator = require('./auth/authenticator')
 const admin = require('./admin/adminApp')
@@ -31,6 +33,11 @@ expressAppConfig.addValidator();
 const app = expressAppConfig.getApp();
 
 app.use(cors())
+
+// To test if the right AWS version is deployed
+app.get('/version', function (req, res) {
+  res.send(VERSION)
+})
 
 app.use(fileUpload());
 
