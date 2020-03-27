@@ -6,7 +6,7 @@ import Booking from "./Booking";
 import Withdraw from "./Withdraw";
 import ConfirmBooking from "./ConfirmBooking";
 import Finished from "./Finished";
-
+import AdminPage from "./AdminPage";
 function App(props) {
   return (
     <Router>

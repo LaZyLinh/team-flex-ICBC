@@ -14,6 +14,7 @@
 import ApiClient from '../ApiClient';
 import User from './User';
 import Workspace from './Workspace';
+import BookingSummary from "./BookingSummary";
 
 /**
  * The Booking model module.
@@ -67,6 +68,7 @@ class Booking {
             if (data.hasOwnProperty('workspace')) {
                 obj['workspace'] = Workspace.constructFromObject(data['workspace']);
             }
+
         }
         return obj;
     }
