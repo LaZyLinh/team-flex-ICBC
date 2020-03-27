@@ -35,8 +35,8 @@ class Withdraw extends React.Component {
     event.preventDefault();
     const staffId = 2;
     const data = await OfficeBookingApi.getBookingsByUserID(staffId);
-    this.setState({ bookings: data });
     console.log(data);
+    this.setState({ bookings: data });
     // , (error, data) => {
     //   if (error) {
     //     console.log("Got an error from API call");

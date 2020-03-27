@@ -68,6 +68,10 @@ class Booking {
             if (data.hasOwnProperty('workspace')) {
                 obj['workspace'] = Workspace.constructFromObject(data['workspace']);
             }
+            if (data.hasOwnProperty('bookings')) {
+                //新加的
+                obj['bookings'] = ApiClient.convertToType(data['bookings'], [BookingSummary]);
+            }
 
         }
         return obj;
