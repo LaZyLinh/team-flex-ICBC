@@ -52,30 +52,40 @@ class Booking {
 
             if (data.hasOwnProperty('bookingId')) {
                 obj['bookingId'] = ApiClient.convertToType(data['bookingId'], 'Number');
-            }
+            } else if (data.hasOwnProperty('BookingId')) {
+                obj['bookingId'] = ApiClient.convertToType(data['BookingId'], 'Number')};
             if (data.hasOwnProperty('startDate')) {
                 obj['startDate'] = ApiClient.convertToType(data['startDate'], 'Date');
-            }
+            }else if(data.hasOwnProperty('StartDate')) {
+                obj['startDate'] = ApiClient.convertToType(data['StartDate'], 'Date')};
             if (data.hasOwnProperty('endDate')) {
                 obj['endDate'] = ApiClient.convertToType(data['endDate'], 'Date');
+            }else  if (data.hasOwnProperty('EndDate')) {
+                obj['endDate'] = ApiClient.convertToType(data['EndDate'], 'Date');
             }
             if (data.hasOwnProperty('user')) {
                 obj['user'] = User.constructFromObject(data['user']);
+            }else  if (data.hasOwnProperty('User')) {
+                obj['user'] = User.constructFromObject(data['User']);
             }
             if (data.hasOwnProperty('availabilityId')) {
                 obj['availabilityId'] = ApiClient.convertToType(data['availabilityId'], 'Number');
+            }else if (data.hasOwnProperty('AvailabilityId')) {
+                obj['AvailabilityId'] = ApiClient.convertToType(data['AvailabilityId'], 'Number');
             }
             if (data.hasOwnProperty('workspace')) {
                 obj['workspace'] = Workspace.constructFromObject(data['workspace']);
+            }else  if (data.hasOwnProperty('WorkspaceId')) {
+                obj['workspace'] = Workspace.constructFromObject(data['Workspace']);
             }
-            if (data.hasOwnProperty('bookings')) {
-                //新加的
-                obj['bookings'] = ApiClient.convertToType(data['bookings'], [BookingSummary]);
-            }
+            // if (data.hasOwnProperty('bookings')) {
+            //     //新加的
+            //     obj['bookings'] = ApiClient.convertToType(data['bookings'], [BookingSummary]);
+            // }
 
         }
         return obj;
-    }
+    } 
 
 
 }
