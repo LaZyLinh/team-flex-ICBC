@@ -47,7 +47,6 @@ class Booking {
      * @return {module:model/Booking} The populated <code>Booking</code> instance.
      */
     static constructFromObject(data, obj) {
-        console.log("DATA:");
         console.log(data);
         if (data) {
             obj = obj || new Booking();
@@ -89,10 +88,7 @@ class Booking {
             }else  if (data.hasOwnProperty('ownerWorksapceId')) {
                 obj['workspaceId'] = Workspace.constructFromObject(data['ownerWorksapceId']);
             }
-            // if (data.hasOwnProperty('bookings')) {
-            //     //新加的
-            //     obj['bookings'] = ApiClient.convertToType(data['bookings'], [BookingSummary]);
-            // }
+
 
         }
         console.log("OUTPUT");

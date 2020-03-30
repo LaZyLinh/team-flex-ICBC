@@ -14,14 +14,12 @@ class Display_SmallSquare extends React.Component {
     this.getLending = this.getLending.bind(this);
   }
   async getLending() {
-    const lendingHistory = OfficeLending.getAvailabilitiesByOwnerID(2);
+    const lendingHistory = OfficeLending.getAvailabilitiesByOwnerID(5005);
     let Lend = [];
     await Promise.all([lendingHistory]).then(messages => {
       Lend = messages[0];
       this.setState({ Lending: Lend });
     });
-    console.log(this.state.Lending[0].startDate.toString());
-    console.log(this.state.Lending[0].startDate.toString().substring(4, 24));
   }
 
   processLending(eachOne) {

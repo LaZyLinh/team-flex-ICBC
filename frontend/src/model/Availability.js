@@ -47,6 +47,8 @@ class Availability {
     static constructFromObject(data, obj) {
         if (data) {
             obj = obj || new Availability();
+            console.log("Availability");
+            console.log(data);
 
             if (data.hasOwnProperty('availabilityId')) {
                 obj['availabilityId'] = ApiClient.convertToType(data['availabilityId'], 'Number');
