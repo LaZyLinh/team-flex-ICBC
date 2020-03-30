@@ -61,11 +61,16 @@ class Booking {
             if (data.hasOwnProperty('startDate')) {
                 obj['startDate'] = ApiClient.convertToType(data['startDate'], 'Date');
             }else if(data.hasOwnProperty('StartDate')) {
-                obj['startDate'] = ApiClient.convertToType(data['StartDate'], 'Date')};
+                obj['startDate'] = ApiClient.convertToType(data['StartDate'], 'Date')}
+             else if(data.hasOwnProperty('BookingStartDate')) {
+                    obj['startDate'] = ApiClient.convertToType(data['BookingStartDate'], 'Date')};
+
             if (data.hasOwnProperty('endDate')) {
                 obj['endDate'] = ApiClient.convertToType(data['endDate'], 'Date');
             }else  if (data.hasOwnProperty('EndDate')) {
                 obj['endDate'] = ApiClient.convertToType(data['EndDate'], 'Date');
+            } else  if (data.hasOwnProperty('BookingEndDate')) {
+                obj['endDate'] = ApiClient.convertToType(data['BookingEndDate'], 'Date');
             }
             if (data.hasOwnProperty('user')) {
                 obj['user'] = User.constructFromObject(data['user']);
