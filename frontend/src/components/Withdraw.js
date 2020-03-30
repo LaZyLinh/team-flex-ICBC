@@ -33,7 +33,7 @@ class Withdraw extends React.Component {
   async onSubmitStaffId(event) {
     console.log("onSubmitStaffId");
     event.preventDefault();
-    const staffId = 2;
+    const staffId = 1001;
     const data = await OfficeBookingApi.getBookingsByUserID(staffId);
     console.log(data);
     this.setState({ bookings: data });
