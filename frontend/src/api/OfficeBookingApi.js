@@ -190,7 +190,6 @@ class OfficeBookingApi {
    * data is of type: {@link Array.<module:model/Booking>}
    */
   getBookingsByUserID(staffId, callback) {
-    console.log("calledAPI");
     let postBody = null;
     // verify the required parameter 'staffId' is set
     if (staffId === undefined || staffId === null) {

@@ -48,9 +48,12 @@ class Workspace {
     static constructFromObject(data, obj) {
         if (data) {
             obj = obj || new Workspace();
-
+                 console.log("data for Workspace");
+                 console.log(data);
             if (data.hasOwnProperty('workspaceId')) {
                 obj['workspaceId'] = ApiClient.convertToType(data['workspaceId'], 'String');
+            }else if (data.hasOwnProperty('WorkspaceId')) {
+                obj['workspaceId'] = ApiClient.convertToType(data['WorkspaceId'], 'String');
             }
             if (data.hasOwnProperty('staff')) {
                 obj['staff'] = User.constructFromObject(data['staff']);

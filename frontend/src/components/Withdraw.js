@@ -35,8 +35,8 @@ class Withdraw extends React.Component {
     event.preventDefault();
     const staffId = 1001;
     const data = await OfficeBookingApi.getBookingsByUserID(staffId);
-    console.log(data);
     this.setState({ bookings: data });
+    console.log(this.state.bookings);
     // , (error, data) => {
     //   if (error) {
     //     console.log("Got an error from API call");
@@ -76,22 +76,6 @@ class Withdraw extends React.Component {
   onAcknowledgeCanceled() {
     this.setState({ showBookingCancelSuccess: false });
   }
-
-  // createTableRowData() {
-  //   const bookings = this.state.bookings;
-  //   return bookings.map(b => {
-  //     return {
-  //       bookingId: b.BookingId,
-  //       startDate: b.BookingStartDate,
-  //       endDate: b.BookingEndDate,
-  //       city: b.workspace.floor.city,
-  //       workspaceId: b.workspace.workspaceId,
-  //       // TODO: Implement confirmation
-  //       status: "Confirmed",
-  //       officeOwner: b.workspace.staff.firstName + " " + b.workspace.staff.lastName
-  //     };
-  //   });
-  // }
 
   render() {
     const { classes } = this.props;

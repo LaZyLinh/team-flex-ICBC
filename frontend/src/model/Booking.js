@@ -50,8 +50,6 @@ class Booking {
         console.log("DATA:");
         console.log(data);
         if (data) {
-            console.log("DATA:");
-            console.log(data);
             obj = obj || new Booking();
 
             if (data.hasOwnProperty('bookingId')) {
@@ -72,6 +70,9 @@ class Booking {
             } else  if (data.hasOwnProperty('BookingEndDate')) {
                 obj['endDate'] = ApiClient.convertToType(data['BookingEndDate'], 'Date');
             }
+            if(data.hasOwnProperty('Confirmed')){
+                obj['confirmed'] = ApiClient.convertToType(data['Confirmed'],'Number');
+            }
             if (data.hasOwnProperty('user')) {
                 obj['user'] = User.constructFromObject(data['user']);
             }else  if (data.hasOwnProperty('User')) {
@@ -82,10 +83,11 @@ class Booking {
             }else if (data.hasOwnProperty('AvailabilityId')) {
                 obj['AvailabilityId'] = ApiClient.convertToType(data['AvailabilityId'], 'Number');
             }
-            if (data.hasOwnProperty('workspace')) {
-                obj['workspace'] = Workspace.constructFromObject(data['workspace']);
-            }else  if (data.hasOwnProperty('WorkspaceId')) {
-                obj['workspace'] = Workspace.constructFromObject(data['Workspace']);
+            if (data.hasOwnProperty('OwnerWorksapceId')) {
+                console.log(data['OwnerWorksapceId']);
+                obj['workspaceId'] = Workspace.constructFromObject(data['OwnerWorksapceId']);
+            }else  if (data.hasOwnProperty('ownerWorksapceId')) {
+                obj['workspaceId'] = Workspace.constructFromObject(data['ownerWorksapceId']);
             }
             // if (data.hasOwnProperty('bookings')) {
             //     //新加的
@@ -93,6 +95,8 @@ class Booking {
             // }
 
         }
+        console.log("OUTPUT");
+        console.log(obj);
         return obj;
     }
 

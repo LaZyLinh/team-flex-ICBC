@@ -83,17 +83,6 @@ function EnhancedTableHead(props) {
     <TableHead>
       <TableRow>
         <TableCell />
-        {/*<TableCell padding="checkbox">*/}
-        {/*  <Checkbox*/}
-        {/*    style={{*/}
-        {/*      color: "#002D7D"*/}
-        {/*    }}*/}
-        {/*    indeterminate={numSelected > 0 && numSelected < rowCount}*/}
-        {/*    checked={rowCount > 0 && numSelected === rowCount}*/}
-        {/*    onChange={onSelectAllClick}*/}
-        {/*    inputProps={{ "aria-label": "select all desserts" }}*/}
-        {/*  />*/}
-        {/*</TableCell>*/}
         {headCells.map(headCell => (
           <TableCell
             className={`${classes.headText}`}
@@ -140,13 +129,13 @@ const useToolbarStyles = makeStyles(theme => ({
   highlight:
     theme.palette.type === "light"
       ? {
-        color: theme.palette.secondary.main,
-        backgroundColor: lighten(theme.palette.secondary.light, 0.85)
-      }
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+        }
       : {
-        color: theme.palette.text.primary,
-        backgroundColor: theme.palette.secondary.dark
-      },
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark
+        },
   title: {
     flex: "1 1 100%"
   }
@@ -166,10 +155,10 @@ const EnhancedTableToolbar = props => {
           {numSelected} selected
         </Typography>
       ) : (
-          <Typography className={classes.title} variant="h6" id="tableTitle">
-            Nutrition
-          </Typography>
-        )}
+        <Typography className={classes.title} variant="h6" id="tableTitle">
+          Nutrition
+        </Typography>
+      )}
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
@@ -178,12 +167,12 @@ const EnhancedTableToolbar = props => {
           </IconButton>
         </Tooltip>
       ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="filter list">
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        )}
+        <Tooltip title="Filter list">
+          <IconButton aria-label="filter list">
+            <FilterListIcon />
+          </IconButton>
+        </Tooltip>
+      )}
     </Toolbar>
   );
 };
@@ -234,10 +223,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function createData(officeLoc, WSId, sDate, eDate, officeOwner, status) {
-  if (sDate === undefined || eDate === undefined) return {}
-  sDate = sDate.substring(0, 10);
-  eDate = eDate.substring(0, 10);
-  console.log(typeof status);
+  if (sDate === undefined || eDate === undefined) return {};
+  sDate = sDate.toString().substring(4, 15);
+  eDate = eDate.toString().substring(4, 15);
   if (status == 1) {
     status = "active";
   } else {
@@ -252,7 +240,7 @@ function createData(officeLoc, WSId, sDate, eDate, officeOwner, status) {
 
 export default function ManageTables(props) {
   const rows = props.rows.map(r =>
-    createData(r.City, r.OwnerWorksapceId, r.BookingStartDate, r.BookingEndDate, r.OwnerFirstName, r.Confirmed)
+    createData(r.City, r.OwnerWorksapceId, r.startDate, r.endDate, r.OwnerFirstName, r.confirmed)
   );
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
