@@ -47,7 +47,11 @@ class Booking {
      * @return {module:model/Booking} The populated <code>Booking</code> instance.
      */
     static constructFromObject(data, obj) {
+        console.log("DATA:");
+        console.log(data);
         if (data) {
+            console.log("DATA:");
+            console.log(data);
             obj = obj || new Booking();
 
             if (data.hasOwnProperty('bookingId')) {
@@ -85,7 +89,7 @@ class Booking {
 
         }
         return obj;
-    } 
+    }
 
 
 }
