@@ -13,7 +13,6 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -22,6 +21,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { withStyles } from "@material-ui/core/styles";
 import { confirmAlert } from "react-confirm-alert";
+import OfficeBookingApi from "../../api/OfficeBookingApi";
 
 const StyledTableCell = withStyles(theme => ({
   head: {
@@ -50,6 +50,7 @@ function descendingComparator(a, b, property) {
   }
   return 0;
 }
+
 
 function getComparator(order, property) {
   return order == "desc"
@@ -162,9 +163,9 @@ const EnhancedTableToolbar = props => {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
+          {/*<IconButton aria-label="delete">*/}
+          {/*  <DeleteIcon onClick={cancelBooking()} />*/}
+          {/*</IconButton>*/}
         </Tooltip>
       ) : (
         <Tooltip title="Filter list">
@@ -222,7 +223,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function createData(officeLoc, WSId, sDate, eDate, officeOwner, status) {
+function createData(officeLoc, WSId, sDate, eDate, officeOwner, status, bookingId) {
   if (sDate === undefined || eDate === undefined) return {};
   sDate = sDate.toString().substring(4, 15);
   eDate = eDate.toString().substring(4, 15);
@@ -231,7 +232,7 @@ function createData(officeLoc, WSId, sDate, eDate, officeOwner, status) {
   } else {
     status = "inactive";
   }
-  return { officeLoc, WSId, sDate, eDate, officeOwner, status };
+  return { officeLoc, WSId, sDate, eDate, officeOwner, status, bookingId };
 }
 
 //  function reformatDate(originalDate) {
@@ -240,7 +241,7 @@ function createData(officeLoc, WSId, sDate, eDate, officeOwner, status) {
 
 export default function ManageTables(props) {
   const rows = props.rows.map(r =>
-    createData(r.City, r.OwnerWorksapceId, r.startDate, r.endDate, r.OwnerFirstName, r.confirmed)
+    createData(r.location, r.workspaceId, r.startDate, r.endDate, r.OwnerFirstName, r.confirmed, r.bookingId)
   );
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
@@ -351,7 +352,7 @@ export default function ManageTables(props) {
                       <TableCell align="left" scope="row" className={`${classes.rowText}`}>
                         {row.officeLoc}
                       </TableCell>
-                      <TableCell align="center" className={`${classes.rowText}`} padding={"none"}>
+                      <TableCell align="left" className={`${classes.rowText}`} padding={"none"}>
                         {row.WSId}
                       </TableCell>
                       <TableCell align="center" className={`${classes.rowText}`}>
@@ -367,7 +368,7 @@ export default function ManageTables(props) {
                         {row.status}
                       </TableCell>
                       <TableCell>
-                        <DeleteIcon />
+                        <DeleteIcon onClick={OfficeBookingApi.cancelBooking(row.bookingId)} />
                       </TableCell>
                     </StyledTableRow>
                   );

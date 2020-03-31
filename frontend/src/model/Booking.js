@@ -15,6 +15,7 @@ import ApiClient from '../ApiClient';
 import User from './User';
 import Workspace from './Workspace';
 import BookingSummary from "./BookingSummary";
+import {object} from "prop-types";
 
 /**
  * The Booking model module.
@@ -83,21 +84,34 @@ class Booking {
                 obj['AvailabilityId'] = ApiClient.convertToType(data['AvailabilityId'], 'Number');
             }
             if (data.hasOwnProperty('OwnerWorksapceId')) {
-                console.log(data['OwnerWorksapceId']);
-                obj['workspaceId'] = Workspace.constructFromObject(data['OwnerWorksapceId']);
+                obj['workspaceId'] = data['OwnerWorksapceId'];
             }else  if (data.hasOwnProperty('ownerWorksapceId')) {
-                obj['workspaceId'] = Workspace.constructFromObject(data['ownerWorksapceId']);
-            }
+                obj['workspaceId'] = ApiClient.convertToType(data['ownerWorksapceId']);}
+            if (data.hasOwnProperty('City')) {
+                obj['location'] = data['City'];
+            }else  if (data.hasOwnProperty('city')) {
+                obj['location'] = ApiClient.convertToType(data['city']);}
+            //  if (data.hasOwnProperty('OwnerWorksapceId')) {
+            //
+            //     obj['workspaceId'] = Workspace.constructFromObject(data['OwnerWorksapceId']);
+            // }else  if (data.hasOwnProperty('ownerWorksapceId')) {
+            //     obj['workspaceId'] =Workspace.constructFromObject(data['ownerWorksapceId']);
+            // }
+
+
 
 
         }
-        console.log("OUTPUT");
+        console.log('OBJECT');
         console.log(obj);
         return obj;
     }
 
 
+
+
 }
+
 
 /**
  * @member {Number} bookingId

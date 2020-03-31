@@ -50,6 +50,7 @@ class OfficeBookingApi {
    * @param {module:api/OfficeBookingApi~cancelBookingCallback} callback The callback function, accepting three arguments: error, data, response
    */
   cancelBooking(id, callback) {
+    console.log('called cancel');
     let postBody = null;
     // verify the required parameter 'id' is set
     if (id === undefined || id === null) {
