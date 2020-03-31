@@ -14,6 +14,7 @@ import Display_SmallSquare from "./display/Display_SmallSquare";
 import Home from "./Home";
 
 import Link from "@material-ui/core/Link";
+import ApiClient from "../ApiClient";
 
 class Withdraw extends React.Component {
   constructor(props) {
@@ -29,6 +30,30 @@ class Withdraw extends React.Component {
     this.onCancelBooking = this.onCancelBooking.bind(this);
     this.onSubmitStaffId = this.onSubmitStaffId.bind(this);
   }
+  // componentDidMount = async () => {
+  //   const userInfo = await ApiClient.instance.callApi(
+  //     "/auth/user",
+  //     "POST",
+  //     {},
+  //     {},
+  //     { Authorization: "Bearer " + this.props.accountInfo.jwtIdToken },
+  //     { Email: this.props.accountInfo.account.userName },
+  //     null,
+  //     [],
+  //     ["application/x-www-form-urlencoded"],
+  //     ["application/json"],
+  //     Object,
+  //     null
+  //   );
+  //   this.setState({
+  //     staffId: userInfo.StaffId,
+  //     location: userInfo.Location || "N/A",
+  //     workspace: userInfo.WorkspaceId || "N/A",
+  //     features: userInfo.features || [],
+  //     hasNoWorkspace: !userInfo.WorkspaceId,
+  //     warning: !userInfo.WorkspaceId
+  //   });
+  // };
 
   async onSubmitStaffId(event) {
     console.log("onSubmitStaffId");
