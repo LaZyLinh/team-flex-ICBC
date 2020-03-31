@@ -367,9 +367,9 @@ class ApiClient {
         returnType, apiBasePath, callback) {
 
         var url = this.buildUrl(path, pathParams, apiBasePath);
-        console.log(url);
-        var request = superagent(httpMethod, url);
 
+        var request = superagent(httpMethod, url);
+        console.log(request);
         if (this.plugins !== null) {
             for (var index in this.plugins) {
                 if (this.plugins.hasOwnProperty(index)) {
