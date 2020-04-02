@@ -49,6 +49,7 @@ class OfficeLendingApi {
    */
   cancelAvailability(id, callback) {
     let postBody = null;
+    console.log(id);
     // verify the required parameter 'id' is set
     if (id === undefined || id === null) {
       throw new Error("Missing the required parameter 'id' when calling cancelAvailability");

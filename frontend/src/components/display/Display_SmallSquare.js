@@ -12,6 +12,7 @@ class Display_SmallSquare extends React.Component {
       Lending: []
     };
     this.getLending = this.getLending.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
   async getLending() {
     const lendingHistory = OfficeLending.getAvailabilitiesByOwnerID(5008);
@@ -22,6 +23,24 @@ class Display_SmallSquare extends React.Component {
     });
     console.log("Lending History");
     console.log(this.state.Lending);
+  }
+
+  handleDelete(availabilityId) {
+    console.log(availabilityId);
+    confirmAlert({
+      title: "Confirm delete",
+      message: "Are you sure you want delete this availability?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => OfficeLending.cancelAvailability(availabilityId)
+        },
+        {
+          label: "No",
+          onclick: () => alert("Do not delete")
+        }
+      ]
+    });
   }
 
   processLending(eachOne) {
@@ -46,7 +65,10 @@ class Display_SmallSquare extends React.Component {
                 </h1>
                 <h1 key={i} style={{ fontSize: "10px", position: "relative", top: "0%", color: "white" }}>
                   {"end:" + eachLend.endDate.toString().substring(4, 24)}
-                  <DeleteIcon style={{ color: "white", fontSize: "15px", position: "relative",left:"10%" ,bottom: "50%" }} onClick={} />
+                  <DeleteIcon
+                    style={{ color: "white", fontSize: "15px", position: "relative", left: "10%", bottom: "50%" }}
+                    onClick={() => this.handleDelete(eachLend.availabilityId)}
+                  ></DeleteIcon>
                 </h1>
 
                 {/*<DeleteIcon style={{ color: "white", fontSize: "10px", position: "relative", bottom: "50%" }} />*/}
