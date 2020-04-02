@@ -439,7 +439,7 @@ class OfficeBookingService {
       // create booking
       const createBookingQuery =
         `INSERT INTO booking (Confirmed, StartDate, EndDate, StaffId, AvailabilityId, WorkspaceId)
-         VALUES (${UNCONFIRMED}, '${startDate}', '${endDate}', ${staffId}, 9000, '${a.WorkspaceId}')`;
+         VALUES (${UNCONFIRMED}, '${startDate}', '${endDate}', ${staffId}, ${availabilityId}, '${a.WorkspaceId}')`;
       try {
         const result = await knexHelper(createBookingQuery);
         return {
@@ -454,9 +454,8 @@ class OfficeBookingService {
       }
     } catch (e) {
       return {
-        message: e.message || 'Unknown Error, call the Avengers',
-        status: e.status || 500,
-        error: true
+        error: e.message || 'Unknown Error, call the Avengers',
+        code: e.status || 500,
       }
     }
   }
