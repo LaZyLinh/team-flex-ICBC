@@ -98,6 +98,7 @@ router.post('/user', (req, res) => {
 */
 router.get('/workspaces', (req, res) => {
   workspaceDB.getWorkspaceByFloorId(req.query.floorId).then(obj => {
+    res.json(obj[0]);
     res.status(200);
   }).catch(err => {
     res.status(500);
