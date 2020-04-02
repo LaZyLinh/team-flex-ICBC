@@ -1,6 +1,6 @@
 'use strict';
 
-const VERSION = 1
+const VERSION = 2 // Apr 1, 2020, 10:41pm
 
 const config = require('./config')
 const authenticator = require('./auth/authenticator')
