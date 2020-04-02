@@ -14,12 +14,14 @@ class Display_SmallSquare extends React.Component {
     this.getLending = this.getLending.bind(this);
   }
   async getLending() {
-    const lendingHistory = OfficeLending.getAvailabilitiesByOwnerID(5005);
+    const lendingHistory = OfficeLending.getAvailabilitiesByOwnerID(5008);
     let Lend = [];
     await Promise.all([lendingHistory]).then(messages => {
       Lend = messages[0];
       this.setState({ Lending: Lend });
     });
+    console.log("Lending History");
+    console.log(this.state.Lending);
   }
 
   processLending(eachOne) {
@@ -44,8 +46,9 @@ class Display_SmallSquare extends React.Component {
                 </h1>
                 <h1 key={i} style={{ fontSize: "10px", position: "relative", top: "0%", color: "white" }}>
                   {"end:" + eachLend.endDate.toString().substring(4, 24)}
-                  <DeleteIcon style={{ color: "white", fontSize: "15px", position: "relative",left:"10%" ,bottom: "50%" }} />
+                  <DeleteIcon style={{ color: "white", fontSize: "15px", position: "relative",left:"10%" ,bottom: "50%" }} onClick={} />
                 </h1>
+
                 {/*<DeleteIcon style={{ color: "white", fontSize: "10px", position: "relative", bottom: "50%" }} />*/}
               </div>
             </div>

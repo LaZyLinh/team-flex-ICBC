@@ -106,7 +106,11 @@ class OfficeBookingService {
           let bookerEmail = Object.values(JSON.parse(JSON.stringify(booker)))[0][0];
 
           let workspaceOwner = await Booking.getOwnerEmail(bookingId);
-          let workspaceOwnerEmail = Object.values(JSON.parse(JSON.stringify(workspaceOwner)))[0][0];
+          const thereIsAnOwner = workspaceOwner[0].length > 0;
+          let workspaceOwnerEmail;
+          if (thereIsAnOwner) {
+            workspaceOwnerEmail = Object.values(JSON.parse(JSON.stringify(workspaceOwner)))[0][0];
+          }
 
           let booking = JSON.parse(JSON.stringify(await Booking.getByBookingId(bookingId)))[0][0];
           let bookingInfo = {
@@ -121,7 +125,9 @@ class OfficeBookingService {
           console.log(booking[0]);
           console.log(bookingInfo);
           emailService.sendEmailConfirmBookingBooker(bookerEmail.Email, bookingInfo);
-          emailService.sendEmailConfirmBookingLender(workspaceOwnerEmail.Email, bookingInfo);
+          if (thereIsAnOwner) {
+            emailService.sendEmailConfirmBookingLender(workspaceOwnerEmail.Email, bookingInfo);
+          }
           // stop timer !!!
           resolve(bookingInfo);
         } catch (e) {
