@@ -370,6 +370,7 @@ class ApiClient {
 
         var request = superagent(httpMethod, url);
         console.log(request);
+        console.log(request);
         if (this.plugins !== null) {
             for (var index in this.plugins) {
                 if (this.plugins.hasOwnProperty(index)) {
