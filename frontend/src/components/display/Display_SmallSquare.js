@@ -13,7 +13,10 @@ class Display_SmallSquare extends React.Component {
     };
     this.getLending = this.getLending.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.refreshPage = this.refreshPage.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
+
   async getLending() {
     const lendingHistory = OfficeLending.getAvailabilitiesByOwnerID(5008);
     let Lend = [];
@@ -23,6 +26,10 @@ class Display_SmallSquare extends React.Component {
     });
     console.log("Lending History");
     console.log(this.state.Lending);
+  }
+
+  refreshPage() {
+    window.location.reload(false);
   }
 
   handleDelete(availabilityId) {
@@ -48,8 +55,10 @@ class Display_SmallSquare extends React.Component {
     eachOne.endDate.toString();
     console.log(typeof eachOne.startDate);
   }
+
   render() {
     const { classes } = this.props;
+    console.log(this.state.Lending.length);
     return (
       <div>
         <Button variant="outlined" style={{ width: "100%" }} onClick={this.getLending}>
@@ -61,14 +70,17 @@ class Display_SmallSquare extends React.Component {
             <div className={`${classes.eachOne}`}>
               <div className={`${classes.eachPart}`}>
                 <h1 key={i} style={{ fontSize: "10px", position: "relative", top: "10%", color: "white" }}>
-                  {"start:" + eachLend.startDate.toString().substring(4, 24)}
+                  {"start:" + eachLend.startDate.toString().substring(4, 16)}
                 </h1>
                 <h1 key={i} style={{ fontSize: "10px", position: "relative", top: "0%", color: "white" }}>
-                  {"end:" + eachLend.endDate.toString().substring(4, 24)}
+                  {"end:" + eachLend.endDate.toString().substring(4, 16)}
                   <DeleteIcon
                     style={{ color: "white", fontSize: "15px", position: "relative", left: "10%", bottom: "50%" }}
                     // onClick={() => this.handleDelete(eachLend.availabilityId)}
-                      onClick={() => OfficeLending.cancelAvailability(eachLend.availabilityId)}
+                    onClick={async () => {
+                      await OfficeLending.cancelAvailability(eachLend.availabilityId);
+                      window.location.reload(false);
+                    }}
                   ></DeleteIcon>
                 </h1>
 
@@ -93,6 +105,11 @@ const DisplayStyle = {
     backgroundColor: "#002D7D",
     width: "200px",
     height: "50px"
+  },
+  refresh: {
+    textColor: "blue",
+    position: "relative",
+    top: "40%"
   }
 };
 export default withStyles(DisplayStyle)(Display_SmallSquare);
