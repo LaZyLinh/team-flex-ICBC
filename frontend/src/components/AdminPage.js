@@ -18,17 +18,6 @@ class AdminPage extends React.Component {
     };
   }
 
-  componentDidMount() { }
-
-  // getAllLoc() {
-  //   console.log("hey");
-  //   let allLocationsP = OfficeBookingApi.getLocations();
-  //   let allLocation;
-  //   Promise.all([allLocationsP]).then(eachLoc => {
-  //     this.setState({ locations: eachLoc[0] });
-  //     console.log(this.state.locations);
-  //   });
-  // }
   render() {
     const { classes } = this.props;
     return (
