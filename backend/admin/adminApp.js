@@ -14,6 +14,9 @@ const AdminFloorService = require("../services/AdminFloorService");
 const Helper = require('./helper')
 const Features = require('../db/features');
 
+const knex = require('../db/mysqlDB')
+const knexHelper = async (query) => (await knex.raw(query))[0]
+
 require('dotenv').config();
 
 router.get('/', (req, res) => {
@@ -52,6 +55,8 @@ router.post('/login', async (req, res, next) => {
 // all endpoint below here requires admin login token
 router.use(auth.required)
 
+
+
 // Admin Add User
 // /admin/user endpoint
 // Mandatory body values: firstName, lastName, department, email
@@ -88,6 +93,73 @@ router.post('/user', (req, res) => {
     res.status(500);
     res.json({ message: err.toString() });
   })
+})
+
+router.get('/locations', async (req, res) => {
+  try {
+    const query = `SELECT * FROM location`
+    const locations = await knexHelper(query)
+    res.json(locations.map(row => row.Location))
+  } catch (err) {
+    console.log(err);
+    res.status(500);
+    res.json(err);
+  }
+})
+
+router.post('/locations', async (req, res) => {
+  try {
+    let name = req.body.locationName
+    if (name == null || typeof name !== 'string' || name == '') {
+      throw {
+        error: "body must have locationName as non-empty string",
+        status: 400
+      }
+    }
+    name = name.trim()
+    if (name === '') {
+      throw {
+        error: "location name must not be all whitespace, that's kinda confusing",
+        status: 400
+      }
+    }
+    const query = `SELECT * FROM location`
+    const locations = (await knexHelper(query)).map(row => row.Location)
+    if (locations.includes(name)) {
+      throw {
+        error: "location name already exists",
+        status: 400
+      }
+    }
+    const insertQuery = `INSERT INTO location (Location) VALUES ('${name}')`
+    await knexHelper(insertQuery)
+    res.send("OK, done created")
+  } catch (err) {
+    const status = err.status || 500
+    res.status(status)
+    res.json(err)
+  }
+})
+
+router.delete('/locations', async (req, res) => {
+  try {
+    let name = req.query.locationName.trim()
+    const selectQuery = `SELECT * FROM location WHERE Location='${name}'`
+    const rows = await knexHelper(selectQuery)
+    if (rows.length === 0) {
+      throw {
+        error: "location name doesn't exist in location table",
+        status: 400
+      }
+    }
+    const deleteQuery = `DELETE FROM location WHERE Location='${name}'`
+    await knexHelper(deleteQuery)
+    res.send("OK, done deleted from the superficial location table, note that this doesn't delete any associated floors or workspaces!")
+  } catch (err) {
+    const status = err.status || 500
+    res.status(status)
+    res.json(err)
+  }
 })
 
 /*
