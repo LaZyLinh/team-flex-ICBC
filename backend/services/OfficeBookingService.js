@@ -96,52 +96,80 @@ class OfficeBookingService {
    * bookingId Integer 
    * returns BookingSummary 
    **/
-  static createBooking({ bookingId }) {
-    return new Promise(
-      async (resolve) => {
-        try {
-          await Booking.confirmBooking(bookingId);
-
-          let booker = await Booking.getUserEmail(bookingId);
-          if (booker[0].length === 0) {
-            console.log("/bookings DELETE -> cancelBooking -> 400 ID doesn't exist");
-            throw { message: "ID doesn't exist", status: 400 }
-          }
-          let bookerEmail = Object.values(JSON.parse(JSON.stringify(booker)))[0][0];
-
-          let workspaceOwner = await Booking.getOwnerEmail(bookingId);
-          const thereIsAnOwner = workspaceOwner[0].length > 0;
-          let workspaceOwnerEmail;
-          if (thereIsAnOwner) {
-            workspaceOwnerEmail = Object.values(JSON.parse(JSON.stringify(workspaceOwner)))[0][0];
-          }
-
-          let booking = JSON.parse(JSON.stringify(await Booking.getByBookingId(bookingId)))[0][0];
-          let bookingInfo = {
-            startDate: new Date(booking.StartDate).toLocaleDateString(),
-            endDate: new Date(booking.EndDate).toLocaleDateString(),
-            workspaceId: booking.WorkspaceId
-          };
-
-          const EmailService = require("./EmailService");
-          const emailService = new EmailService();
-
-          console.log(booking[0]);
-          console.log(bookingInfo);
-          emailService.sendEmailConfirmBookingBooker(bookerEmail.Email, bookingInfo);
-          if (thereIsAnOwner) {
-            emailService.sendEmailConfirmBookingLender(workspaceOwnerEmail.Email, bookingInfo);
-          }
-          // stop timer !!!
-          resolve(bookingInfo);
-        } catch (e) {
-          resolve(Service.rejectResponse(
-            e.message || 'Invalid input',
-            e.status || 403,
-          ));
+  static async createBooking({ bookingId }) {
+    try {
+      const bookingQuery = `SELECT * FROM booking WHERE BookingId=${bookingId}`
+      const rows = await knexHelper(bookingQuery);
+      if (rows.length === 0) {
+        throw {
+          message: "ID doesn't exist", status: 400
         }
-      },
-    );
+      }
+      const booking = rows[0];
+      if (booking.Confirmed === 1) {
+        // Go to end of happy path
+        return {
+          startDate: new Date(booking.StartDate).toLocaleDateString(),
+          endDate: new Date(booking.EndDate).toLocaleDateString(),
+          workspaceId: booking.WorkspaceId
+        }
+      }
+
+      // Confirmed === 0 past this point
+      if (booking.Timestamp == null) {
+        // Clean up
+        await Booking.deleteBooking(bookingId);
+      }
+
+      const expired = this.lockedBookingHasExpired(booking.Timestamp);
+      if (expired) {
+        throw {
+          message: "The lock on this workspace has expired, so can't confirm the booking.",
+          status: 400
+        }
+      }
+
+      await Booking.confirmBooking(bookingId);
+
+      let booker = await Booking.getUserEmail(bookingId);
+      if (booker[0].length === 0) {
+        throw { message: "ID doesn't exist", status: 400 }
+      }
+      const bookerEmail = Object.values(JSON.parse(JSON.stringify(booker)))[0][0];
+
+      let workspaceOwner = await Booking.getOwnerEmail(bookingId);
+      const thereIsAnOwner = workspaceOwner[0].length > 0;
+      let workspaceOwnerEmail;
+      if (thereIsAnOwner) {
+        workspaceOwnerEmail = Object.values(JSON.parse(JSON.stringify(workspaceOwner)))[0][0];
+      }
+
+      let booking = JSON.parse(JSON.stringify(await Booking.getByBookingId(bookingId)))[0][0];
+      let bookingInfo = {
+        startDate: new Date(booking.StartDate).toLocaleDateString(),
+        endDate: new Date(booking.EndDate).toLocaleDateString(),
+        workspaceId: booking.WorkspaceId
+      };
+
+      const EmailService = require("./EmailService");
+      const emailService = new EmailService();
+
+      console.log(booking[0]);
+      console.log(bookingInfo);
+      emailService.sendEmailConfirmBookingBooker(bookerEmail.Email, bookingInfo);
+      if (thereIsAnOwner) {
+        emailService.sendEmailConfirmBookingLender(workspaceOwnerEmail.Email, bookingInfo);
+      }
+    } catch (e) {
+      return this.errorReturn(e);
+    }
+  }
+
+  static errorReturn(e) {
+    return {
+      error: e.message || 'Unknown Error, call the Avengers',
+      code: e.status || 500,
+    }
   }
 
   static async getPackages({ startDate, endDate, floorIds, features }) {
@@ -149,15 +177,7 @@ class OfficeBookingService {
   }
 
   /**
-   * Finds Availabilities, filtered by various properties, of which startDate and endDate are required
-   *
-   * startDate date The first date of the search range
-   * endDate date The last date of the search range
-   * location String Office building location (optional)
-   * floor String Floor of building (optional)
-   * features List Features to filter by (optional)
-   * returns List
-   * example: http://localhost:6000/availabilities?startDate=2019-04-01&endDate=2021-04-04&features='private office'&location='4126 Macdonald St,'
+   * Deprecated (replaced by getPackages)
    **/
   static getAvailabilities({ startDate, endDate, location, floor, features }) {
     return new Promise(
@@ -174,7 +194,6 @@ class OfficeBookingService {
           }).catch(err => {
             throw err;
           })
-
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
@@ -281,10 +300,7 @@ class OfficeBookingService {
   }
 
   /**
-   * Finds top availabilities, not filtered
-   *
-   * amount BigDecimal 
-   * returns List
+    * Deprecated (replaced by getPackages)
    **/
   static getTopAvailabilities({ amount }) {
     if (!amount) {
@@ -395,14 +411,17 @@ class OfficeBookingService {
     return Math.floor(millis / MILLIS_PER_DAY);
   }
 
+  static lockedBookingHasExpired(rawTimestampJsDate) {
+    return Date.now() - rawTimestampJsDate.valueOf() > MILLIS_LOCK_TIME;
+  }
+
   static async checkBookingValidity(rawBookingRow) {
-    console.log(rawBookingRow);
     if (rawBookingRow.Confirmed == 0) {
       if (rawBookingRow.Timestamp == null) {
         await this.unlockBooking({ id: rawBookingRow.BookingId });
         return false;
       }
-      if (Date.now() - rawBookingRow.Timestamp.valueOf() > MILLIS_LOCK_TIME) {
+      if (this.lockedBookingHasExpired(rawBookingRow.Timestamp)) {
         await this.unlockBooking({ id: rawBookingRow.BookingId });
         return false;
       }
@@ -490,20 +509,29 @@ class OfficeBookingService {
    * id Integer ID of the Booking to delete
    * no response value expected for this operation
    **/
-  static unlockBooking({ id }) {
-    return new Promise(
-      async (resolve) => {
-        try {
-          await Booking.deleteBooking(id);
-          resolve('200');
-        } catch (e) {
-          resolve(Service.rejectResponse(
-            e.message || 'Invalid input',
-            e.status || 400,
-          ));
+  static async unlockBooking({ id }) {
+    try {
+      const selectQuery = `SELECT * FROM booking WHERE BookingId=${id}`
+      const rawResults = knexHelper(selectQuery)
+      if (rawResults.length === 0) {
+        throw {
+          message: "ID doesn't exist.",
+          status: 400
         }
-      },
-    );
+      }
+      const booking = rawResults[0]
+      if (booking.Confirmed === 0) {
+        await Booking.deleteBooking(id);
+        return { message: "OK" }
+      } else {
+        throw {
+          message: "Cannot unlock booking because it's already been confirmed, i.e. not locked.",
+          status: 400
+        }
+      }
+    } catch (e) {
+      return this.errorReturn(e)
+    }
   }
 
   static async getAllFeatures() {
