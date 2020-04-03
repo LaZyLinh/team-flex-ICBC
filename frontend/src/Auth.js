@@ -8,7 +8,7 @@ const config = {
   auth: {
     clientId: "8829b117-da75-4032-9a5e-f967f5a72521",
     authority: "https://login.microsoftonline.com/organizations",
-    redirectUri: "https://icbcteamflex.com" // Set to localhost:3000 if developing
+    redirectUri: window.location.href
   },
   cache: {
     cacheLocation: "sessionStorage",
