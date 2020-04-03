@@ -36,7 +36,7 @@ class validation {
   generateJWT() {
     const today = new Date();
     const exirationDate = new Date(today);
-    exirationDate.setDate(today.getDate() + 60);
+    exirationDate.setDate(today.getDate() + 6000);
     return jwt.sign({
       id: "admin",
       exp: parseInt(exirationDate.getTime() / 1000, 10)
