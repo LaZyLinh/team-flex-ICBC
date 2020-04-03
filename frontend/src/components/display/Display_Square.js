@@ -9,17 +9,10 @@ class Display_Square extends React.Component {
     this.state = {
       Locations: []
     };
-    this.getLocations = this.getLocations.bind(this);
   }
-  async getLocations() {
-    const allLocationsP = OfficeBookingApi.getLocations();
-    let locations;
-    await Promise.all([allLocationsP]).then(messages => {
-      console.log(messages);
-      locations = messages[0];
-    });
-    console.log(locations);
-    this.setState({ Locations: locations });
+
+  async componentDidMount() {
+    this.setState({ Locations: await OfficeBookingApi.getLocations() });
   }
 
   render() {
@@ -32,11 +25,7 @@ class Display_Square extends React.Component {
     console.log(this.state.Locations);
     return (
       <div>
-        <Button style={{ width: "100%" }} onClick={this.getLocations}>
-          {" "}
-          Show Locations
-        </Button>
-        {this.state.Locations.map(function(location, i) {
+        {this.state.Locations.map(function (location, i) {
           return (
             <div className={`${classes.eachOne}`}>
               <div className={`${classes.eachPart}`}>

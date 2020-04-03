@@ -7,6 +7,7 @@ import Withdraw from "./Withdraw";
 import ConfirmBooking from "./ConfirmBooking";
 import Finished from "./Finished";
 import AdminPage from "./AdminPage";
+
 function App(props) {
   return (
     <Router>
@@ -28,6 +29,9 @@ function App(props) {
         </Route>
         <Route exact path="/">
           <Home accountInfo={props.accountInfo} />
+        </Route>
+        <Route exact path="/adminPage">
+          <AdminPage />
         </Route>
       </div>
     </Router>
