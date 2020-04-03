@@ -14,6 +14,7 @@ const FWC = require("flexwork-common");
 const LIMIT = 500;
 const MILLIS_PER_DAY = 1000 * 60 * 60 * 24
 const UNCONFIRMED = 0
+const MILLIS_LOCK_TIME = 1000 * 60 * 20 // 20 minutes
 
 
 class OfficeBookingService {
@@ -394,6 +395,22 @@ class OfficeBookingService {
     return Math.floor(millis / MILLIS_PER_DAY);
   }
 
+  static async checkBookingValidity(rawBookingRow) {
+    console.log(rawBookingRow);
+    if (rawBookingRow.Confirmed == 0) {
+      if (rawBookingRow.Timestamp == null) {
+        await this.unlockBooking({ id: rawBookingRow.BookingId });
+        return false;
+      }
+      if (Date.now() - rawBookingRow.Timestamp.valueOf() > MILLIS_LOCK_TIME) {
+        await this.unlockBooking({ id: rawBookingRow.BookingId });
+        return false;
+      }
+    }
+    // if locked (unconfirmed), see if 20 minutes has elapsed
+    return true;
+  }
+
   /**
    * Temporarily lock a Booking as the User enters confirmation page
    *
@@ -427,6 +444,10 @@ class OfficeBookingService {
       const bookingsQuery = `SELECT * FROM booking WHERE AvailabilityId=${availabilityId}`
       const bookings = await knexHelper(bookingsQuery)
       for (const b of bookings) {
+        const bookingIsValid = await this.checkBookingValidity(b);
+        if (!bookingIsValid) {
+          continue;
+        }
         const existingBStart = this.dateToUnixDay(b.StartDate)
         const existingBEnd = this.dateToUnixDay(b.EndDate)
         if (this.hasOverlap(existingBStart, existingBEnd, bStart, bEnd)) {
@@ -437,9 +458,10 @@ class OfficeBookingService {
         }
       }
       // create booking
+      const timestampStr = new Date().toISOString().slice(0, 19).replace('T', ' ')
       const createBookingQuery =
-        `INSERT INTO booking (Confirmed, StartDate, EndDate, StaffId, AvailabilityId, WorkspaceId)
-         VALUES (${UNCONFIRMED}, '${startDate}', '${endDate}', ${staffId}, ${availabilityId}, '${a.WorkspaceId}')`;
+        `INSERT INTO booking (Confirmed, StartDate, EndDate, StaffId, AvailabilityId, WorkspaceId, Timestamp) 
+         VALUES (${UNCONFIRMED}, '${startDate}', '${endDate}', ${staffId}, ${availabilityId}, '${a.WorkspaceId}', '${timestampStr}')`;
       try {
         const result = await knexHelper(createBookingQuery);
         return {

@@ -24,7 +24,7 @@ router.get('/', (req, res) => {
 
 /*
  admin login
- default password: bestteam
+ ***** DEFAULT PASSWORD: bestteam *****
  Response:  200 OK, with ​token. The token will be included in the header of every admin request.
                 format: header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwiZXhwIjoxNTg5NTAyMDA0LCJpYXQiOjE1ODQzMTgwMDR9.PyJvSoQzOtjkKknE0FqrARp2_hsD06aoGzo98uM5WWc'
             403 Forbidden: wrong pass
