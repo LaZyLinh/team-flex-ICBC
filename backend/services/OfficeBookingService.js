@@ -464,7 +464,7 @@ class OfficeBookingService {
   /**
    * Unlocks a Booking before the 20 minute automatic unlock
    * For when the User navigates away from the confirmation page or closes the browser tab.
-   *
+   * /lockWorkspace/{id}
    * id Integer ID of the Booking to delete
    * no response value expected for this operation
    **/
@@ -472,11 +472,12 @@ class OfficeBookingService {
     return new Promise(
       async (resolve) => {
         try {
-          resolve(Service.successResponse(''));
+          await Booking.deleteBooking(id);
+          resolve('200');
         } catch (e) {
           resolve(Service.rejectResponse(
             e.message || 'Invalid input',
-            e.status || 405,
+            e.status || 400,
           ));
         }
       },
