@@ -37,9 +37,12 @@ const remoteOption = {
 
 
 if (process.env.LOCAL_JOHN) {
+  console.log("mysqlDB: LOCAL_JOHN");
   module.exports = require('knex')(johnLocalOption);
 } else if (process.env.LOCAL) {
+  console.log("mysqlDB: LOCAL");
   module.exports = require('knex')(localOption);
 } else {
+  console.log("mysqlDB: AWS");
   module.exports = require('knex')(remoteOption);
 }

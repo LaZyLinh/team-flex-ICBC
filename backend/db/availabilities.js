@@ -89,7 +89,7 @@ module.exports = {
   },
 
   getByAvailabilityId: function (id) {
-    return knex.raw('select a.StartDate, a.EndDate from availability a where a.AvailabilityId = ?', [id]);
+    return knex.raw('select a.StartDate, a.EndDate, a.WorkspaceId from availability a where a.AvailabilityId = ?', [id]);
   },
 
   getByWorkspaceId: function (id) {

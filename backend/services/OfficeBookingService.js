@@ -12,6 +12,9 @@ const FWC = require("flexwork-common");
 // How many availabilities in the DB to dig for open ones
 // The ones that we dig might not be open, and the general use case is to return the top 10 open ones
 const LIMIT = 500;
+const MILLIS_PER_DAY = 1000 * 60 * 60 * 24
+const UNCONFIRMED = 0
+
 
 class OfficeBookingService {
 
@@ -367,6 +370,30 @@ class OfficeBookingService {
     );
   }
 
+  // helper
+  static doesEncompass(availabilityStartMillis, availabilityEndMillis, bookingStartMillis, bookingEndMillis) {
+    return availabilityStartMillis <= bookingStartMillis && availabilityEndMillis >= bookingEndMillis
+  }
+
+  // helper
+  static hasOverlap(b1start, b1end, b2start, b2end) {
+    // there is no overlap if 1 begins after the other ends
+    const noOverlap = b1start > b2end || b2start > b1end
+    return !noOverlap
+  }
+
+  // helper
+  static dateToUnixDay(jsdate) {
+    const millis = jsdate.getTime()
+    return Math.floor(millis / MILLIS_PER_DAY);
+  }
+
+  // helper
+  static strToUnixDay(isodatestr) {
+    const millis = Date.parse(isodatestr);
+    return Math.floor(millis / MILLIS_PER_DAY);
+  }
+
   /**
    * Temporarily lock a Booking as the User enters confirmation page
    *
@@ -376,36 +403,63 @@ class OfficeBookingService {
    * endDate date 
    * returns BookingSummary
    **/
-  static lockBooking({ availabilityId, staffId, startDate, endDate }) {
-    return new Promise(
-      async (resolve, reject) => {
-        try {
-          console.log('in lockBooking');
-          Availabilities.getByAvailabilityId(availabilityId).then((availability) => {
-            let a = Object.values(JSON.parse(JSON.stringify(availability)))[0][0];
-            if (startDate >= a.StartDate.slice(0, 10) && endDate <= a.EndDate.slice(0, 10)) {
-              console.log('booking is valid');
-              // create booking
-              Booking.insertBooking(availabilityId, staffId, startDate, endDate, false).then(() => {
-                Booking.getBookingbyAvailStaffDates(availabilityId, staffId, startDate, endDate).then((booking) => {
-                  console.log(booking);
-                  resolve(booking[0]);
-                });
-              });
-            } else {
-              console.log('booking is not valid');
-              reject(new Error(403));
-            }
-          });
-        } catch (e) {
-          resolve(Service.rejectResponse(
-            e.message || 'Invalid input',
-            e.status || 403,
-          ));
+  static async lockBooking({ availabilityId, staffId, startDate, endDate }) {
+    try {
+      const bStart = this.strToUnixDay(startDate);
+      const bEnd = this.strToUnixDay(endDate);
+      const availabilities = (await Availabilities.getByAvailabilityId(availabilityId))[0]
+      if (availabilities.length === 0) {
+        throw ({
+          message: `Availability doesn't exist, ID: ${availabilityId}`,
+          status: 400
+        })
+      }
+      const a = availabilities[0] // the found availabiliity
+      const aStart = this.dateToUnixDay(a.StartDate)
+      const aEnd = this.dateToUnixDay(a.EndDate)
+
+      if (!this.doesEncompass(aStart, aEnd, bStart, bEnd)) {
+        throw ({
+          message: `Availability exists. Booking's date range is too big for it though: Availability: ${JSON.stringify(a)}`,
+          status: 400
+        })
+      }
+      const bookingsQuery = `SELECT * FROM booking WHERE AvailabilityId=${availabilityId}`
+      const bookings = await knexHelper(bookingsQuery)
+      for (const b of bookings) {
+        const existingBStart = this.dateToUnixDay(b.StartDate)
+        const existingBEnd = this.dateToUnixDay(b.EndDate)
+        if (this.hasOverlap(existingBStart, existingBEnd, bStart, bEnd)) {
+          throw ({
+            message: `There is a overlap with existing booking: ${JSON.stringify(b)}`,
+            status: 400
+          })
         }
-      },
-    );
+      }
+      // create booking
+      const createBookingQuery =
+        `INSERT INTO booking (Confirmed, StartDate, EndDate, StaffId, AvailabilityId, WorkspaceId)
+         VALUES (${UNCONFIRMED}, '${startDate}', '${endDate}', ${staffId}, ${availabilityId}, '${a.WorkspaceId}')`;
+      try {
+        const result = await knexHelper(createBookingQuery);
+        return {
+          bookingId: result.InsertId,
+          startDate, endDate,
+        }
+      } catch (e) {
+        throw ({
+          message: "Unexpected DB error: " + e.message,
+          status: 500,
+        })
+      }
+    } catch (e) {
+      return {
+        error: e.message || 'Unknown Error, call the Avengers',
+        code: e.status || 500,
+      }
+    }
   }
+
 
   /**
    * Unlocks a Booking before the 20 minute automatic unlock
