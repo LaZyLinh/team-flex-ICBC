@@ -33,7 +33,7 @@ class Display_SmallSquare extends React.Component {
       buttons: [
         {
           label: "Yes",
-          onClick: () => OfficeLending.cancelAvailability(availabilityId)
+          onClick: async () => await OfficeLending.cancelAvailability(availabilityId)
         },
         {
           label: "No",
@@ -67,7 +67,8 @@ class Display_SmallSquare extends React.Component {
                   {"end:" + eachLend.endDate.toString().substring(4, 24)}
                   <DeleteIcon
                     style={{ color: "white", fontSize: "15px", position: "relative", left: "10%", bottom: "50%" }}
-                    onClick={() => this.handleDelete(eachLend.availabilityId)}
+                    // onClick={() => this.handleDelete(eachLend.availabilityId)}
+                      onClick={() => OfficeLending.cancelAvailability(eachLend.availabilityId)}
                   ></DeleteIcon>
                 </h1>
 
