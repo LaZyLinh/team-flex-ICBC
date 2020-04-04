@@ -1,43 +1,41 @@
 import React from "react";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { createLocation, getLocationNames } from "../../api/AdminApi";
+import { createLocation } from "../../api/AdminApi";
 import Alert from "@material-ui/lab/Alert";
 
 export default class AddLocation extends React.Component {
-  constructor(props) {
-    super(props);
-    const locations = props.locations;
+  constructor() {
+    super();
     this.state = {
       showCityAlreadyAddedError: false,
       showSuccess: false,
       showUnknownError: false,
-      locations,
       location: ""
     };
   }
 
-  async componentDidMount() {
-    this.setState({ locations: await getLocationNames() });
-  }
+  // async componentDidMount() {
+  //   this.setState({ locations: await getLocationNames() });
+  // }
 
   handleOnClick = async () => {
+    const locations = this.props.getLocations();
     const locationTrimmed = this.state.location.trim();
     if (locationTrimmed.length === 0) {
       // do nothing
       return;
     }
-    if (this.state.locations.includes(locationTrimmed)) {
-      console.log("locations includes the entered location!");
+    if (locations.includes(locationTrimmed)) {
       this.setState({
         showCityAlreadyAddedError: true
       });
       return;
     }
-    console.log("AddLocation handleOnClick happy path begins");
     try {
       await createLocation(locationTrimmed);
       this.setState({ showGreen: true });
+      this.props.updateLocations(); // Parent
     } catch (err) {
       console.log(err);
       this.setState({ showUnknownError: true });
