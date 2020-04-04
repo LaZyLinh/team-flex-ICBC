@@ -20,47 +20,52 @@ class EditFloor extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <React.Fragment>
+      <div className={`${classes.mainStyle}`}>
         <div className={`${classes.headerStyle}`}>
           <h1 style={{ color: "white", position: "absolute", left: "2.78%", fontSize: 48 }}>Edit Floor</h1>
         </div>
-        <div className={`${classes.split, classes.left}`}>
-          <h2>Jane Flex</h2>
+        <div className={`${classes.split}`}>
+          <div className={`${classes.left}`}>
+            <h2>Jane Flex</h2>
+          </div>
+          <div className={`${classes.right}`}>
+            <h2>Jane Flex</h2>
+          </div>
         </div>
-        <div className={`${classes.split, classes.right}`}>
-          <h2>Jane Flex</h2>
-        </div>
-      </React.Fragment>
+      </div>
     )
   }
 }
 
 const muiStyles = {
+  mainStyle: {
+    display: "block"
+  },
+
+  split: {
+    display: "flex",
+    width: '100%'
+  },
+
   headerStyle: {
-    position: "absolute",
+    display: "block",
+    position: "relative",
     left: "0px",
     right: "0px",
     top: "0px",
     height: "100px",
+    width: "100%",
     backgroundColor: "#002D7D"
   },
 
-  split: {
-    height: "100%",
-    width: "50%",
-    position: "fixed",
-    zIndex: '1',
-    top: 0,
-    overflowX: "hidden",
-    paddingTop: "20px"
-  },
-
   left: {
+    width: "50%",
     left: 0,
     backgroundColor: "#111"
   },
 
   right: {
+    width: "50%",
     right: 0,
     backgroundColor: "red"
   }
