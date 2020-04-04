@@ -66,6 +66,7 @@ export function getAdminToken() {
 
 // helper
 async function api(verb, path, body = undefined) {
+  localStorage.setItem("debug_body", JSON.stringify(body))
   jwt = localStorage.getItem("admin_jwt")
   if (!jwt) {
     throw new Error(`There is no admin jwt set`)
@@ -77,7 +78,7 @@ async function api(verb, path, body = undefined) {
   const config = {
     headers: {
       "Authorization": `Bearer ${jwt}`,
-      "Content-type": 'application/x-www-form-urlencoded'
+      // "Content-type": 'application/x-www-form-urlencoded' // TODO implement this with qs
     }
   }
   if (verb === 'post') {
@@ -92,10 +93,11 @@ async function api(verb, path, body = undefined) {
   if (verb === 'put') {
     return (await axios.put(path, body, config)).data
   }
-  throw new Error(`The given verb (${verb}) is not get, post or delete`)
+  throw new Error(`The given verb (${verb}) is not get, post, delete or put`)
 }
 
 export async function createLocation(name) {
+  localStorage.setItem("debug", name);
   try {
     await api('post', '/locations', { locationName: name })
   } catch (err) {
