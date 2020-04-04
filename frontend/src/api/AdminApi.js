@@ -10,7 +10,6 @@ import { func } from 'prop-types';
 
 const MILLIS_ADMIN_JWT_EXPIRY_TIME = 1000 * 60 * 60 * 24 * 3 // 3 days
 
-let loggedIn = false;
 let jwt = localStorage.getItem("admin_jwt")
 let jwtExpiresMillis = localStorage.getItem("admin_jwt_expires_millis")
 if (!jwtExpiresMillis) {
@@ -43,13 +42,9 @@ export async function login(passwordStr) {
 }
 
 export function isLoggedIn() {
-  if (!loggedIn) {
-    return false;
-  }
   try {
     const tokenExpiresAt = localStorage.getItem("admin_jwt_expires_millis");
     if (tokenExpiresAt > Date.now()) {
-      loggedIn = true;
       jwt = getAdminToken();
       jwtExpiresMillis = tokenExpiresAt
       return true;
@@ -61,7 +56,6 @@ export function isLoggedIn() {
       return false;
     }
   } catch (e) {
-    loggedIn = false;
     return false;
   }
 }
@@ -77,7 +71,7 @@ async function api(verb, path, body = undefined) {
     throw new Error(`There is no admin jwt set`)
   }
   if (jwtExpiresMillis < Date.now()) {
-
+    // TODO: handle expired token after opening admin page
   }
   console.log(jwt)
   const config = {
@@ -103,9 +97,10 @@ async function api(verb, path, body = undefined) {
 
 export async function createLocation(name) {
   try {
-    await api('post', '/location', { locationName: name })
+    await api('post', '/locations', { locationName: name })
   } catch (err) {
     localStorage.setItem("admin_error", JSON.stringify(err))
+    throw err;
   }
 }
 
@@ -195,5 +190,3 @@ export async function getFloorsByCity(city) {
     console.log(err)
   }
 }
-
-
