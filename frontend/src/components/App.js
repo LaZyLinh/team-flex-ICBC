@@ -7,6 +7,7 @@ import Withdraw from "./Withdraw";
 import ConfirmBooking from "./ConfirmBooking";
 import Finished from "./Finished";
 import AdminPage from "./AdminPage";
+import EditFloor from "./EditFloor"
 
 function App(props) {
   return (
@@ -32,6 +33,9 @@ function App(props) {
         </Route>
         <Route exact path="/adminPage">
           <AdminPage />
+        </Route>
+        <Route exact path="/editFloor">
+          <EditFloor />
         </Route>
       </div>
     </Router>
