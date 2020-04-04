@@ -54,6 +54,14 @@ class EditFloor extends React.Component {
     // todo
   }
 
+  changeCurrent = (data) => {
+    console.log(data)
+    this.state.currentFloorIndex = data;
+    this.state.currentLocation = this.state.allFloors[data].Location;
+    this.state.currentFloorId = this.state.allFloors[data].FloorId;
+    this.forceUpdate()
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -64,7 +72,7 @@ class EditFloor extends React.Component {
         </div>
         <div className={`${classes.split}`}>
           <div className={`${classes.left}`}>
-            <Img className={`${classes.floorplanImg}`} src={`https://icbcflexwork.me:8080/floorplans/${this.state.currentFloorId}.jpg`} />
+            <img className={`${classes.floorplanImg}`} src={`https://icbcflexwork.me:8080/floorplans/${this.state.currentFloorId}.jpg`} alt="No FloorPlan found" />
             <h3>{this.state.currentLocation}</h3>
             <div className={`${classes.buttens}`}>
             </div>
@@ -76,7 +84,7 @@ class EditFloor extends React.Component {
                 Add new Floor
           </Button>
             </div>
-            {this.state.allFloors ? <FloorList floors={this.state.allFloors} /> : <span>"loading..."</span>}
+            {this.state.allFloors ? <FloorList floors={this.state.allFloors} callback={this.changeCurrent} /> : <span>"loading..."</span>}
           </div>
         </div>
       </div>
@@ -128,7 +136,8 @@ const muiStyles = {
   },
 
   left: {
-    paddingTop: "20px",
+    boxAlign: "center",
+    paddingTop: "10%",
     textAlign: "center",
     width: "50%",
     height: "100%",
