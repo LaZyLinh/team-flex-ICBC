@@ -20,7 +20,7 @@ class Withdraw extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      staffId: -1,
+      staffId: "",
       // bookings: [],
       // TEST:
       bookings: [],
@@ -30,35 +30,35 @@ class Withdraw extends React.Component {
     this.onCancelBooking = this.onCancelBooking.bind(this);
     this.onSubmitStaffId = this.onSubmitStaffId.bind(this);
   }
-  // componentDidMount = async () => {
-  //   const userInfo = await ApiClient.instance.callApi(
-  //     "/auth/user",
-  //     "POST",
-  //     {},
-  //     {},
-  //     { Authorization: "Bearer " + this.props.accountInfo.jwtIdToken },
-  //     { Email: this.props.accountInfo.account.userName },
-  //     null,
-  //     [],
-  //     ["application/x-www-form-urlencoded"],
-  //     ["application/json"],
-  //     Object,
-  //     null
-  //   );
-  //   this.setState({
-  //     staffId: userInfo.StaffId,
-  //     location: userInfo.Location || "N/A",
-  //     workspace: userInfo.WorkspaceId || "N/A",
-  //     features: userInfo.features || [],
-  //     hasNoWorkspace: !userInfo.WorkspaceId,
-  //     warning: !userInfo.WorkspaceId
-  //   });
-  // };
 
-  async onSubmitStaffId(event) {
+   componentDidMount = async ()=>{
+       const userInfo = await ApiClient.instance.callApi(
+           "/auth/user",
+           "POST",
+           {},
+           {},
+           { Authorization: "Bearer " + this.props.accountInfo.jwtIdToken },
+           { Email: this.props.accountInfo.account.userName },
+           null,
+           [],
+           ["application/x-www-form-urlencoded"],
+           ["application/json"],
+           Object,
+           null
+       );
+       console.log(userInfo);
+        await this.setState({
+           staffId:userInfo.StaffId,
+       });
+       console.log(this.state.staffId);
+   };
+
+  async onSubmitStaffId() {
     console.log("onSubmitStaffId");
-    event.preventDefault();
-    const staffId = 1004;
+    console.log('from AD:');
+    console.log(this.state.staffId);
+    const staffId = this.state.staffId;
+    console.log(staffId);
     const data = await OfficeBookingApi.getBookingsByUserID(staffId);
     console.log(data);
     this.setState({ bookings: data });
@@ -116,18 +116,20 @@ class Withdraw extends React.Component {
           <HomeIcon className={`${classes.shapeFilter}`} />
         </Link>
         <div className={`${classes.lendingHistory}`}>
-          <Display_SmallSquare />
+          <Display_SmallSquare  staffIdFromMain = {this.state.staffId}/>
         </div>
-        <form onSubmit={this.onSubmitStaffId} className={`${classes.idSearch}`}>
-          <TextField
-            onKeyPress={e => this.setState({ staffId: e.target.value })}
-            type="text"
-            label="ID"
-            name="staffId"
-          />
-        </form>
+        {/*<form onSubmit={this.onSubmitStaffId} className={`${classes.idSearch}`}>*/}
+          {/*<TextField*/}
+            {/*onKeyPress={e => this.setState({ staffId: e.target.value })}*/}
+            {/*type="text"*/}
+            {/*label="ID"*/}
+            {/*name="staffId"*/}
+          {/*/>*/}
+        {/*</form>*/}
+          <Button  className={`${classes.searchIcon}`} onClick={()=>this.onSubmitStaffId()}>My Booking History</Button>
+
         <div className={`${classes.bookingTable}`}>
-          <ManageTable rows={this.state.bookings} />
+          <ManageTable  rows={this.state.bookings} />
         </div>
       </div>
     );
