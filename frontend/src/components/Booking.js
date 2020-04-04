@@ -1,28 +1,131 @@
 import React from "react";
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core";
 import Select from "@material-ui/core/Select";
 import Link from "@material-ui/core/Link";
+import Drawer from "@material-ui/core/Drawer";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
+import Typography from "@material-ui/core/Typography";
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import Divider from "@material-ui/core/Divider";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import InboxIcon from "@material-ui/icons/MoveToInbox";
+import MailIcon from "@material-ui/icons/Mail";
+import Card from "@material-ui/core/Card";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { ArrowForwardOutlined, YoutubeSearchedFor } from "@material-ui/icons";
-import { GiCalendar } from "react-icons/gi";
+import { GiDesk } from "react-icons/gi";
 import Button from "@material-ui/core/Button"; // only needs to be imported once
 import EnhancedTable from "./Table.js";
 import OfficeBookingApi from "../api/OfficeBookingApi";
 import { createData } from "./Table";
-import styles from "./../styles/Booking.styles";
-import logo from "../assets/home_logo.png";
 import { DateRange } from "react-date-range";
+import styles from "../styles/Booking.styles";
+import logo from "../assets/home_logo.png";
 
 class Booking extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      location: "",
+      locations: [],
+      floor: "",
+      floors: [],
+      startDate: new Date(),
+      endDate: new Date(),
+      features: []
+    };
   }
+
+  componentDidMount = async () => {
+    const reqs = [
+      OfficeBookingApi.getLocations(),
+      OfficeBookingApi.getFeatures()
+      // OfficeBookingApi.getTopAvailabilities(20)
+    ];
+    const results = await Promise.all(reqs);
+    console.log(results[1]);
+    const features = results[1].map(f => {
+      return {
+        name: f,
+        checked: false
+      };
+    });
+    this.setState({
+      locations: results[0],
+      features
+    });
+    let floors = await OfficeBookingApi.getFloors({ location: "Vancouver" });
+    const floorIds = floors.map(f => f.floorId);
+    console.log(floorIds);
+    const sdStr = this.state.startDate.toISOString().slice(0, 10);
+    const edStr = this.state.endDate.toISOString().slice(0, 10);
+    const res = await OfficeBookingApi.getPackages("2020-03-30", "2020-05-27");
+    console.log(res);
+  };
+
+  handleDateChange = dateRange => {
+    this.setState({
+      startDate: dateRange.selection.startDate,
+      endDate: dateRange.selection.endDate
+    });
+    if (this.state.location) {
+      // OfficeBookingApi.getPackages("2020-03-30", "2020-05-27", { floorIds });
+    }
+  };
+
+  handleSelectLocation = event => {
+    this.setState({ location: event.target.value });
+    OfficeBookingApi.getFloors({ location: event.target.value }).then(floors => {
+      const floorIds = floors.map(f => console.log(f));
+      this.setState({ floors: floorIds });
+    });
+  };
+
+  handleSelectFloor = event => {
+    console.log(event);
+  };
+
+  handleCheckFeature = event => {
+    console.log(event);
+  };
+
+  getLocationItems = () => {
+    let menuItems = [];
+    let i = 0;
+    for (const location of this.state.locations) {
+      menuItems.push(
+        <MenuItem value={location} key={i++}>
+          {location}
+        </MenuItem>
+      );
+    }
+    return menuItems;
+  };
+
+  getFloorItems = () => {
+    let menuItems = [];
+    let i = 0;
+    for (const floor of this.state.floors) {
+      menuItems.push(
+        <MenuItem value={floor} key={i++}>
+          {floor}
+        </MenuItem>
+      );
+    }
+    return menuItems;
+  };
 
   render = () => {
     const { classes } = this.props;
@@ -33,10 +136,95 @@ class Booking extends React.Component {
           <Link href="/">
             <img className={classes.logo} src={logo} alt="Logo"></img>
           </Link>
-          <div className={classes.title}>Booking</div>
-          <GiCalendar className={classes.icon} />
+          <div className={classes.title}>BOOKING</div>
+          <GiDesk className={classes.icon} />
+        </div>
+        <div className={classes.leftPanel}>
+          <DateRange
+            scroll={{ enabled: true, monthHeight: 190 }}
+            className={`${classes.calendar}`}
+            direction="vertical"
+            fixedHeight={false}
+            editableDateInputs={false}
+            onChange={this.handleDateChange}
+            moveRangeOnFirstSelection={false}
+            minDate={new Date()}
+            ranges={[
+              {
+                startDate: this.state.startDate,
+                endDate: this.state.endDate,
+                key: "selection",
+                color: "#0048a8d9"
+              }
+            ]}
+          />
+          <FormControl variant="filled" className={classes.locationInput}>
+            <InputLabel id="location">Location</InputLabel>
+            <Select labelId="location" value={this.state.location} onChange={this.handleSelectLocation}>
+              {this.getLocationItems()}
+            </Select>
+          </FormControl>
+          <FormControl variant="filled" className={classes.floorInput}>
+            <InputLabel id="floor">Floor</InputLabel>
+            <Select labelId="floor" value={this.state.floor} onChange={this.handleSelectFloor}>
+              {this.getFloorItems()}
+            </Select>
+          </FormControl>
+          {/* <div className="featureSelection">
+            {this.state.features.map((feature, i) => {
+              console.log(feature);
+              return (
+                <Checkbox
+                  label={feature.name}
+                  value={feature.name}
+                  onChange={this.handleCheckFeature}
+                  checked={feature.checked}
+                  key={i}
+                />
+              );
+            })}
+          </div> */}
+          <div>{this.renderPackages(classes)}</div>
         </div>
       </div>
+    );
+  };
+
+  renderPackages = classes => {
+    // for (const package of this.state.packages) {
+
+    // }
+    return (
+      <ExpansionPanel>
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <div className={classes.packageHeading}>Expansion Panel 1</div>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <div>
+            <Card className={classes.availabilityItem}>
+              <CardContent>
+                <Typography className={classes.title} color="textSecondary" gutterBottom>
+                  Word of the Day
+                </Typography>
+                <Typography variant="h5" component="h2">
+                  be
+                </Typography>
+                <Typography className={classes.pos} color="textSecondary">
+                  adjective
+                </Typography>
+                <Typography variant="body2" component="p">
+                  well meaning and kindly.
+                  <br />
+                  {'"a benevolent smile"'}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button size="small">Floor Plan</Button>
+              </CardActions>
+            </Card>
+          </div>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
     );
   };
 }
@@ -178,17 +366,6 @@ class Booking2 extends React.Component {
               {this.locationSelectMenuItems()}
             </Select>
           </FormControl>
-
-          <DateRange
-            scroll={{ enabled: true, monthHeight: 300 }}
-            className={`${classes.calendar}`}
-            direction="vertical"
-            fixedHeight={false}
-            editableDateInputs={false}
-            onChange={this.handleDateChange}
-            moveRangeOnFirstSelection={false}
-            ranges={[this.state]}
-          />
 
           {/*Feature Selection*/}
           <FormControl component="fieldset" className={classes.featureSelection}>

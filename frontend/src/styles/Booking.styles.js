@@ -16,11 +16,11 @@ export default {
     textAlign: "center"
   },
   logo: {
-    width: "100px",
-    height: "45px",
+    width: "95px",
+    height: "40px",
     position: "absolute",
-    left: "2%",
-    top: "8%"
+    left: "1%",
+    top: "10%"
   },
   icon: {
     color: "#ffffff",
@@ -30,7 +30,7 @@ export default {
     top: "20%"
   },
   title: {
-    paddingTop: "10px",
+    paddingTop: "8px",
     fontSize: "34px",
     fontFamily: fontFamily,
     fontWeight: "bold",
@@ -38,6 +38,47 @@ export default {
     textShadow: "0px 0px 4px #ffffff70",
     letterSpacing: "3px"
   },
+  leftPanel: {
+    height: "100%",
+    width: "315px",
+    position: "fixed",
+    top: "55px",
+    left: "0",
+    backgroundImage: "linear-gradient(to top, #fff1eb 0%, #ace0f9 100%);"
+  },
+  calendar: {
+    position: "absolute",
+    top: "150px",
+    left: "11px",
+    boxShadow: "0px 2px 2px 0px rgba(0,0,0,.2)",
+    fontSize: "10px"
+  },
+  locationInput: {
+    position: "absolute",
+    top: "15px",
+    left: "11px",
+    width: "293px",
+    backgroundColor: "rgb(248, 248, 248)"
+    // boxShadow: "0px 2px 2px 0px rgba(0,0,0,.2)"
+  },
+  floorInput: {
+    position: "absolute",
+    top: "80px",
+    left: "11px",
+    width: "293px",
+    backgroundColor: "rgb(248, 248, 248)"
+    // boxShadow: "0px 2px 2px 0px rgba(0,0,0,.2)"
+  },
+  featureSelection: {
+    postion: "absolute",
+    overflow: "scroll",
+    backgroundColor: "#ffffff",
+    top: "300px",
+    bottom: "5%"
+  }
+};
+
+const a = {
   infiniteCalendar: {
     position: "absolute",
     top: "11vh",

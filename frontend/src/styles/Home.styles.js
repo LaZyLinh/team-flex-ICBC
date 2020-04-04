@@ -81,6 +81,6 @@ export default {
   },
   buttonText: {
     fontFamily: fontFamily,
-    fontSize: "1.2em"
+    fontSize: "1.45em"
   }
 };
