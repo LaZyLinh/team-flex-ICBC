@@ -7,7 +7,7 @@ import { getAdminToken } from "../api/AdminApi";
 import OfficeBookingApi from "../api/OfficeBookingApi";
 import FormDialog from "./display/Popup_window";
 import Display_Square from "./display/Display_Square";
-// import AddLocation from "./adminPage/AddLocation";
+import AddLocation from "./adminPage/AddLocation";
 
 class AdminPage extends React.Component {
   constructor() {
@@ -25,7 +25,7 @@ class AdminPage extends React.Component {
         <div className={`${classes.headerStyle}`}>
           <h1 style={{ color: "white", position: "absolute", left: "2.78%", fontSize: 48 }}>Admin Page</h1>
         </div>
-        {/* <AddLocation locations={this.state.locations} /> */}
+        <AddLocation locations={this.state.locations} />
         <div className={`${classes.showLocationsStyle}`}>
           <Display_Square />
         </div>
