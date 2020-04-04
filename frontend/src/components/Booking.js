@@ -201,29 +201,27 @@ class Booking extends React.Component {
       for (const availability of pkg) {
         availItems.push(
           <ExpansionPanelDetails>
-            <div>
-              <Card className={classes.availabilityItem}>
-                <CardContent>
-                  <Typography variant="h5" component="h2" className={classes.availTitle} gutterBottom>
-                    Availability {j}
-                  </Typography>
-                  <Typography>
-                    <strong>Start:</strong> {availability.startDate}
-                    <br />
-                    <strong>End:</strong> {availability.endDate}
-                  </Typography>
-                  <Typography className={classes.pos}>
-                    <strong>Workspace:</strong> ${availability.workspaceId}
-                  </Typography>
-                  <Typography variant="body2" component="p" color="textSecondary">
-                    <strong>Owner comment:</strong> {availability.comment || "None"}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button size="small">Floor Plan</Button>
-                </CardActions>
-              </Card>
-            </div>
+            <Card className={classes.availabilityItem}>
+              <CardContent>
+                <Typography variant="h5" component="h2" className={classes.availTitle} gutterBottom>
+                  Availability {j}
+                </Typography>
+                <Typography>
+                  <strong>Start:</strong> {availability.startDate}
+                  <br />
+                  <strong>End:</strong> {availability.endDate}
+                </Typography>
+                <Typography className={classes.pos}>
+                  <strong>Workspace:</strong> ${availability.workspaceId}
+                </Typography>
+                <Typography variant="body2" component="p" color="textSecondary">
+                  <strong>Owner comments:</strong> {availability.comment || "None"}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button size="small">Floor Plan</Button>
+              </CardActions>
+            </Card>
           </ExpansionPanelDetails>
         );
         j++;
@@ -233,7 +231,7 @@ class Booking extends React.Component {
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <div className={classes.packageHeading}>Package {i}</div>
           </ExpansionPanelSummary>
-          {availItems}
+          <div className={classes.availContainer}>{availItems}</div>
         </ExpansionPanel>
       );
       i++;

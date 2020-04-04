@@ -78,7 +78,13 @@ export default {
   },
   pkgsContainer: {
     position: "absolute",
-    left: "316px"
+    left: "316px",
+    width: "100%"
+  },
+  availContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
+    overflow: "scroll"
   },
   availTitle: {
     color: "#000000"
