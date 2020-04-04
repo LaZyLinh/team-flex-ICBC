@@ -7,12 +7,12 @@ import { getAdminToken } from "../api/AdminApi";
 import OfficeBookingApi from "../api/OfficeBookingApi";
 import FormDialog from "./display/Popup_window";
 import Display_Square from "./display/Display_Square";
+import AddLocation from "./adminPage/AddLocation";
 
 class AdminPage extends React.Component {
   constructor() {
     super();
     this.state = {
-      token: getAdminToken(),
       locations: [],
       windowOpen: false
     };
@@ -25,16 +25,7 @@ class AdminPage extends React.Component {
         <div className={`${classes.headerStyle}`}>
           <h1 style={{ color: "white", position: "absolute", left: "2.78%", fontSize: 48 }}>Admin Page</h1>
         </div>
-        <div className={`${classes.searchCellStyle}`}>
-          <div className={`${classes.searchBarStyle}`}>
-            <TextField style={{ position: "absolute", top: "7px", left: "20%" }} />
-            <SearchIcon style={{ fontSize: "34px", position: "absolute", top: "5px", left: "3%" }} />
-          </div>
-          <div className={`${classes.addLocationStyle}`}>
-            <h1 style={{ color: "white", position: "absolute", left: "10%", top: "0%", fontSize: "30px" }}>Location</h1>
-            <FormDialog />
-          </div>
-        </div>
+        <AddLocation />
         <div className={`${classes.showLocationsStyle}`}>
           <Display_Square />
         </div>
