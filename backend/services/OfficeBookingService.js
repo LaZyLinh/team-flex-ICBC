@@ -66,10 +66,10 @@ class OfficeBookingService {
           const EmailService = require("./EmailService");
           const emailService = new EmailService();
 
-          let booking = JSON.parse(JSON.stringify(await Booking.getByBookingId(id)))[0][0];
+          let booking2 = JSON.parse(JSON.stringify(await Booking.getByBookingId(id)))[0][0];
           let bookingInfo = {
-            startDate: new Date(booking.StartDate).toLocaleDateString(),
-            endDate: new Date(booking.EndDate).toLocaleDateString(),
+            startDate: new Date(booking2.StartDate).toLocaleDateString(),
+            endDate: new Date(booking2.EndDate).toLocaleDateString(),
             workspaceId: booking.WorkspaceId
           };
 
@@ -144,17 +144,17 @@ class OfficeBookingService {
         workspaceOwnerEmail = Object.values(JSON.parse(JSON.stringify(workspaceOwner)))[0][0];
       }
 
-      let booking = JSON.parse(JSON.stringify(await Booking.getByBookingId(bookingId)))[0][0];
+      let booking2 = JSON.parse(JSON.stringify(await Booking.getByBookingId(bookingId)))[0][0];
       let bookingInfo = {
-        startDate: new Date(booking.StartDate).toLocaleDateString(),
-        endDate: new Date(booking.EndDate).toLocaleDateString(),
-        workspaceId: booking.WorkspaceId
+        startDate: new Date(booking2.StartDate).toLocaleDateString(),
+        endDate: new Date(booking2.EndDate).toLocaleDateString(),
+        workspaceId: booking2.WorkspaceId
       };
 
       const EmailService = require("./EmailService");
       const emailService = new EmailService();
 
-      console.log(booking[0]);
+      console.log(booking2[0]);
       console.log(bookingInfo);
       emailService.sendEmailConfirmBookingBooker(bookerEmail.Email, bookingInfo);
       if (thereIsAnOwner) {
