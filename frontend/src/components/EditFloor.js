@@ -22,10 +22,12 @@ class EditFloor extends React.Component {
     // TODO get city from url or props
     const city = "Vancouver";
     const floors = await getFloorsByCity(city);
-
+    let currentFloor = floors[0] ? floors[0].FloorId : 0
+    // TODO floor plans
     this.setState({
       floors,
-      currentFloor: floors[0].FloorId
+      currentFloor: currentFloor,
+
     })
 
   }

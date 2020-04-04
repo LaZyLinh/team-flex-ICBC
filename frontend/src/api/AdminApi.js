@@ -11,7 +11,7 @@ import { func } from 'prop-types';
 const MILLIS_ADMIN_JWT_EXPIRY_TIME = 1000 * 60 * 60 * 24 * 3 // 3 days
 
 let loggedIn = false;
-let jwt = localStorage.getItem("admin_jwt").toString('base64')
+let jwt = localStorage.getItem("admin_jwt")
 let jwtExpiresMillis = localStorage.getItem("admin_jwt_expires_millis")
 if (!jwtExpiresMillis) {
   jwtExpiresMillis = 0;
