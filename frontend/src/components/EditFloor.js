@@ -1,5 +1,6 @@
 import React from 'react'
 import { TextField, withStyles } from "@material-ui/core";
+import { getFloorsByCity } from '../api/AdminApi'
 
 // router.post("/upload-floor-data", AdminFloorService.uploadFloorData);
 // backend has this which takes a (spread sheet file) and puts the whole floor's data into the database
@@ -20,6 +21,8 @@ class EditFloor extends React.Component {
   componentDidMount = async () => {
     // TODO get city from url or props
     const city = "Vancouver";
+    const floors = await getFloorsByCity(city);
+    console.log(floors);
 
   }
 

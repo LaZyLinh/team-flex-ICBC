@@ -72,12 +72,14 @@ export function getAdminToken() {
 
 // helper
 async function api(verb, path, body = undefined) {
+  jwt = localStorage.getItem("admin_jwt")
   if (!jwt) {
     throw new Error(`There is no admin jwt set`)
   }
   if (jwtExpiresMillis < Date.now()) {
 
   }
+  console.log(jwt)
   const config = {
     headers: {
       Authorization: `Bearer ${jwt}`
@@ -177,6 +179,15 @@ export async function updateWorkspace(body) {
 export async function resetFeatures(features) {
   try {
     await api('post', '/reset-features', { featureList: features });
+  } catch (err) {
+    localStorage.setItem("admin_error", JSON.stringify(err))
+    console.log(err)
+  }
+}
+
+export async function getFloorsByCity(city) {
+  try {
+    return (await api('get', '/floors?=\"' + city + '\"')).data
   } catch (err) {
     localStorage.setItem("admin_error", JSON.stringify(err))
     console.log(err)
