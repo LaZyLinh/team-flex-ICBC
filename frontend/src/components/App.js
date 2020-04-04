@@ -9,6 +9,7 @@ import Finished from "./Finished";
 import EditLocation from "./admin/EditLocation";
 import EditFloor from "./EditFloor";
 import AdminPage from "./AdminPage";
+import EditWorkspace from "./admin/EditWorkspace";
 
 function App(props) {
   return (
@@ -41,6 +42,16 @@ function App(props) {
         />
         <Route exact path="/editFloor">
           <EditFloor />
+        </Route>
+        <Route exact path="/editWorkspace/:workspaceId">
+          component=
+          {({ match }) => (
+            <EditWorkspace
+              workspaceId={match.params.workspaceId}
+              workspaceName={match.params.workspaceName}
+              floorId={match.params.floorId}
+            />
+          )}
         </Route>
       </div>
     </Router>

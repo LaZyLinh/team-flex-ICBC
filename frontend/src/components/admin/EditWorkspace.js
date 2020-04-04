@@ -77,7 +77,7 @@ export default class EditWorkspace extends React.Component {
       <React.Fragment>
         <div className={`${classes.headerStyle}`}>
           <h1 style={{ color: "white", position: "absolute", left: "2.78%", fontSize: 48 }}>
-            Admin - Edit Workspace: <em>{this.props.body}</em>
+            Admin - Edit Workspace: <em>{this.props.workspaceId}</em>
           </h1>
         </div>
         <div style={{ position: "absolute", top: "100px" }}>{this.showWorkspaces()} </div>
