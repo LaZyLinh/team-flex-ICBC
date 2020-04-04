@@ -13,6 +13,7 @@ const OfficeLendingService = require('../services/OfficeLendingService');
 const AdminFloorService = require("../services/AdminFloorService");
 const Helper = require('./helper')
 const Features = require('../db/features');
+const floorDB = require("../db/floors");
 
 const knex = require('../db/mysqlDB')
 const knexHelper = async (query) => (await knex.raw(query))[0]
@@ -155,6 +156,23 @@ router.delete('/locations', async (req, res) => {
     const deleteQuery = `DELETE FROM location WHERE Location='${name}'`
     await knexHelper(deleteQuery)
     res.send("OK, done deleted from the superficial location table, note that this doesn't delete any associated floors or workspaces!")
+  } catch (err) {
+    const status = err.status || 500
+    res.status(status)
+    res.json(err)
+  }
+})
+
+/*
+* admin get floors by city name
+*/
+router.get('/floors', (req, res) => {
+  try {
+    let city = req.query.city.trim();
+    floorDB.getLocationByCity(city).then((obj) => {
+      res.status(200);
+      res.json(obj[0]);
+    })
   } catch (err) {
     const status = err.status || 500
     res.status(status)
