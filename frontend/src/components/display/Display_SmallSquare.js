@@ -4,28 +4,48 @@ import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { confirmAlert } from "react-confirm-alert";
+import ApiClient from "../../ApiClient";
+import Lending from "../Lending";
 
 class Display_SmallSquare extends React.Component {
   constructor(props) {
-    super(props);
+     super(props);
     this.state = {
-      Lending: []
+      Lending: [],
+        staffId:""
     };
     this.getLending = this.getLending.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.refreshPage = this.refreshPage.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
   }
+    // componentDidMount = async ()=>{
+    //     const userInfo = await ApiClient.instance.callApi(
+    //         "/auth/user",
+    //         "POST",
+    //         {},
+    //         {},
+    //         { Authorization: "Bearer " + this.props.accountInfo.jwtIdToken },
+    //         { Email: this.props.accountInfo.account.userName },
+    //         null,
+    //         [],
+    //         ["application/x-www-form-urlencoded"],
+    //         ["application/json"],
+    //         Object,
+    //         null
+    //     );
+    //     console.log(userInfo);
+    //     this.setState({
+    //         staffId:userInfo.StaffId,
+    //     });
+    //     console.log(this.state.staffId);
+    // };
 
   async getLending() {
-    const lendingHistory = OfficeLending.getAvailabilitiesByOwnerID(5008);
-    let Lend = [];
-    await Promise.all([lendingHistory]).then(messages => {
-      Lend = messages[0];
-      this.setState({ Lending: Lend });
-    });
-    console.log("Lending History");
-    console.log(this.state.Lending);
+    console.log(this.props.staffIdFromMain)
+    const Lend=  await OfficeLending.getAvailabilitiesByOwnerID(this.props.staffIdFromMain);
+    this.setState({Lending:Lend});
+
   }
 
   refreshPage() {
@@ -58,7 +78,6 @@ class Display_SmallSquare extends React.Component {
 
   render() {
     const { classes } = this.props;
-    console.log(this.state.Lending.length);
     return (
       <div>
         <Button variant="outlined" style={{ width: "100%" }} onClick={this.getLending}>
