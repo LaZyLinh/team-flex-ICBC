@@ -11,7 +11,7 @@ import { func } from 'prop-types';
 const MILLIS_ADMIN_JWT_EXPIRY_TIME = 1000 * 60 * 60 * 24 * 3 // 3 days
 
 let loggedIn = false;
-let jwt = localStorage.getItem("admin_jwt")
+let jwt = localStorage.getItem("admin_jwt").toString('base64')
 let jwtExpiresMillis = localStorage.getItem("admin_jwt_expires_millis")
 if (!jwtExpiresMillis) {
   jwtExpiresMillis = 0;
@@ -82,14 +82,15 @@ async function api(verb, path, body = undefined) {
   console.log(jwt)
   const config = {
     headers: {
-      Authorization: `Bearer ${jwt}`
+      "Authorization": `Bearer ${jwt}`,
+      "Content-type": 'application/x-www-form-urlencoded'
     }
   }
   if (verb === 'post') {
     return (await axios.post(path, body, config)).data
   }
   if (verb === 'get') {
-    return (await axios.get(path, body, config)).data
+    return (await axios.get(path, config))
   }
   if (verb === 'delete') {
     return (await axios.delete(path, body, config)).data
@@ -187,7 +188,8 @@ export async function resetFeatures(features) {
 
 export async function getFloorsByCity(city) {
   try {
-    return (await api('get', '/floors?=\"' + city + '\"')).data
+    return (await api('get', '/floors?city=\"' + city + '\"')).data
+    // return (await api('get', '/floors?city=' + city)).data
   } catch (err) {
     localStorage.setItem("admin_error", JSON.stringify(err))
     console.log(err)
