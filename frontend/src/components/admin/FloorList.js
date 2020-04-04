@@ -15,6 +15,16 @@ class FloorList extends React.Component {
     this.props.callback(index)
   }
 
+  handleEdit = (index) => {
+    // TODO go to edit workspace page
+  }
+
+  handleDelete = (index) => {
+    this.props.deleteCallback(index)
+  }
+
+
+
   render() {
     const { classes } = this.props;
 
@@ -25,6 +35,7 @@ class FloorList extends React.Component {
           <th>Location</th>
           <th>City</th>
           <th>Building</th>
+          <th></th>
         </tr>
         {
           this.state.floors.map((item, index) =>
@@ -33,8 +44,11 @@ class FloorList extends React.Component {
               <th>{item.Location}</th>
               <th>{item.City}</th>
               <th>{item.Building}</th>
-              <EditIcon />
-              <DeleteIcon className={`${classes.deleteIcon}`} /> </tr>)
+              <th>
+                <EditIcon onClick={() => this.handleEdit(index)} />
+                <DeleteIcon className={`${classes.deleteIcon}`} onClick={() => { this.handleDelete(index) }} />
+              </th>
+            </tr>)
         }
       </ table >
     )
@@ -44,7 +58,8 @@ class FloorList extends React.Component {
 
 const muiStyles = {
   deleteIcon: {
-    right: 0
+    right: 0,
+    paddingLeft: "10px"
   },
 
   row: {

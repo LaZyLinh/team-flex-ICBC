@@ -62,6 +62,10 @@ class EditFloor extends React.Component {
     this.forceUpdate()
   }
 
+  deleteFloor = (fidx) => {
+
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -84,7 +88,7 @@ class EditFloor extends React.Component {
                 Add new Floor
           </Button>
             </div>
-            {this.state.allFloors ? <FloorList floors={this.state.allFloors} callback={this.changeCurrent} /> : <span>"loading..."</span>}
+            {this.state.allFloors ? <FloorList floors={this.state.allFloors} callback={this.changeCurrent} deleteCallback={this.deleteFloor} /> : <span>"loading..."</span>}
           </div>
         </div>
       </div>
@@ -108,6 +112,8 @@ const muiStyles = {
     width: "100%",
     height: "100%",
     backgroundColor: "#DAE1EC",
+    paddingBottom: "10px",
+    paddingTop: "10px",
     textAlign: "right"
   },
   buttens: {
@@ -119,6 +125,7 @@ const muiStyles = {
     border: "1px solid rgba(10, 101, 255, 0.5)",
     top: "10%",
     boxShadow: "0px 1px 1px",
+    paddingBottom: "10px",
     "&:hover": {
       border: "1px solid rgba(10, 101, 255, 1)"
     }
