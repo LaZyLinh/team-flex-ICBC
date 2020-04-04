@@ -66,10 +66,10 @@ class OfficeBookingService {
           const EmailService = require("./EmailService");
           const emailService = new EmailService();
 
-          let booking = JSON.parse(JSON.stringify(await Booking.getByBookingId(id)))[0][0];
+          let booking2 = JSON.parse(JSON.stringify(await Booking.getByBookingId(id)))[0][0];
           let bookingInfo = {
-            startDate: new Date(booking.StartDate).toLocaleDateString(),
-            endDate: new Date(booking.EndDate).toLocaleDateString(),
+            startDate: new Date(booking2.StartDate).toLocaleDateString(),
+            endDate: new Date(booking2.EndDate).toLocaleDateString(),
             workspaceId: booking.WorkspaceId
           };
 
