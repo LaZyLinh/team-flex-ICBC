@@ -241,7 +241,7 @@ function createData(officeLoc, WSId, sDate, eDate, officeOwner, status, bookingI
 
 export default function ManageTables(props) {
   const rows = props.rows.map(r =>
-    createData(r.location, r.workspaceId, r.startDate, r.endDate, r.OwnerFirstName, r.confirmed, r.bookingId)
+    createData(r.location, r.workspaceId, r.startDate, r.endDate, r.name, r.confirmed, r.bookingId)
   );
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
@@ -362,13 +362,17 @@ export default function ManageTables(props) {
                         {row.eDate}
                       </TableCell>
                       <TableCell align="center" className={`${classes.rowText}`}>
-                        {row.officeOwner}
+                        {row. officeOwner}
                       </TableCell>
                       <TableCell align="left" className={`${classes.rowText}`}>
                         {row.status}
                       </TableCell>
                       <TableCell>
-                        <DeleteIcon onClick={OfficeBookingApi.cancelBooking(row.bookingId)} />
+                        <DeleteIcon onClick={async ()=>{
+                          await OfficeBookingApi.cancelBooking(row.bookingId);
+                          window.location.reload(false);}
+                      } />
+
                       </TableCell>
                     </StyledTableRow>
                   );

@@ -91,6 +91,9 @@ class Booking {
                 obj['location'] = data['City'];
             }else  if (data.hasOwnProperty('city')) {
                 obj['location'] = ApiClient.convertToType(data['city']);}
+                if(data.hasOwnProperty('OwnerLastName')){
+                    obj['name']= data['OwnerLastName'];
+                }
             //  if (data.hasOwnProperty('OwnerWorksapceId')) {
             //
             //     obj['workspaceId'] = Workspace.constructFromObject(data['OwnerWorksapceId']);

@@ -6,6 +6,7 @@
 // https://www.npmjs.com/package/axios
 
 import Axios from 'axios'
+import { func } from 'prop-types';
 
 const MILLIS_ADMIN_JWT_EXPIRY_TIME = 1000 * 60 * 60 * 24 * 3 // 3 days
 
@@ -71,25 +72,31 @@ export function getAdminToken() {
 
 // helper
 async function api(verb, path, body = undefined) {
+  jwt = localStorage.getItem("admin_jwt")
   if (!jwt) {
     throw new Error(`There is no admin jwt set`)
   }
   if (jwtExpiresMillis < Date.now()) {
 
   }
+  console.log(jwt)
   const config = {
     headers: {
-      Authorization: `Bearer ${jwt}`
+      "Authorization": `Bearer ${jwt}`,
+      "Content-type": 'application/x-www-form-urlencoded'
     }
   }
   if (verb === 'post') {
     return (await axios.post(path, body, config)).data
   }
   if (verb === 'get') {
-    return (await axios.get(path, body, config)).data
+    return (await axios.get(path, config))
   }
   if (verb === 'delete') {
     return (await axios.delete(path, body, config)).data
+  }
+  if (verb === 'put') {
+    return (await axios.put(path, body, config)).data
   }
   throw new Error(`The given verb (${verb}) is not get, post or delete`)
 }
@@ -119,3 +126,74 @@ export async function deleteLocationName(name) {
     console.log(err)
   }
 }
+
+
+// file must in binary
+export async function uploadFloorData(floorid, csvFile) {
+  try {
+    await api('post', "/upload-floor-data", { floorId: floorid, floorData: csvFile })
+  } catch (err) {
+    localStorage.setItem("admin_error", JSON.stringify(err))
+    console.log(err)
+  }
+}
+
+// img must in binary
+export async function uploadFloorImage(floorid, img) {
+  try {
+    await api('post', "/upload-floorplan-image", { floorId: floorid, floorplanImage: img })
+  } catch (err) {
+    localStorage.setItem("admin_error", JSON.stringify(err))
+    console.log(err)
+  }
+}
+
+export async function getWorkspacesByFloorId(floorId) {
+  try {
+    return (await api('get', '/workpaces?=' + floorId)).data
+  } catch (err) {
+    localStorage.setItem("admin_error", JSON.stringify(err))
+    console.log(err)
+  }
+}
+
+export async function deleteWorkspace(workspaceId) {
+  try {
+    await api('delete', '/deleteWorkpace?=' + workspaceId);
+  } catch (err) {
+    localStorage.setItem("admin_error", JSON.stringify(err))
+    console.log(err)
+  }
+}
+
+export async function updateWorkspace(body) {
+  try {
+    await api('put', '/workspaces', body);
+  } catch (err) {
+    localStorage.setItem("admin_error", JSON.stringify(err))
+    console.log(err)
+  }
+}
+
+
+// ! backend may have error, dont use yet
+export async function resetFeatures(features) {
+  try {
+    await api('post', '/reset-features', { featureList: features });
+  } catch (err) {
+    localStorage.setItem("admin_error", JSON.stringify(err))
+    console.log(err)
+  }
+}
+
+export async function getFloorsByCity(city) {
+  try {
+    return (await api('get', '/floors?city=\"' + city + '\"')).data
+    // return (await api('get', '/floors?city=' + city)).data
+  } catch (err) {
+    localStorage.setItem("admin_error", JSON.stringify(err))
+    console.log(err)
+  }
+}
+
+
