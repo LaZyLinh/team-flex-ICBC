@@ -1,6 +1,7 @@
 import React from 'react'
 import { TextField, withStyles } from "@material-ui/core";
 import { getFloorsByCity } from '../api/AdminApi'
+import FakeImg from '../1.jpg'
 
 // router.post("/upload-floor-data", AdminFloorService.uploadFloorData);
 // backend has this which takes a (spread sheet file) and puts the whole floor's data into the database
@@ -22,18 +23,28 @@ class EditFloor extends React.Component {
     // TODO get city from url or props
     const city = "Vancouver";
     const floors = await getFloorsByCity(city);
-    let currentFloor = floors[0] ? floors[0].FloorId : 0
+    let currentFloor = 0;
+    const location = floors[currentFloor].Location
+
     // TODO floor plans
     this.setState({
-      floors,
-      currentFloor: currentFloor,
+      floors: floors,
+      currentFloorIndex: currentFloor,
+      currentLocation: location
 
     })
+    console.log(this.state.floors[0]);
+  }
 
+  getCurrentFloorName() {
+    if (this.state.floors) {
+      return this.state.floors[this.state.currentFloorIndex].Location;
+    }
   }
 
   render() {
     const { classes } = this.props;
+
     return (
       <div className={`${classes.mainStyle}`}>
         <div className={`${classes.headerStyle}`}>
@@ -41,7 +52,8 @@ class EditFloor extends React.Component {
         </div>
         <div className={`${classes.split}`}>
           <div className={`${classes.left}`}>
-            <h2>Jane Flex</h2>
+            <img className={`${classes.floorplanImg}`} src={FakeImg} alt="No floor plan added" />
+            <h3>{this.state.currentLocation}</h3>
           </div>
           <div className={`${classes.right}`}>
             <h2>Jane Flex</h2>
@@ -56,7 +68,10 @@ const muiStyles = {
   mainStyle: {
     display: "block"
   },
-
+  floorplanImg: {
+    height: "100%",
+    width: "100%"
+  },
   split: {
     display: "flex",
     width: '100%'
@@ -75,12 +90,13 @@ const muiStyles = {
 
   left: {
     width: "50%",
+    height: "100%",
     left: 0,
-    backgroundColor: "#111"
   },
 
   right: {
     width: "50%",
+    height: "100%",
     right: 0,
     backgroundColor: "red"
   }
