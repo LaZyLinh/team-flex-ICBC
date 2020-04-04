@@ -79,7 +79,9 @@ export default {
   pkgsContainer: {
     position: "absolute",
     left: "316px",
-    width: "100%"
+    width: "100%",
+    minWidth: "950px",
+    padding: "8px 5px"
   },
   availContainer: {
     display: "flex",

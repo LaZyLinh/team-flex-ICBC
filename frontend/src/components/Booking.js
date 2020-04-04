@@ -203,7 +203,7 @@ class Booking extends React.Component {
           <ExpansionPanelDetails>
             <Card className={classes.availabilityItem}>
               <CardContent>
-                <Typography variant="h5" component="h2" className={classes.availTitle} gutterBottom>
+                <Typography variant="h6" component="h6" className={classes.availTitle} gutterBottom>
                   Availability {j}
                 </Typography>
                 <Typography>
@@ -229,7 +229,11 @@ class Booking extends React.Component {
       pkgItems.push(
         <ExpansionPanel>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <div className={classes.packageHeading}>Package {i}</div>
+            <div className={classes.packageHeading}>
+              <Typography variant="h4" component="h4">
+                Booking Option #{i}
+              </Typography>
+            </div>
           </ExpansionPanelSummary>
           <div className={classes.availContainer}>{availItems}</div>
         </ExpansionPanel>
