@@ -68,6 +68,8 @@ class Lending extends React.Component {
       hasNoWorkspace: !userInfo.WorkspaceId,
       warning: !userInfo.WorkspaceId
     });
+    console.log("From lending");
+    console.log(this.state.staffId);
   };
 
   getFeatures = () => {

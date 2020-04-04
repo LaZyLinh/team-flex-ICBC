@@ -1,27 +1,48 @@
+/* eslint-disable react/jsx-pascal-case */
 import React from "react";
 import { TextField, withStyles } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import OfficeBookingApi from "../api/OfficeBookingApi";
+import FormDialog from "./display/Popup_window";
+import Display_Square from "./display/Display_Square";
+import AddLocation from "./admin/AddLocation";
+
+import { getLocationNames } from "../api/AdminApi";
 
 class AdminPage extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      locations: [],
+      windowOpen: false
+    };
+  }
+
+  getLocations = () => {
+    return this.state.locations;
+  };
+
+  async componentDidMount() {
+    this.setState({ locations: await getLocationNames() });
+  }
+
+  updateLocations = async () => {
+    this.setState({ locations: await getLocationNames() });
+  };
+
   render() {
     const { classes } = this.props;
     return (
       <React.Fragment>
         <div className={`${classes.headerStyle}`}>
-          <h1 style={{ color: "white", position: "absolute", left: "2.78%", fontSize: 48 }}>Edit</h1>
+          <h1 style={{ color: "white", position: "absolute", left: "2.78%", fontSize: 48 }}>
+            Admin Page - Manage Locations
+          </h1>
         </div>
-        <div className={`${classes.searchCellStyle}`}>
-          <div className={`${classes.searchBarStyle}`}>
-            <TextField style={{ position: "absolute", top: "7px", left: "20%" }} />
-            <SearchIcon style={{ fontSize: "34px", position: "absolute", top: "5px", left: "3%" }} />
-          </div>
-          <div className={`${classes.addLocationStyle}`}>
-            <h1 style={{ color: "white", position: "absolute", left: "10%", top: "0%", fontSize: "30px" }}>Location</h1>
-            <AddCircleOutlineIcon
-              style={{ color: "white", position: "absolute", right: "10%", bottom: "10%", fontSize: "40px" }}
-            />
-          </div>
+        <AddLocation getLocations={this.getLocations} updateLocations={this.updateLocations} />
+        <div className={`${classes.showLocationsStyle}`}>
+          <Display_Square />
         </div>
       </React.Fragment>
     );
@@ -61,6 +82,11 @@ const muiStyles = {
     height: "55px",
     top: "7px",
     borderRadius: "20px"
+  },
+  showLocationsStyle: {
+    position: "absolute",
+    top: "30%",
+    width: "100%"
   }
 };
 

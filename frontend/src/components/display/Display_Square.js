@@ -9,17 +9,10 @@ class Display_Square extends React.Component {
     this.state = {
       Locations: []
     };
-    this.getLocations = this.getLocations.bind(this);
   }
-  async getLocations() {
-    const allLocationsP = OfficeBookingApi.getLocations();
-    let locations;
-    await Promise.all([allLocationsP]).then(messages => {
-      console.log(messages);
-      locations = messages[0];
-    });
-    console.log(locations);
-    this.setState({ Locations: locations });
+
+  async componentDidMount() {
+    this.setState({ Locations: await OfficeBookingApi.getLocations() });
   }
 
   render() {
@@ -32,13 +25,9 @@ class Display_Square extends React.Component {
     console.log(this.state.Locations);
     return (
       <div>
-        <Button style={{ width: "100%" }} onClick={this.getLocations}>
-          {" "}
-          Show Locations
-        </Button>
-        {this.state.Locations.map(function(location, i) {
+        {this.state.Locations.map((location, i) => {
           return (
-            <div className={`${classes.eachOne}`}>
+            <div className={`${classes.eachOne}`} key={i}>
               <div className={`${classes.eachPart}`}>
                 <h1 style={{ fontSize: "20px", position: "relative", top: "50%", color: "white" }}>{location}</h1>
               </div>
@@ -51,9 +40,9 @@ class Display_Square extends React.Component {
 }
 const DisplayStyle = {
   eachOne: {
-    width: "33%",
+    width: "20%",
     display: "inline-block",
-    marginLeft: "15%",
+    marginLeft: "10%",
     textAlign: "center"
   },
   eachPart: {
