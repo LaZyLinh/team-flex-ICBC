@@ -1,7 +1,9 @@
 import React from 'react'
+import Img from 'react-image'
+import Button from "@material-ui/core/Button";
 import { TextField, withStyles } from "@material-ui/core";
 import { getFloorsByCity } from '../api/AdminApi'
-import FakeImg from '../1.jpg'
+import FloorList from "./admin/FloorList"
 
 // router.post("/upload-floor-data", AdminFloorService.uploadFloorData);
 // backend has this which takes a (spread sheet file) and puts the whole floor's data into the database
@@ -13,33 +15,43 @@ import FakeImg from '../1.jpg'
 class EditFloor extends React.Component {
   constructor() {
     super();
+    // TODO get city from url or props
+    const vancity = "Vancouver";
     this.state = {
+      city: vancity,
       locations: [],
       windowOpen: false
     };
   }
 
-  componentDidMount = async () => {
-    // TODO get city from url or props
-    const city = "Vancouver";
-    const floors = await getFloorsByCity(city);
+  componentWillMount = async () => {
+
+    const floors = await getFloorsByCity(this.state.city);
+
     let currentFloor = 0;
     const location = floors[currentFloor].Location
+    const currentFloorId = floors[currentFloor].FloorId
 
-    // TODO floor plans
     this.setState({
-      floors: floors,
+      allFloors: floors,
       currentFloorIndex: currentFloor,
-      currentLocation: location
-
+      currentLocation: location,
+      currentFloorId: currentFloorId
     })
-    console.log(this.state.floors[0]);
   }
 
   getCurrentFloorName() {
     if (this.state.floors) {
       return this.state.floors[this.state.currentFloorIndex].Location;
     }
+  }
+
+  handleUploadMap = () => {
+    // todo 
+  }
+
+  handleUploadCSV = () => {
+    // todo
   }
 
   render() {
@@ -52,11 +64,19 @@ class EditFloor extends React.Component {
         </div>
         <div className={`${classes.split}`}>
           <div className={`${classes.left}`}>
-            <img className={`${classes.floorplanImg}`} src={FakeImg} alt="No floor plan added" />
+            <Img className={`${classes.floorplanImg}`} src={`https://icbcflexwork.me:8080/floorplans/${this.state.currentFloorId}.jpg`} />
             <h3>{this.state.currentLocation}</h3>
+            <div className={`${classes.buttens}`}>
+            </div>
           </div>
           <div className={`${classes.right}`}>
-            <h2>Jane Flex</h2>
+            <h2>{"Floors in " + this.state.city}</h2>
+            <div className={classes.floorBar}>
+              <Button className={classes.aButton} onClick={this.handleUploadMap} variant="outlined" color="primary">
+                Add new Floor
+          </Button>
+            </div>
+            {this.state.allFloors ? <FloorList floors={this.state.allFloors} /> : <span>"loading..."</span>}
           </div>
         </div>
       </div>
@@ -76,6 +96,25 @@ const muiStyles = {
     display: "flex",
     width: '100%'
   },
+  floorBar: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#DAE1EC",
+    textAlign: "right"
+  },
+  buttens: {
+    display: "inline-grid"
+  },
+
+  aButton: {
+    color: "#002D7D",
+    border: "1px solid rgba(10, 101, 255, 0.5)",
+    top: "10%",
+    boxShadow: "0px 1px 1px",
+    "&:hover": {
+      border: "1px solid rgba(10, 101, 255, 1)"
+    }
+  },
 
   headerStyle: {
     display: "block",
@@ -89,6 +128,8 @@ const muiStyles = {
   },
 
   left: {
+    paddingTop: "20px",
+    textAlign: "center",
     width: "50%",
     height: "100%",
     left: 0,
@@ -98,7 +139,7 @@ const muiStyles = {
     width: "50%",
     height: "100%",
     right: 0,
-    backgroundColor: "red"
+    backgroundColor: "DAE1EC"
   }
 
 }
