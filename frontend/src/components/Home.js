@@ -12,6 +12,7 @@ import { withStyles } from "@material-ui/core";
 import { GiCalendar, GiDesk, GiChecklist } from "react-icons/gi";
 import styles from "../styles/Home.styles";
 import logo from "../assets/home_logo.png";
+import { login, isLoggedIn } from "../api/AdminApi";
 
 class Home extends React.Component {
   constructor(props) {
@@ -31,18 +32,24 @@ class Home extends React.Component {
   };
 
   handleAdminPortal = () => {
-    this.setState(prevState => {
-      return { openDialog: !prevState.openDialog };
-    });
+    if (isLoggedIn()) {
+      window.location.href = "/adminPage";
+    } else {
+      this.setState(prevState => {
+        return { openDialog: !prevState.openDialog };
+      });
+    }
   };
 
-  handleAdminLogin = () => {
-    // TODO: send request to verify password
-    // TODO: if request succeeds, redirect to admin portal
-    // TODO: if request fails...
-    this.setState({
-      wrongPassword: true
-    });
+  handleAdminLogin = async () => {
+    const successfulLogin = await login(this.state.password);
+    if (successfulLogin) {
+      window.location.href = "/adminPage";
+    } else {
+      this.setState({
+        wrongPassword: true
+      });
+    }
   };
 
   render = () => {
