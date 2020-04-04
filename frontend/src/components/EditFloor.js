@@ -17,6 +17,12 @@ class EditFloor extends React.Component {
     };
   }
 
+  componentDidMount = async () => {
+    // TODO get city from url or props
+    const city = "Vancouver";
+
+  }
+
   render() {
     const { classes } = this.props;
     return (
