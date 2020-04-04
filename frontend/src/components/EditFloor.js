@@ -2,8 +2,10 @@ import React from "react";
 import Img from "react-image";
 import Button from "@material-ui/core/Button";
 import { TextField, withStyles } from "@material-ui/core";
+import { confirmAlert } from 'react-confirm-alert';
 import { getFloorsByCity } from "../api/AdminApi";
 import FloorList from "./admin/FloorList";
+
 
 // router.post("/upload-floor-data", AdminFloorService.uploadFloorData);
 // backend has this which takes a (spread sheet file) and puts the whole floor's data into the database
@@ -24,10 +26,12 @@ class EditFloor extends React.Component {
 
   componentWillMount = async () => {
     const floors = await getFloorsByCity(this.state.city);
-
+    if (!floors) {
+      alert("an error occured!")
+    }
     let currentFloor = 0;
-    const location = floors[currentFloor].Location;
-    const currentFloorId = floors[currentFloor].FloorId;
+    const location = floors[currentFloor] ? floors[currentFloor].Location : "N/A";
+    const currentFloorId = floors[currentFloor] ? floors[currentFloor].FloorId : 0;
 
     this.setState({
       allFloors: floors,
@@ -43,16 +47,8 @@ class EditFloor extends React.Component {
     }
   }
 
-  handleUploadMap = () => {
-    // todo
-  };
-
-  handleUploadCSV = () => {
-    // todo
-  };
 
   changeCurrent = data => {
-    console.log(data);
     this.state.currentFloorIndex = data;
     this.state.currentLocation = this.state.allFloors[data].Location;
     this.state.currentFloorId = this.state.allFloors[data].FloorId;
@@ -61,6 +57,12 @@ class EditFloor extends React.Component {
 
   deleteFloor = (fidx) => {
     console.log(fidx);
+    if (window.confirm(`Are you sure you wish to delete Floor ${this.state.allFloors[fidx].FloorId} in ${this.state.allFloors[fidx].Location}? All workspaces and Lendings on that floor will be deleted.`)) {
+      console.log("click yes");
+      // TODO request delete
+      this.forceUpdate();
+    }
+
 
   }
 
@@ -145,7 +147,7 @@ const muiStyles = {
 
   left: {
     boxAlign: "center",
-    paddingTop: "10%",
+    paddingTop: "5%",
     textAlign: "center",
     width: "50%",
     height: "100%",

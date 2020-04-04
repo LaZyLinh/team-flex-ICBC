@@ -7,7 +7,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 class FloorList extends React.Component {
   constructor(props) {
     super(props);
-    console.log(JSON.stringify(this.props.floors))
     this.state = { floors: this.props.floors }
   }
 
@@ -30,13 +29,13 @@ class FloorList extends React.Component {
 
     return (
       < table style={{ backgroundColor: "#7D90B2", width: "100%", border: "none", cellspacing: "0", cellpadding: "0" }} >
-        <tr key="floor_title" style={{ backgroundColor: "white", width: "100%", height: "56px" }}>
+        {this.state.floors[0] ? <tr key="floor_title" style={{ backgroundColor: "white", width: "100%", height: "56px" }}>
           <th style={{ width: "20px" }}>Floor Number</th>
           <th>Location</th>
           <th>City</th>
           <th>Building</th>
           <th></th>
-        </tr>
+        </tr> : <span className={`${classes.noSpan}`}>No floor found</span>}
         {
           this.state.floors.map((item, index) =>
             <tr key={index} onClick={() => this.handleClickLine(index)} className={`${classes.row}`}>
@@ -45,7 +44,7 @@ class FloorList extends React.Component {
               <th>{item.City}</th>
               <th>{item.Building}</th>
               <th>
-                <EditIcon onClick={() => this.handleEdit(index)} />
+                <EditIcon className={`${classes.editbtn}`} onClick={() => this.handleEdit(index)} />
                 <DeleteIcon className={`${classes.deleteIcon}`} onClick={() => { this.handleDelete(index) }} />
               </th>
             </tr>)
@@ -57,18 +56,33 @@ class FloorList extends React.Component {
 }
 
 const muiStyles = {
+  noSpan: {
+    height: "56px", textAlign: "center",
+    paddingLeft: "40%",
+    paddingTop: "20px",
+    paddingBotton: "20px"
+  },
+  editbtn: {
+    "&:hover": {
+      cursor: "pointer"
+    }
+  },
+
   deleteIcon: {
-    right: 0,
-    paddingLeft: "10px"
+    marginLeft: "10px",
+    "&:hover": {
+      cursor: "pointer"
+    }
   },
 
   row: {
     backgroundColor: "white",
     width: "100%",
-    height: "56px",
+    height: "46px",
     border: "none",
     "&:hover": {
-      border: "1px solid rgba(10, 101, 255, 1)"
+      border: "1px solid rgba(10, 101, 255, 1)",
+      backgroundColor: "#DAE1EC",
     }
   }
 }
