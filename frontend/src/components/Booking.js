@@ -50,11 +50,7 @@ class Booking extends React.Component {
   }
 
   componentDidMount = async () => {
-    const reqs = [
-      OfficeBookingApi.getLocations(),
-      OfficeBookingApi.getFeatures()
-      // OfficeBookingApi.getTopAvailabilities(20)
-    ];
+    const reqs = [OfficeBookingApi.getLocations(), OfficeBookingApi.getFeatures()];
     const results = await Promise.all(reqs);
     console.log(results[1]);
     const features = results[1].map(f => {
@@ -193,6 +189,9 @@ class Booking extends React.Component {
   };
 
   renderPackages = classes => {
+    if (!this.state.packages) {
+      return <div className={`${classes.noAvailText}`}>No availabilities for this filter. Search again.</div>;
+    }
     const pkgItems = [];
     let i = 1;
     for (const pkg of this.state.packages) {
@@ -200,7 +199,7 @@ class Booking extends React.Component {
       let j = 1;
       for (const availability of pkg) {
         availItems.push(
-          <ExpansionPanelDetails>
+          <ExpansionPanelDetails key={j}>
             <Card className={classes.availabilityItem}>
               <CardContent>
                 <Typography variant="h6" component="h6" className={classes.availTitle} gutterBottom>
@@ -227,8 +226,8 @@ class Booking extends React.Component {
         j++;
       }
       pkgItems.push(
-        <ExpansionPanel>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+        <ExpansionPanel key={i}>
+          <ExpansionPanelSummary className={classes.pkgSummary} expandIcon={<ExpandMoreIcon />}>
             <div className={classes.packageHeading}>
               <Typography variant="h4" component="h4">
                 Booking Option #{i}
