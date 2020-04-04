@@ -6,8 +6,9 @@ import Booking from "./Booking";
 import Withdraw from "./Withdraw";
 import ConfirmBooking from "./ConfirmBooking";
 import Finished from "./Finished";
+import EditLocation from "./admin/EditLocation";
+import EditFloor from "./EditFloor";
 import AdminPage from "./AdminPage";
-import EditFloor from "./EditFloor"
 
 function App(props) {
   return (
@@ -34,6 +35,10 @@ function App(props) {
         <Route exact path="/adminPage">
           <AdminPage />
         </Route>
+        <Route
+          path="/admin/edit-location/:locationName"
+          component={({ match }) => <EditLocation locationName={match.params.locationName} />}
+        />
         <Route exact path="/editFloor">
           <EditFloor />
         </Route>
