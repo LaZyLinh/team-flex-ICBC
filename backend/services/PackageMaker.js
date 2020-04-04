@@ -164,17 +164,19 @@ function unixDayToISO(day) {
   return new Date(day * MILLIS_IN_DAY).toISOString().substring(0, 10)
 }
 
-function makeBookingSuggestion(start, { availability, length }) {
+async function makeBookingSuggestion(start, { availability, length }, knex) {
+  const floor = await getFloorByWorkspaceId(availability.workspaceId, knex)
   return {
     availabilityId: availability.id,
     startDate: unixDayToISO(start),
     endDate: unixDayToISO(start + length - 1),
     workspaceId: availability.workspaceId,
-    comment: availability.comment
+    comment: availability.comment,
+    floor
   }
 }
 
-function buildPackageFromMultipleAvailabilities(availabilities, startDate, endDate) {
+async function buildPackageFromMultipleAvailabilities(availabilities, startDate, endDate, knex) {
   const { start, end } = getRange(startDate, endDate)
   // day -> availabilities open that day
   const bestDaysOfAllAvailabilities = {}
@@ -233,25 +235,40 @@ function buildPackageFromMultipleAvailabilities(availabilities, startDate, endDa
     } else {
       // add suggested booking
       const day = bestDaysOfAllAvailabilities[i]
-      package.push(makeBookingSuggestion(i, day))
+      package.push(await makeBookingSuggestion(i, day, knex))
       i += day.length
     }
   }
   return package
 }
 
-function buildPackages(availabilities, completeOverlapIDs, startDate, endDate) {
+async function getFloorByWorkspaceId(workspaceId, knex) {
+  const floorQuery = `SELECT FloorId, FloorNo, City, Building FROM floor NATURAL JOIN workspace WHERE WorkspaceId='${workspaceId}'`
+  // console.log(floorQuery)
+  const rawRows = await resultFromKnex(floorQuery, knex)
+  // console.log(rawRows)
+  if (rawRows.length === 0) {
+    console.log("Severe error in PackageMaker::getFloorByWorkspaceId")
+    return { floorId: 0, floorNo: 0, building: "Unknown", city: "Unknown" }
+  } else {
+    const floorRow = rawRows[0]
+    return { floorId: floorRow.FloorId, floorNo: floorRow.FloorNo, building: floorRow.Building, city: floorRow.City }
+  }
+}
+
+async function buildPackages(availabilities, completeOverlapIDs, startDate, endDate, knex) {
   if (completeOverlapIDs.length > 0) {
     // Plan A: return these availabilities
     const packages = []
     for (const id of completeOverlapIDs) {
       const a = availabilities[id]
-      packages.push([{ availabilityId: id, startDate, endDate, workspaceId: a.workspaceId, comment: a.comment }])
+      const floor = await getFloorByWorkspaceId(a.workspaceId, knex);
+      packages.push([{ availabilityId: id, startDate, endDate, workspaceId: a.workspaceId, comment: a.comment, floor }])
     }
     return packages
   } else {
     // Plan B: build the best package from open dates
-    const package = buildPackageFromMultipleAvailabilities(availabilities, startDate, endDate)
+    const package = await buildPackageFromMultipleAvailabilities(availabilities, startDate, endDate, knex)
     if (package.length === 0) {
       return []
     } else {
@@ -266,7 +283,7 @@ async function makePackages(conditions, knex = defaultKnex) {
     return []
   }
   const completeOverlapIDs = getCompleteOverlapIDs(availabilities, conditions.startDate, conditions.endDate)
-  return buildPackages(availabilities, completeOverlapIDs, conditions.startDate, conditions.endDate)
+  return await buildPackages(availabilities, completeOverlapIDs, conditions.startDate, conditions.endDate, knex)
 }
 
 module.exports = { makePackages }
