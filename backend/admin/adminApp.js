@@ -113,7 +113,7 @@ router.post('/locations', async (req, res) => {
     let name = req.body.locationName
     if (name == null || typeof name !== 'string' || name === '') {
       throw {
-        error: "body must have locationName as non-empty string",
+        error: `body must have locationName as non-empty string. name: ${name}, body: ${JSON.stringify(req.body)}`,
         status: 400
       }
     }

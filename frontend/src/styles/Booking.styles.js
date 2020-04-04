@@ -75,6 +75,21 @@ export default {
     backgroundColor: "#ffffff",
     top: "300px",
     bottom: "5%"
+  },
+  pkgsContainer: {
+    position: "absolute",
+    left: "316px",
+    width: "100%",
+    minWidth: "950px",
+    padding: "8px 5px"
+  },
+  availContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
+    overflow: "scroll"
+  },
+  availTitle: {
+    color: "#000000"
   }
 };
 

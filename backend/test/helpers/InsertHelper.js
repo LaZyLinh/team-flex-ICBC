@@ -45,7 +45,7 @@ async function insertAvailability(availabilityId, startDate, endDate, workspaceI
 }
 
 async function insertBooking(bookingId, startDate, endDate, staffId, availabilityId, workspaceId) {
-  await knex.raw(`INSERT INTO booking VALUES (1, ${bookingId}, '${startDate}', '${endDate}', ${staffId}, ${availabilityId}, '${workspaceId}');`)
+  await knex.raw(`INSERT INTO booking (Confirmed, BookingId, StartDate, EndDate, StaffId, AvailabilityId, WorkspaceId) VALUES (1, ${bookingId}, '${startDate}', '${endDate}', ${staffId}, ${availabilityId}, '${workspaceId}');`)
 }
 
 module.exports = { setKnex, resetFeatureTables, insertFeature, insertWorkspaceFeature, insertUser, insertWorkspace, insertFloor, insertAvailability, insertBooking }

@@ -44,7 +44,8 @@ class Booking extends React.Component {
       floors: [],
       startDate: new Date(),
       endDate: new Date(),
-      features: []
+      features: [],
+      packages: []
     };
   }
 
@@ -72,6 +73,7 @@ class Booking extends React.Component {
     const sdStr = this.state.startDate.toISOString().slice(0, 10);
     const edStr = this.state.endDate.toISOString().slice(0, 10);
     const res = await OfficeBookingApi.getPackages("2020-03-30", "2020-05-27");
+    this.setState({ packages: res });
     console.log(res);
   };
 
@@ -184,48 +186,61 @@ class Booking extends React.Component {
               );
             })}
           </div> */}
-          <div>{this.renderPackages(classes)}</div>
+          <div className={classes.pkgsContainer}>{this.renderPackages(classes)}</div>
         </div>
       </div>
     );
   };
 
   renderPackages = classes => {
-    // for (const package of this.state.packages) {
-
-    // }
-    return (
-      <ExpansionPanel>
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          <div className={classes.packageHeading}>Expansion Panel 1</div>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <div>
+    const pkgItems = [];
+    let i = 1;
+    for (const pkg of this.state.packages) {
+      const availItems = [];
+      let j = 1;
+      for (const availability of pkg) {
+        availItems.push(
+          <ExpansionPanelDetails>
             <Card className={classes.availabilityItem}>
               <CardContent>
-                <Typography className={classes.title} color="textSecondary" gutterBottom>
-                  Word of the Day
+                <Typography variant="h6" component="h6" className={classes.availTitle} gutterBottom>
+                  Availability {j}
                 </Typography>
-                <Typography variant="h5" component="h2">
-                  be
-                </Typography>
-                <Typography className={classes.pos} color="textSecondary">
-                  adjective
-                </Typography>
-                <Typography variant="body2" component="p">
-                  well meaning and kindly.
+                <Typography>
+                  <strong>Start:</strong> {availability.startDate}
                   <br />
-                  {'"a benevolent smile"'}
+                  <strong>End:</strong> {availability.endDate}
+                </Typography>
+                <Typography className={classes.pos}>
+                  <strong>Workspace:</strong> ${availability.workspaceId}
+                </Typography>
+                <Typography variant="body2" component="p" color="textSecondary">
+                  <strong>Owner comments:</strong> {availability.comment || "None"}
                 </Typography>
               </CardContent>
               <CardActions>
                 <Button size="small">Floor Plan</Button>
               </CardActions>
             </Card>
-          </div>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-    );
+          </ExpansionPanelDetails>
+        );
+        j++;
+      }
+      pkgItems.push(
+        <ExpansionPanel>
+          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <div className={classes.packageHeading}>
+              <Typography variant="h4" component="h4">
+                Booking Option #{i}
+              </Typography>
+            </div>
+          </ExpansionPanelSummary>
+          <div className={classes.availContainer}>{availItems}</div>
+        </ExpansionPanel>
+      );
+      i++;
+    }
+    return pkgItems;
   };
 }
 

@@ -1,9 +1,9 @@
-import React from 'react'
-import Img from 'react-image'
+import React from "react";
+import Img from "react-image";
 import Button from "@material-ui/core/Button";
 import { TextField, withStyles } from "@material-ui/core";
-import { getFloorsByCity } from '../api/AdminApi'
-import FloorList from "./admin/FloorList"
+import { getFloorsByCity } from "../api/AdminApi";
+import FloorList from "./admin/FloorList";
 
 // router.post("/upload-floor-data", AdminFloorService.uploadFloorData);
 // backend has this which takes a (spread sheet file) and puts the whole floor's data into the database
@@ -13,32 +13,29 @@ import FloorList from "./admin/FloorList"
 // Choice 2 - have a button that leads to a page that handles it
 
 class EditFloor extends React.Component {
-  constructor() {
-    super();
-    // TODO get city from url or props
-    const vancity = "Vancouver";
+  constructor(props) {
+    super(props);
     this.state = {
-      city: vancity,
+      city: props.locationName,
       locations: [],
       windowOpen: false
     };
   }
 
   componentWillMount = async () => {
-
     const floors = await getFloorsByCity(this.state.city);
 
     let currentFloor = 0;
-    const location = floors[currentFloor].Location
-    const currentFloorId = floors[currentFloor].FloorId
+    const location = floors[currentFloor].Location;
+    const currentFloorId = floors[currentFloor].FloorId;
 
     this.setState({
       allFloors: floors,
       currentFloorIndex: currentFloor,
       currentLocation: location,
       currentFloorId: currentFloorId
-    })
-  }
+    });
+  };
 
   getCurrentFloorName() {
     if (this.state.floors) {
@@ -47,22 +44,23 @@ class EditFloor extends React.Component {
   }
 
   handleUploadMap = () => {
-    // todo 
-  }
+    // todo
+  };
 
   handleUploadCSV = () => {
     // todo
-  }
+  };
 
-  changeCurrent = (data) => {
-    console.log(data)
+  changeCurrent = data => {
+    console.log(data);
     this.state.currentFloorIndex = data;
     this.state.currentLocation = this.state.allFloors[data].Location;
     this.state.currentFloorId = this.state.allFloors[data].FloorId;
-    this.forceUpdate()
-  }
+    this.forceUpdate();
+  };
 
   deleteFloor = (fidx) => {
+    console.log(fidx);
 
   }
 
@@ -76,23 +74,26 @@ class EditFloor extends React.Component {
         </div>
         <div className={`${classes.split}`}>
           <div className={`${classes.left}`}>
-            <img className={`${classes.floorplanImg}`} src={`https://icbcflexwork.me:8080/floorplans/${this.state.currentFloorId}.jpg`} alt="No FloorPlan found" />
+            <img
+              className={`${classes.floorplanImg}`}
+              src={`https://icbcflexwork.me:8080/floorplans/${this.state.currentFloorId}.jpg`}
+              alt="No FloorPlan found"
+            />
             <h3>{this.state.currentLocation}</h3>
-            <div className={`${classes.buttens}`}>
-            </div>
+            <div className={`${classes.buttens}`}></div>
           </div>
           <div className={`${classes.right}`}>
             <h2>{"Floors in " + this.state.city}</h2>
             <div className={classes.floorBar}>
               <Button className={classes.aButton} onClick={this.handleUploadMap} variant="outlined" color="primary">
                 Add new Floor
-          </Button>
+              </Button>
             </div>
             {this.state.allFloors ? <FloorList floors={this.state.allFloors} callback={this.changeCurrent} deleteCallback={this.deleteFloor} /> : <span>"loading..."</span>}
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 
@@ -106,7 +107,7 @@ const muiStyles = {
   },
   split: {
     display: "flex",
-    width: '100%'
+    width: "100%"
   },
   floorBar: {
     width: "100%",
@@ -148,7 +149,7 @@ const muiStyles = {
     textAlign: "center",
     width: "50%",
     height: "100%",
-    left: 0,
+    left: 0
   },
 
   right: {
@@ -157,7 +158,6 @@ const muiStyles = {
     right: 0,
     backgroundColor: "DAE1EC"
   }
-
-}
+};
 
 export default withStyles(muiStyles)(EditFloor);
