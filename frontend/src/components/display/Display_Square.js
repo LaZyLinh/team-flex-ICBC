@@ -25,9 +25,9 @@ class Display_Square extends React.Component {
     console.log(this.state.Locations);
     return (
       <div>
-        {this.state.Locations.map(function (location, i) {
+        {this.state.Locations.map((location, i) => {
           return (
-            <div className={`${classes.eachOne}`}>
+            <div className={`${classes.eachOne}`} key={i}>
               <div className={`${classes.eachPart}`}>
                 <h1 style={{ fontSize: "20px", position: "relative", top: "50%", color: "white" }}>{location}</h1>
               </div>
@@ -40,9 +40,9 @@ class Display_Square extends React.Component {
 }
 const DisplayStyle = {
   eachOne: {
-    width: "33%",
+    width: "20%",
     display: "inline-block",
-    marginLeft: "15%",
+    marginLeft: "10%",
     textAlign: "center"
   },
   eachPart: {
