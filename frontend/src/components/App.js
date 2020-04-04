@@ -53,6 +53,9 @@ function App(props) {
             />
           )}
         </Route>
+        <Route exact path="/editWs">
+          <EditWorkspace/>
+        </Route>
       </div>
     </Router>
   );

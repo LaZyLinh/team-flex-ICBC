@@ -1,6 +1,7 @@
 import React from "react";
-import { getWorkspacesByFloorId, deleteWorkspace, updateWorkspace } from "../../api/AdminApi";
+import { deleteWorkspace, getWorkspacesByFloorId } from "../../api/AdminApi";
 import Button from "@material-ui/core/Button";
+
 
 export default class EditWorkspace extends React.Component {
   constructor(props) {
@@ -13,13 +14,15 @@ export default class EditWorkspace extends React.Component {
 
   async componentDidMount() {
     this.setState({
-      workspaces: await getWorkspacesByFloorId(this.props.floorId)
+      // workspaces: await getWorkspacesByFloorId(this.props.floorId)
+      workspaces: await getWorkspacesByFloorId(1)
     });
     console.log(this.state.workspaces);
   }
 
   showWorkspace = workspace => {
     const workspaceId = workspace.WorkspaceId;
+
     const workspaceName = workspace.WorkspaceName;
     return (
       <React.Fragment key={workspaceId}>
@@ -40,7 +43,8 @@ export default class EditWorkspace extends React.Component {
   };
 
   showWorkspaces = () => {
-    if (this.state.workspaces.length === 0) {
+    if (0 === 0) {
+      // if (this.state.workspaces.length == 0) {
       return <h2>No workspaces have been added.</h2>;
     } else {
       const workspaces = this.state.workspaces;
@@ -74,8 +78,8 @@ export default class EditWorkspace extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <React.Fragment>
-        <div className={`${classes.headerStyle}`}>
+      <React.Fragment >
+        <div >
           <h1 style={{ color: "white", position: "absolute", left: "2.78%", fontSize: 48 }}>
             Admin - Edit Workspace: <em>{this.props.workspaceId}</em>
           </h1>
@@ -87,7 +91,11 @@ export default class EditWorkspace extends React.Component {
           </Button>
         </div>
         {this.showSecondDeleteButtonIfNeeded()}
-      </React.Fragment>
+      </React.Fragment >
     );
   }
+
+
+
+
 }
