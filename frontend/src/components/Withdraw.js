@@ -58,8 +58,9 @@ class Withdraw extends React.Component {
   async onSubmitStaffId(event) {
     console.log("onSubmitStaffId");
     event.preventDefault();
-    const staffId = 1001;
+    const staffId = 1004;
     const data = await OfficeBookingApi.getBookingsByUserID(staffId);
+    console.log(data);
     this.setState({ bookings: data });
     console.log(this.state.bookings);
     // , (error, data) => {
@@ -117,7 +118,6 @@ class Withdraw extends React.Component {
         <div className={`${classes.lendingHistory}`}>
           <Display_SmallSquare />
         </div>
-        <SearchIcon className={`${classes.searchIcon}`} />
         <form onSubmit={this.onSubmitStaffId} className={`${classes.idSearch}`}>
           <TextField
             onKeyPress={e => this.setState({ staffId: e.target.value })}
