@@ -3,11 +3,12 @@ import React from "react";
 import { TextField, withStyles } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import { getAdminToken } from "../api/AdminApi";
 import OfficeBookingApi from "../api/OfficeBookingApi";
 import FormDialog from "./display/Popup_window";
 import Display_Square from "./display/Display_Square";
-import AddLocation from "./adminPage/AddLocation";
+import AddLocation from "./admin/AddLocation";
+
+import { getLocationNames } from "../api/AdminApi";
 
 class AdminPage extends React.Component {
   constructor() {
@@ -18,14 +19,28 @@ class AdminPage extends React.Component {
     };
   }
 
+  getLocations = () => {
+    return this.state.locations;
+  };
+
+  async componentDidMount() {
+    this.setState({ locations: await getLocationNames() });
+  }
+
+  updateLocations = async () => {
+    this.setState({ locations: await getLocationNames() });
+  };
+
   render() {
     const { classes } = this.props;
     return (
       <React.Fragment>
         <div className={`${classes.headerStyle}`}>
-          <h1 style={{ color: "white", position: "absolute", left: "2.78%", fontSize: 48 }}>Admin Page</h1>
+          <h1 style={{ color: "white", position: "absolute", left: "2.78%", fontSize: 48 }}>
+            Admin Page - Manage Locations
+          </h1>
         </div>
-        <AddLocation locations={this.state.locations} />
+        <AddLocation getLocations={this.getLocations} updateLocations={this.updateLocations} />
         <div className={`${classes.showLocationsStyle}`}>
           <Display_Square />
         </div>
@@ -70,7 +85,8 @@ const muiStyles = {
   },
   showLocationsStyle: {
     position: "absolute",
-    top: "30%"
+    top: "30%",
+    width: "100%"
   }
 };
 
