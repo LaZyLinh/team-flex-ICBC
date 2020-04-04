@@ -1,6 +1,6 @@
 'use strict';
 
-const VERSION = 4 // Apr 2, 2020, 4:39pm
+const VERSION = -1 // Apr 4, 2020, 6:38am
 
 const config = require('./config')
 const authenticator = require('./auth/authenticator')

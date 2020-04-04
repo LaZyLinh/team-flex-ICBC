@@ -111,7 +111,7 @@ router.get('/locations', async (req, res) => {
 router.post('/locations', async (req, res) => {
   try {
     let name = req.body.locationName
-    if (name == null || typeof name !== 'string' || name == '') {
+    if (name == null || typeof name !== 'string' || name === '') {
       throw {
         error: "body must have locationName as non-empty string",
         status: 400
@@ -120,7 +120,7 @@ router.post('/locations', async (req, res) => {
     name = name.trim()
     if (name === '') {
       throw {
-        error: "location name must not be all whitespace, that's kinda confusing",
+        error: "unexpected error: location name must not be all whitespace. the front end should not have sent this request",
         status: 400
       }
     }
