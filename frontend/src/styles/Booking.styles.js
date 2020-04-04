@@ -75,6 +75,13 @@ export default {
     backgroundColor: "#ffffff",
     top: "300px",
     bottom: "5%"
+  },
+  pkgsContainer: {
+    position: "absolute",
+    left: "316px"
+  },
+  availTitle: {
+    color: "#000000"
   }
 };
 

@@ -44,7 +44,8 @@ class Booking extends React.Component {
       floors: [],
       startDate: new Date(),
       endDate: new Date(),
-      features: []
+      features: [],
+      packages: []
     };
   }
 
@@ -72,6 +73,7 @@ class Booking extends React.Component {
     const sdStr = this.state.startDate.toISOString().slice(0, 10);
     const edStr = this.state.endDate.toISOString().slice(0, 10);
     const res = await OfficeBookingApi.getPackages("2020-03-30", "2020-05-27");
+    this.setState({ packages: res });
     console.log(res);
   };
 
@@ -184,48 +186,59 @@ class Booking extends React.Component {
               );
             })}
           </div> */}
-          <div>{this.renderPackages(classes)}</div>
+          <div className={classes.pkgsContainer}>{this.renderPackages(classes)}</div>
         </div>
       </div>
     );
   };
 
   renderPackages = classes => {
-    // for (const package of this.state.packages) {
-
-    // }
-    return (
-      <ExpansionPanel>
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          <div className={classes.packageHeading}>Expansion Panel 1</div>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <div>
-            <Card className={classes.availabilityItem}>
-              <CardContent>
-                <Typography className={classes.title} color="textSecondary" gutterBottom>
-                  Word of the Day
-                </Typography>
-                <Typography variant="h5" component="h2">
-                  be
-                </Typography>
-                <Typography className={classes.pos} color="textSecondary">
-                  adjective
-                </Typography>
-                <Typography variant="body2" component="p">
-                  well meaning and kindly.
-                  <br />
-                  {'"a benevolent smile"'}
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button size="small">Floor Plan</Button>
-              </CardActions>
-            </Card>
-          </div>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-    );
+    const pkgItems = [];
+    let i = 1;
+    for (const pkg of this.state.packages) {
+      const availItems = [];
+      let j = 1;
+      for (const availability of pkg) {
+        availItems.push(
+          <ExpansionPanelDetails>
+            <div>
+              <Card className={classes.availabilityItem}>
+                <CardContent>
+                  <Typography variant="h5" component="h2" className={classes.availTitle} gutterBottom>
+                    Availability {j}
+                  </Typography>
+                  <Typography>
+                    <strong>Start:</strong> {availability.startDate}
+                    <br />
+                    <strong>End:</strong> {availability.endDate}
+                  </Typography>
+                  <Typography className={classes.pos}>
+                    <strong>Workspace:</strong> ${availability.workspaceId}
+                  </Typography>
+                  <Typography variant="body2" component="p" color="textSecondary">
+                    <strong>Owner comment:</strong> {availability.comment || "None"}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Button size="small">Floor Plan</Button>
+                </CardActions>
+              </Card>
+            </div>
+          </ExpansionPanelDetails>
+        );
+        j++;
+      }
+      pkgItems.push(
+        <ExpansionPanel>
+          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <div className={classes.packageHeading}>Package {i}</div>
+          </ExpansionPanelSummary>
+          {availItems}
+        </ExpansionPanel>
+      );
+      i++;
+    }
+    return pkgItems;
   };
 }
 
