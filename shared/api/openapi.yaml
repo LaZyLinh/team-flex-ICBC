@@ -1046,6 +1046,6 @@ components:
           type: integer
           example: 1
         example:
-        floorId: 1
+          floorId: 1
 
 
