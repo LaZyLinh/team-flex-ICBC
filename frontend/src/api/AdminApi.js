@@ -66,6 +66,7 @@ export function getAdminToken() {
 
 // helper
 async function api(verb, path, body = undefined) {
+  localStorage.setItem("debug_body", JSON.stringify(body))
   jwt = localStorage.getItem("admin_jwt")
   if (!jwt) {
     throw new Error(`There is no admin jwt set`)
@@ -77,7 +78,7 @@ async function api(verb, path, body = undefined) {
   const config = {
     headers: {
       "Authorization": `Bearer ${jwt}`,
-      "Content-type": 'application/x-www-form-urlencoded'
+      // "Content-type": 'application/x-www-form-urlencoded' // TODO implement this with qs
     }
   }
   if (verb === 'post') {
@@ -87,15 +88,16 @@ async function api(verb, path, body = undefined) {
     return (await axios.get(path, config))
   }
   if (verb === 'delete') {
-    return (await axios.delete(path, body, config)).data
+    return (await axios.delete(path, config))
   }
   if (verb === 'put') {
     return (await axios.put(path, body, config)).data
   }
-  throw new Error(`The given verb (${verb}) is not get, post or delete`)
+  throw new Error(`The given verb (${verb}) is not get, post, delete or put`)
 }
 
 export async function createLocation(name) {
+  localStorage.setItem("debug", name);
   try {
     await api('post', '/locations', { locationName: name })
   } catch (err) {
@@ -171,7 +173,7 @@ export async function updateWorkspace(body) {
 }
 
 
-// ! backend may have error, dont use yet
+
 export async function resetFeatures(features) {
   try {
     await api('post', '/reset-features', { featureList: features });
@@ -190,3 +192,26 @@ export async function getFloorsByCity(city) {
     console.log(err)
   }
 }
+
+export async function addFloor(bdata) {
+  jwt = localStorage.getItem("admin_jwt")
+  await Axios({
+    method: 'POST',
+    url: 'https://icbcflexwork.me:8080/admin/floors',
+    data: bdata,
+    headers: {
+      "Authorization": `Bearer ${jwt}`
+    }
+  })
+
+}
+
+export async function deleteFloor(id) {
+  try {
+    await api('delete', `/floors?id=${id}`);
+  } catch (err) {
+    localStorage.setItem("admin_error", JSON.stringify(err))
+    console.log(err)
+  }
+}
+
