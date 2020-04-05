@@ -132,6 +132,7 @@ export async function uploadFloorData(floorid, csvFile) {
   } catch (err) {
     localStorage.setItem("admin_error", JSON.stringify(err))
     console.log(err)
+    throw err;
   }
 }
 

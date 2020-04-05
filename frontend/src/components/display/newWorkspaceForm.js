@@ -8,13 +8,16 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { withStyles } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
+import { uploadFloorData } from '../../api/AdminApi'
 
 class FormDialog extends React.Component {
     constructor(props) {
         super(props);
         console.log(props)
         this.state = {
+            floorId: props.floorIdFromMain,
             open: false,
+            errMsg: ""
         }
         this.handleFileChange = this.handleFileChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
@@ -36,8 +39,19 @@ class FormDialog extends React.Component {
         this.setState({ file: e.target.files[0] });
     }
 
-    handleSubmit = (event) => {
+    handleSubmit = async (event) => {
         // TODO send upload file request
+        try {
+            await uploadFloorData(this.state.floorId, this.state.file);
+            this.setState({ errMsg: "" })
+            this.setState(prevState => {
+                return { open: !prevState.open };
+            });
+            window.location.reload();
+        } catch (err) {
+            console.log(err)
+            this.setState({ errMsg: "there is an error uploading csv" })
+        }
     }
 
     render() {
@@ -60,6 +74,9 @@ class FormDialog extends React.Component {
                             margin="none"
                             required></input>
                     </DialogContent>
+                    <DialogContentText style={{ color: "red", paddingLeft: "5%" }}>
+                        {this.state.errMsg}
+                    </DialogContentText>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">
                             Cancel
