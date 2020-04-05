@@ -274,9 +274,8 @@ async function adminCreateFloor({ floorNo, building, city, location }, floorPlan
   const insertQuery = `INSERT INTO floor (FloorNo, Building, City, Location) VALUES (${floorNo}, '${building}', '${city}' ,'${location}')`
   const insertId = await knexHelper(insertQuery).insertId
   if (floorPlanImg) {
-    const file = req.files[FORM_ID_IMAGE_UPLOAD];
-    const path = `./public/${FLOORPLANS_PUBLIC_FOLDER}/${insertId}.jpg`;
-    file.mv(path);
+    const path = `./public/floorplans/${insertId}.jpg`;
+    floorPlanImg.mv(path);
   }
   return insertId
 }
