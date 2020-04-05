@@ -2,7 +2,7 @@ import React from 'react'
 import { TextField, withStyles } from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-
+import Tooltip from '@material-ui/core/Tooltip';
 
 class FloorList extends React.Component {
   constructor(props) {
@@ -15,7 +15,7 @@ class FloorList extends React.Component {
   }
 
   handleEdit = (index) => {
-    // TODO go to edit workspace page
+    this.props.editFloorCallback(index)
   }
 
   handleDelete = (index) => {
@@ -44,8 +44,12 @@ class FloorList extends React.Component {
               <th>{item.City}</th>
               <th>{item.Building}</th>
               <th>
-                <EditIcon className={`${classes.editbtn}`} onClick={() => this.handleEdit(index)} />
-                <DeleteIcon className={`${classes.deleteIcon}`} onClick={() => { this.handleDelete(index) }} />
+                <Tooltip title="Edit Workspaces" placement="top">
+                  <EditIcon className={`${classes.editbtn}`} onClick={() => this.handleEdit(index)} />
+                </Tooltip>
+                <Tooltip title="Delete Floor" placement="top">
+                  <DeleteIcon className={`${classes.deleteIcon}`} onClick={() => { this.handleDelete(index) }} />
+                </Tooltip>
               </th>
             </tr>)
         }
