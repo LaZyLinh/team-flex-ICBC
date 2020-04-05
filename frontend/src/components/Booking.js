@@ -258,7 +258,7 @@ class Booking extends React.Component {
                   <strong>End:</strong> {availability.endDate}
                 </Typography>
                 <Typography className={classes.pos}>
-                  <strong>Workspace:</strong> ${availability.workspaceId}
+                  <strong>Workspace:</strong> {availability.workspaceId}
                 </Typography>
                 <Typography variant="body2" component="p" color="textSecondary">
                   <strong>Owner comments:</strong> {availability.comment || "None"}
