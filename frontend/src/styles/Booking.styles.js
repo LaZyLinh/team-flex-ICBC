@@ -78,10 +78,41 @@ export default {
   },
   pkgsContainer: {
     position: "absolute",
-    left: "316px"
+    overflow: "scroll",
+    left: "316px",
+    width: "100%",
+    minWidth: "950px",
+    padding: "8px 5px"
+  },
+  pkgSummary: {
+    backgroundColor: "rgb(248, 248, 248)",
+    color: "#2b63b5"
+  },
+  availContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
+    overflow: "scroll",
+    backgroundColor: "#ace0f9"
   },
   availTitle: {
     color: "#000000"
+  },
+  noAvailText: {
+    position: "absolute",
+    left: "35%",
+    top: "45%",
+    fontFamily: "Inter",
+    fontWeight: "600",
+    fontSize: "24px",
+    lineHeight: "36px",
+    display: "flex",
+    alignItems: "center",
+    textAlign: "left",
+    color: "#817B7B"
+  },
+  availabilityItem: {
+    width: "220px",
+    boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.3)"
   }
 };
 

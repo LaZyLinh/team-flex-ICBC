@@ -6,7 +6,6 @@ import Booking from "./Booking";
 import Withdraw from "./Withdraw";
 import ConfirmBooking from "./ConfirmBooking";
 import Finished from "./Finished";
-import EditLocation from "./admin/EditLocation";
 import EditFloor from "./EditFloor";
 import AdminPage from "./AdminPage";
 import EditWorkspace from "./admin/EditWorkspace";
@@ -37,27 +36,21 @@ function App(props) {
           <AdminPage />
         </Route>
         <Route
-          path="/admin/edit-location/:locationName"
-          component={({ match }) => <EditLocation locationName={match.params.locationName} />}
+          path="/admin/edit-floors/:locationName"
+          component={({ match }) => <EditFloor locationName={match.params.locationName} />}
         />
         <Route exact path="/editFloor">
           <EditFloor />
         </Route>
-        <Route exact path="/editWorkspace/:workspaceId">
-          component=
-          {({ match }) => (
-            <EditWorkspace
-              workspaceId={match.params.workspaceId}
-              workspaceName={match.params.workspaceName}
-              floorId={match.params.floorId}
-            />
-          )}
-        </Route>
+        <Route
+          path="/editWorkspace/:floorId"
+          component={({ match }) => <EditWorkspace floorId={match.params.floorId} />}
+        />
         <Route exact path="/editWs">
-          <EditWorkspace/>
+          <EditWorkspace />
         </Route>
       </div>
-    </Router>
+    </Router >
   );
 }
 

@@ -4,6 +4,8 @@ import { withStyles } from "@material-ui/core";
 import { getFloorsByCity, deleteLocationName } from "../../api/AdminApi";
 import Button from "@material-ui/core/Button";
 
+// Unused
+
 class EditLocation extends React.Component {
   constructor(props) {
     super(props);

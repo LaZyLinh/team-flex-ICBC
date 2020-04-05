@@ -2,6 +2,9 @@ import React from "react";
 import OfficeBookingApi from "../../api/OfficeBookingApi";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core";
+import { getLocationNames } from "../../api/AdminApi";
+
+const EDIT_FLOORS_PATH = "/admin/edit-floors/";
 
 class Display_Square extends React.Component {
   constructor(props) {
@@ -12,8 +15,13 @@ class Display_Square extends React.Component {
   }
 
   async componentDidMount() {
-    this.setState({ Locations: await OfficeBookingApi.getLocations() });
+    this.setState({ Locations: await getLocationNames() });
   }
+
+  onClickLocation = location => () => {
+    console.log("onClickLoation: " + location);
+    window.location.href = EDIT_FLOORS_PATH + location;
+  };
 
   render() {
     const { classes } = this.props;
@@ -27,7 +35,7 @@ class Display_Square extends React.Component {
       <div>
         {this.state.Locations.map((location, i) => {
           return (
-            <div className={`${classes.eachOne}`} key={i}>
+            <div className={`${classes.eachOne}`} key={i} onClick={this.onClickLocation(location)}>
               <div className={`${classes.eachPart}`}>
                 <h1 style={{ fontSize: "20px", position: "relative", top: "50%", color: "white" }}>{location}</h1>
               </div>
@@ -43,7 +51,11 @@ const DisplayStyle = {
     width: "20%",
     display: "inline-block",
     marginLeft: "10%",
-    textAlign: "center"
+    textAlign: "center",
+    "&:hover": {
+      cursor: "pointer"
+    }
+
   },
   eachPart: {
     backgroundColor: "#002D7D",
