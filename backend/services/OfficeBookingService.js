@@ -562,7 +562,7 @@ class OfficeBookingService {
   static async getFeaturesByWorkspaceId(workspaceId) {
     try {
       const query = `select distinct f.FeatureName from workspace w
-                    inner join workspacefeature wf on w.WorkspaceId = wf.WorkspaceId
+                    inner join workspaceFeature wf on w.WorkspaceId = wf.WorkspaceId
                     inner join feature f on f.FeatureId = wf.FeatureId
                     where w.WorkspaceId = '${workspaceId}'`
       const rows = (await knex.raw(query))[0];
