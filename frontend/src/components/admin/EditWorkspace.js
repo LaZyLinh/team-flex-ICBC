@@ -4,6 +4,12 @@ import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core";
 import WorkspaceTable from "../display/WorkspaceTable";
 import FormDialog from "../display/newWorkspaceForm"
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Slide from "@material-ui/core/Slide";
 
 class EditWorkspace extends React.Component {
   constructor(props) {
@@ -25,8 +31,9 @@ class EditWorkspace extends React.Component {
 
   }
 
-  editWorkspacePopup(workspace) {
-
+  editWorkspacePopup = (workspace) => {
+    console.log(workspace)
+    this.setState({ editPopup: true, editWorkspace: workspace })
   }
 
   showWorkspace = workspace => {
@@ -142,7 +149,19 @@ class EditWorkspace extends React.Component {
               <FormDialog floorIdFromMain={this.state.floorId} reloadCallback={this.reloadCallback} />
             </div>
             <WorkspaceTable rows={this.state.workspaces} reloadCallback={this.reloadCallback} showEditPopup={this.editWorkspacePopup} /></div>
-
+          <Dialog
+            TransitionComponent={Transition}
+            open={this.state.editPopup}
+            onClose={this.handleClosePopup}
+            PaperProps={{
+              style: {
+                backgroundColor: "#EBF2FF"
+              }
+            }}>
+            <DialogTitle className={classes.dialogTitle} disableTypography={true}>
+              {this.state.editWorkspace ? "Edit Workspace " + this.state.editWorkspace.wsId : "Edit Workspace"}
+            </DialogTitle>
+          </Dialog>
         </div>
 
 
@@ -222,6 +241,10 @@ const editWsStyle = {
   },
 
 };
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export default withStyles(editWsStyle)(EditWorkspace);
 

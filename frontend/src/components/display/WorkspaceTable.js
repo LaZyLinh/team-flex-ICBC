@@ -348,7 +348,7 @@ export default function WorkspaceTable(props) {
                                                 {row.officeOwner}
                                             </TableCell>
                                             <TableCell>
-                                                <CreateIcon onClick={props.showEditPopup(row)} />
+                                                <CreateIcon onClick={() => props.showEditPopup(row)} />
                                             </TableCell>
 
                                             <TableCell>
