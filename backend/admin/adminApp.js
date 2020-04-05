@@ -387,7 +387,7 @@ router.post('/workspacefeature/add', async (req, res) => {
     const insertQuery = `INSERT IGNORE INTO workspaceFeature (WorkspaceId, FeatureId) VALUES ('${workspaceId}', ${featureId})`
     await knexHelper(insertQuery)
     res.send("OK")
-  } catch (e) {
+  } catch (err) {
     res.status(err.status || 500).json(err)
   }
 })
@@ -400,13 +400,13 @@ router.post('/workspacefeature/delete', async (req, res) => {
     const deleteQuery = `DELETE FROM workspaceFeature WHERE WorkspaceId = '${workspaceId}' AND FeatureID = ${featureId}`
     await knexHelper(deleteQuery)
     res.send("OK")
-  } catch (e) {
+  } catch (err) {
     res.status(err.status || 500).json(err)
   }
 })
 
 async function getStaffIdByEmail(email) {
-  const query = `SELECT StaffId FROM user WHERE Email  = '${email}'`
+  const query = `SELECT StaffId FROM user WHERE Email = '${email}'`
   const results = await knexHelper(query)
   if (results.length === 0) {
     throw {
@@ -417,45 +417,39 @@ async function getStaffIdByEmail(email) {
   return results[0].StaffId
 }
 
-/**
-   * Updates a Workspace's name, staffId, or floorId
- 
-   * id Integer ID of the Workspace to update
-   **/
-async function adminUpdateWorkspace(id, workspaceName, email) {
+async function updateWorkspaceHelper(workspaceId, staffId) {
+  const query = `UPDATE workspace SET StaffId = ${staffId} WHERE WorkspaceId = '${workspaceId}'`
+  await knexHelper(query)
+}
+
+async function adminUpdateWorkspace(id, email) {
   // check to see if workspace exists
-  const workspace = await Workspaces.getByWorkspaceId(id);
-  if (workspace[0].length === 0) {
+  const rows = (await Workspaces.getByWorkspaceId(id))[0];
+  if (rows.length === 0) {
     throw { message: "workspace doesn't exist", status: 403 }
   }
   const staffId = await getStaffIdByEmail(email)
   // update workspace with new information
-  await Workspaces.updateWorkspace(id, workspaceName, staffId, floorId);
-  return;
+  await updateWorkspaceHelper(id, staffId)
 }
 
 /*
  * Update workspace with specified id
- * query example: https://localhost:8080/admin/workspaces?id=NC1-02D&name=Vancouver, Building 1, 1st floor, 01D&email=example@acme.com&floorId=4
+ * query example: https://localhost:8080/admin/workspaces?id=NC1-02D
+ * Body: email
  * Response:  200 OK
- * 401 Unauthorized ​(missing, wrong, or expired security token) – Front end will show admin login screen in response  
- * 403 Forbidden (workspace doesn’t exist)
+ *            400 doesn't exist
 */
 router.put('/workspaces', (req, res) => {
   let params = req.body;
-  adminUpdateWorkspace(req.query.id, params.workspaceName, params.email, params.floorId).then(() => {
+  adminUpdateWorkspace(req.query.id, params.email).then(() => {
     res.status(200);
     res.sendStatus(200);
   }).catch(err => {
     res.status(500);
-    res.json({ message: err.toString() });
+    res.status(err.status || 500).json(err)
   })
 })
-
-
-
-
-
 
 /*
  * resets features to those only in featureList
