@@ -239,6 +239,8 @@ class Booking extends React.Component {
     }
     const pkgItems = [];
     let i = 1;
+    console.log("STATE:");
+    console.log(this.state);
     for (const pkg of this.state.packages) {
       const availItems = [];
       let j = 1;
