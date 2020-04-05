@@ -63,7 +63,7 @@ class Booking extends React.Component {
     console.log(res);
   };
 
-  handleDateChange = dateRange => {
+  handleDateChange = async dateRange => {
     this.setState({
       startDate: dateRange.selection.startDate,
       endDate: dateRange.selection.endDate
@@ -72,15 +72,15 @@ class Booking extends React.Component {
     const edStr = dateRange.selection.endDate.toISOString().slice(0, 10);
     let packages;
     if (this.state.floor) {
-      packages = OfficeBookingApi.getPackages(sdStr, edStr, {
+      packages = await OfficeBookingApi.getPackages(sdStr, edStr, {
         floorIds: this.state.floors.filter(f => f.floorId === this.state.floor.floorId)
       });
     } else if (this.state.location) {
-      packages = OfficeBookingApi.getPackages(sdStr, edStr, {
+      packages = await OfficeBookingApi.getPackages(sdStr, edStr, {
         floorIds: this.state.floors.map(f => f.floorId)
       });
     } else {
-      packages = OfficeBookingApi.getPackages(sdStr, edStr);
+      packages = await OfficeBookingApi.getPackages(sdStr, edStr);
     }
     this.setState({ packages });
   };
@@ -248,6 +248,8 @@ class Booking extends React.Component {
     }
     const pkgItems = [];
     let i = 1;
+    console.log("STATE:");
+    console.log(this.state);
     for (const pkg of this.state.packages) {
       const availItems = [];
       let j = 1;
