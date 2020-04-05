@@ -110,8 +110,59 @@ paths:
                 $ref: "#/components/schemas/LoginResponse"
         "403":
           description: Forbidden
-          content: {}
+          content:
+            text/plain:
+              schema:
+                type: string
+                x-content-type: text/plain
+              example: "Error: Invalid Password"
       x-swagger-router-controller: Admin
+  /admin/locations:
+    get:
+      tags:
+        - Admin
+      summary: A list of all the location names
+      operationId: adminGetLocationsMethod
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                example:
+                  - North Vancouver, BC
+                  - Vancouver, BC
+                items:
+                  type: string
+                x-content-type: application/json
+      x-swagger-router-controller: Admin
+      post:
+        tags:
+          - Admin
+        summary: Add a location
+        operationId: adminAddLocationMethod
+        requestBody:
+          content:
+            application/x-www-form-urlencoded:
+              schema:
+                $ref: "#/components/schemas/body_6"
+          required: true
+        responses:
+          "200":
+            description: Successful Operation
+            content: {}
+          "400":
+            description: Empty String, All Whitespaces, or Duplicate Name 
+            content:
+              text/plain:
+                schema:
+                  type: string
+                  x-content-type: text/plain
+                example: "Error: Location name already exists"
+        x-swagger-router-controller: Admin
+
+
   /features:
     get:
       tags:
@@ -812,6 +863,13 @@ components:
       type: object
       properties:
         password:
+          type: string
+    body_6:
+      required:
+        - locationName
+      type: object
+      properties:
+        locationName:
           type: string
     LoginResponse:
       type: object
