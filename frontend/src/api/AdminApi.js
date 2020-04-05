@@ -173,7 +173,7 @@ export async function updateWorkspace(body) {
 }
 
 
-// ! backend may have error, dont use yet
+
 export async function resetFeatures(features) {
   try {
     await api('post', '/reset-features', { featureList: features });

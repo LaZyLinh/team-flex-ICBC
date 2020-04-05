@@ -72,7 +72,6 @@ class EditFloor extends React.Component {
     console.log(fidx);
     if (window.confirm(`Are you sure you wish to delete Floor ${this.state.allFloors[fidx].FloorId} in ${this.state.allFloors[fidx].Location}? All workspaces and Lendings on that floor will be deleted.`)) {
       console.log("click yes");
-      // TODO test delete
       await deleteFloor(this.state.allFloors[fidx].FloorId)
       window.location.reload();
     }
@@ -114,10 +113,8 @@ class EditFloor extends React.Component {
     bodyFormData.append('floorPlanImg', this.state.file);
 
     addFloor(bodyFormData).then((rsp) => {
-      // TODO wait for fix
 
       console.log(rsp);
-      // TODO 
       this.setState({ errMsg: "" })
       this.setState(prevState => {
         return { openDialog: !prevState.openDialog };
