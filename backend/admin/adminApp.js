@@ -180,6 +180,142 @@ router.get('/floors', (req, res) => {
   }
 })
 
+async function adminDeleteFloor(floorId) {
+  if (floorId == null) {
+    throw {
+      error: "need floorId",
+      status: 400
+    }
+  }
+  const selectQuery = `SELECT COUNT(*) FROM floor WHERE FloorId=${floorId}`
+  const count = (await knexHelper(selectQuery))[0]["COUNT(*)"]
+  if (count === 0) {
+    throw {
+      error: "floorId doesn't exist in database",
+      status: 400
+    }
+  }
+  // Select workspaces
+  try {
+    const selectWorkspacesQuery = `SELECT WorkspaceId FROM workspace WHERE FloorId=${floorId}`
+    const workspacesRaw = await knexHelper(selectWorkspacesQuery)
+    for (const w of workspacesRaw) {
+      const selectAvailabilitiesQuery = `SELECT AvailabilityId FROM availability WHERE WorkspaceId='${w.WorkspaceId}'`
+      const availabilitiesRaw = await knexHelper(selectAvailabilitiesQuery)
+      for (const a of availabilitiesRaw) {
+        const selectBookingsQuery = `SELECT BookingId FROM booking WHERE AvailabilityId=${a.AvailabilityId}`
+        const bookingsRaw = await knexHelper(selectBookingsQuery)
+        for (const b of bookingsRaw) {
+          const deleteBookingQuery = `DELETE FROM booking WHERE BookingId=${b.BookingId}`
+          await knexHelper(deleteBookingQuery)
+        }
+        const deleteAvailabilityQuery = `DELETE FROM availability WHERE AvailabilityId=${a.AvailabiliityId}`
+        await knexHelper(deleteAvailabilityQuery)
+      }
+      const deleteWorkspaceQuery = `DELETE FROM workspace WHERE WorkspaceId='${w.WorkspaceId}'`
+      await knexHelper(deleteWorkspaceQuery)
+    }
+    const deleteFloorQuery = `DELETE FROM floor WHERE FloorId=${floorId}`
+
+    await knexHelper(deleteFloorQuery)
+  } catch (e) {
+    throw {
+      error: "Could not delete... " + JSON.stringify(e),
+      status: 400
+    }
+  }
+}
+
+async function adminEditFloor({ floorId, floorNo, building, city, location }) {
+  if (!floorId) {
+    throw {
+      error: "missing floorId",
+      status: 400
+    }
+  }
+  if (!floorNo && !building && !city && !location) {
+    throw {
+      error: "none of { floorNo, building, city, location } are set",
+      status: 400
+    }
+  }
+  if (floorNo) {
+    if (typeof floorNo !== number) {
+      throw {
+        error: "floorNo must be a number",
+        status: 400
+      }
+    } else if (floorNo < -100 || floorNo > 1000) {
+      throw {
+        error: "floorNo must be in [-100, 1000] ",
+        status: 400
+      }
+    }
+  }
+  const floorNoUpdate = floorNo ? `FloorNo = ${floorNo}` : ""
+  const buildingUpdate = (building && building !== "") ? `Building = '${building}'` : ""
+  const cityUpdate = (city && city !== "") ? `City = '${city}'` : ""
+  const locationUpdate = (location && location !== "") ? `Location = '${location}'` : ""
+  const updateQuery = `UPDATE floor SET ${floorNoUpdate} ${buildingUpdate} ${cityUpdate} ${locationUpdate}
+                       WHERE FloorId=${floorId}`
+  await knexHelper(updateQuery)
+}
+
+async function adminCreateFloor({ floorNo, building, city, location }) {
+  for (const item in [city, building]) {
+    if (!item || typeof item !== 'string' || item.trim() === '') {
+      throw {
+        error: "City/building must not be null or empty string or all whitespace",
+        status: 400
+      }
+    }
+  }
+  if (floorNo == null || typeof floorNo !== "number" || floorNo < -100 || floorNo > 1000) {
+    throw {
+      error: "Floor must be a number between -100 and 1000",
+      status: 400
+    }
+  }
+  const selectQuery = `SELECT COUNT(*) FROM floor WHERE FloorNo=${floorNo} AND Building='${building}' AND City='${city}'`
+  const count = (await knexHelper(selectQuery))[0]["COUNT(*)"]
+  if (count > 0) {
+    throw {
+      error: "There is already an identical floor",
+      status: 400
+    }
+  }
+  const insertQuery = `INSERT INTO floor (FloorNo, Building, City, Location) VALUES (${floorNo}, '${building}', '${city}' ,'${location}')`
+  return await knexHelper(insertQuery).insertId
+}
+
+router.post('/floors', async (req, res) => {
+  try {
+    const createdFloorId = await adminCreateFloor(req.body)
+    res.json({ floorId: createdFloorId })
+  } catch (err) {
+    res.status(err.status || 500).json(err);
+  }
+})
+
+router.delete('/floors', async (req, res) => {
+  try {
+    const floorId = req.query.id;
+    await adminDeleteFloor(floorId)
+    res.status(200).send("OK")
+  } catch (e) {
+    res.status(err.status || 500).json(err);
+  }
+})
+
+router.put('/floors', async (req, res) => {
+  try {
+    await adminEditFloor(req.body)
+    res.status(200).send("OK")
+  } catch (e) {
+    res.status(err.status || 500).json(err);
+  }
+})
+
 /*
  * Get all workspaces info with specific floorId
  * query example: http://localhost:8080/admin/workspaces?floorId=4
