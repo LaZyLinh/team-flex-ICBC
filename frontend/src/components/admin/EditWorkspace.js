@@ -158,6 +158,7 @@ class EditWorkspace extends React.Component {
                 backgroundColor: "#EBF2FF"
               }
             }}>
+            {/* TODO finsihed this part */}
             <DialogTitle className={classes.dialogTitle} disableTypography={true}>
               {this.state.editWorkspace ? "Edit Workspace " + this.state.editWorkspace.wsId : "Edit Workspace"}
             </DialogTitle>
