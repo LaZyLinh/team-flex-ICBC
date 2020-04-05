@@ -1,6 +1,6 @@
 'use strict';
 
-const VERSION = 6 // Apr 4, 2020, 5:12pm
+const VERSION = 8 // CSV Parse done, Apr 5, 2020, 12:25pm
 
 const config = require('./config')
 const authenticator = require('./auth/authenticator')
