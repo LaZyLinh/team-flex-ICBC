@@ -809,10 +809,10 @@ components:
     body_5:
       required:
         - password
-    type: object
-    properties:
-      password:
-        type: string
+      type: object
+      properties:
+        password:
+          type: string
     LoginResponse:
       type: object
       properties:
