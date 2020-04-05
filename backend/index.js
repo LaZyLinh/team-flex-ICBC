@@ -1,6 +1,6 @@
 'use strict';
 
-const VERSION = 8 // CSV Parse done, Apr 5, 2020, 12:25pm
+const VERSION = "2:51PM Apr 5, last change: workspaces PUT"
 
 const config = require('./config')
 const authenticator = require('./auth/authenticator')
@@ -37,7 +37,7 @@ app.use(cors())
 
 // To test if the right AWS version is deployed
 app.get('/version', function (req, res) {
-  res.send(VERSION.toString())
+  res.send(VERSION);
 })
 
 app.use(fileUpload());

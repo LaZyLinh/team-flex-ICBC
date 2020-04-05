@@ -6,7 +6,7 @@ const axios = Axios.create({
 
 // Usage: const fm = await featureMap()
 const featureMap = async () => {
-  return await axios.get('/featuremap').data
+  return (await axios.get('/featuremap')).data;
 };
 
 export default featureMap;
