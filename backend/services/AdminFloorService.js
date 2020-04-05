@@ -51,10 +51,11 @@ function validateUploadRequest(req, formId) {
   if (!floorExists(id)) {
     throw new Error(`Invalid floor ID: ${id}`);
   }
+  console.log(req.files);
   if (req.files.length === 0) {
     throw new Error("No files uploaded at all");
   }
-  const file = req.files[FORM_ID_IMAGE_UPLOAD];
+  const file = req.files[formId];
   if (!file) {
     throw new Error(`No file found for form ID ${formId}`);
   }
@@ -64,16 +65,18 @@ function validateUploadRequest(req, formId) {
 }
 
 async function validateColumnNamesFromCSV(columnNames, featureNames) {
+  console.log("validateColumnNamesFromCSV");
+  console.log(columnNames);
   // Check for mandatory columns
-  for (const colName of MANDATORY_COLUMN_NAMES) {
-    if (!columnNames.includes(colName)) {
+  for (const mandatoryColName of MANDATORY_COLUMN_NAMES) {
+    if (!columnNames.includes(mandatoryColName)) {
       // Does not include a mandatory column name
-      throw new Error(`Missing column name in CSV: ${colName}`);
+      throw new Error(`Missing column name in CSV: ${mandatoryColName}`);
     }
   }
   // Check for missing features
   for (const featureName of featureNames) {
-    if (!columnNamesFromCSV.includes(featureName)) {
+    if (!columnNames.includes(featureName)) {
       throw new Error(`Missing information about feature: ${featureName}`);
     }
   }
@@ -165,15 +168,14 @@ async function processFloorData(file, features, floor) {
   const featureNames = features.map(f => f.name);
   const parsedArray = await csv().fromString(str);
   if (!parsedArray || parsedArray.length === 0) {
-    return false;
+    return "There were no rows to parse it seems";
   }
-  await validateColumnNamesFromCSV(columnNames, featureNames);
-
+  await validateColumnNamesFromCSV(parsedArray, featureNames);
   const featureMap = makeFeatureMap(features);
   // Lots of trips to the database
   const proms = [];
-  for (const row of parsedArray) {
-    proms.push(processCSVRow(row, floor, featureMap, featureNames));
+  for (let i = 1; i < parsedArray.length; ++i) {
+    proms.push(processCSVRow(parsedArray[i], floor, featureMap, featureNames));
   }
   await Promise.all(proms);
 }
@@ -181,9 +183,12 @@ async function processFloorData(file, features, floor) {
 async function uploadFloorData(req, res) {
   validateUploadRequest(req, FORM_ID_CSV_UPLOAD);
   const features = await getFeaturesFromDatabase();
-  const floorId = req.body.floorId;
+  const floorId = parseInt(req.body.floorId);
+  if (floorId === NaN) {
+    throw new Error(`given floorId: ${floorId}, parseInt returned NaN. (Bad/missing floorId)`)
+  }
   // const floorName = await getFloorNameFromDatabase(floorId);
-  const file = req.file[FORM_ID_CSV_UPLOAD];
+  const file = req.files[FORM_ID_CSV_UPLOAD];
   await processFloorData(file, features, { floorId });
 }
 
