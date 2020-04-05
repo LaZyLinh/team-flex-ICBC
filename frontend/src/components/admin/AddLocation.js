@@ -34,7 +34,7 @@ export default class AddLocation extends React.Component {
     }
     try {
       await createLocation(locationTrimmed);
-      this.setState({ showGreen: true });
+      this.setState({ showSuccess: true });
       this.props.updateLocations(); // Parent
     } catch (err) {
       console.log(err);
@@ -61,7 +61,7 @@ export default class AddLocation extends React.Component {
     } else if (this.state.showSuccess) {
       return (
         <Alert style={{ position: "absolute", top: "40px", left: "55%" }} severity="success">
-          New city "{this.state.location}" successfully added! You rock!
+          New city "{this.state.location}" successfully added.
         </Alert>
       );
     } else if (this.state.showUnknownError) {

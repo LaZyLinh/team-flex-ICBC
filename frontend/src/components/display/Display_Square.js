@@ -1,8 +1,7 @@
 import React from "react";
-import OfficeBookingApi from "../../api/OfficeBookingApi";
+import withStyles from "@material-ui/styles/withStyles";
 import Button from "@material-ui/core/Button";
-import { withStyles } from "@material-ui/core";
-import { getLocationNames } from "../../api/AdminApi";
+import { deleteLocationName } from "../../api/AdminApi";
 
 const EDIT_FLOORS_PATH = "/admin/edit-floors/";
 
@@ -10,17 +9,46 @@ class Display_Square extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      Locations: []
+      deleteClicked: {} // map
     };
   }
 
-  async componentDidMount() {
-    this.setState({ Locations: await getLocationNames() });
-  }
-
   onClickLocation = location => () => {
-    console.log("onClickLoation: " + location);
+    console.log("onClickLocation: " + location);
     window.location.href = EDIT_FLOORS_PATH + location;
+  };
+
+  onClickDelete = location => () => {
+    console.log("onClickDelete: " + location);
+    const deleteClicked = this.state.deleteClicked;
+    deleteClicked[location] = true;
+    this.setState({ deleteClicked });
+  };
+
+  onClickConfirmDelete = location => async () => {
+    console.log("onClickConfirmDelete: " + location);
+    await deleteLocationName(location);
+    await this.props.updateLocations();
+  };
+
+  onHover = () => {
+    this.setState();
+  };
+
+  showCorrectButton = location => {
+    if (this.state.deleteClicked[location]) {
+      return (
+        <Button variant="contained" color="secondary" size="small" onClick={this.onClickConfirmDelete(location)}>
+          Confirm Delete
+        </Button>
+      );
+    } else {
+      return (
+        <Button variant="contained" color="secondary" size="small" onClick={this.onClickDelete(location)}>
+          Delete
+        </Button>
+      );
+    }
   };
 
   render() {
@@ -30,15 +58,31 @@ class Display_Square extends React.Component {
     //   // console.log(messages);
     //   const locations = messages[0];
     // });
-    console.log(this.state.Locations);
     return (
       <div>
-        {this.state.Locations.map((location, i) => {
+        {this.props.locations.map((location, i) => {
           return (
-            <div className={`${classes.eachOne}`} key={i} onClick={this.onClickLocation(location)}>
-              <div className={`${classes.eachPart}`}>
-                <h1 style={{ fontSize: "20px", position: "relative", top: "50%", color: "white" }}>{location}</h1>
-              </div>
+            <div className={`${classes.eachOne}`} key={i}>
+              <Button
+                variant="contained"
+                color="primary"
+                className={`${classes.eachPart}`}
+                onClick={this.onClickLocation(location)}
+              >
+                <h1
+                  style={{
+                    fontSize: "20px",
+                    position: "relative",
+                    top: "50%",
+                    color: "white"
+                  }}
+                >
+                  {location}
+                </h1>
+              </Button>
+              <div />
+              {this.showCorrectButton(location)}
+              <div style={{ height: "20px" }} />
             </div>
           );
         })}

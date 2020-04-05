@@ -1,14 +1,11 @@
 /* eslint-disable react/jsx-pascal-case */
 import React from "react";
-import { TextField, withStyles } from "@material-ui/core";
-import SearchIcon from "@material-ui/icons/Search";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import OfficeBookingApi from "../api/OfficeBookingApi";
-import FormDialog from "./display/Popup_window";
+import { withStyles } from "@material-ui/core";
 import Display_Square from "./display/Display_Square";
 import AddLocation from "./admin/AddLocation";
 
 import { getLocationNames } from "../api/AdminApi";
+import EditFeatures from "./admin/EditFeatures";
 
 class AdminPage extends React.Component {
   constructor() {
@@ -24,7 +21,7 @@ class AdminPage extends React.Component {
   };
 
   async componentDidMount() {
-    this.setState({ locations: await getLocationNames() });
+    await this.updateLocations();
   }
 
   updateLocations = async () => {
@@ -41,8 +38,9 @@ class AdminPage extends React.Component {
           </h1>
         </div>
         <AddLocation getLocations={this.getLocations} updateLocations={this.updateLocations} />
+        <EditFeatures />
         <div className={`${classes.showLocationsStyle}`}>
-          <Display_Square />
+          <Display_Square locations={this.state.locations} updateLocations={this.updateLocations} />
         </div>
       </React.Fragment>
     );

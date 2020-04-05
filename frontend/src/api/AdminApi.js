@@ -117,7 +117,7 @@ export async function getLocationNames() {
 
 export async function deleteLocationName(name) {
   try {
-    await api('delete', `/locations/${name.trim()}`)
+    await api('delete', `/locations?locationName=${name.trim()}`)
   } catch (err) {
     localStorage.setItem("admin_error", JSON.stringify(err))
     console.log(err)
