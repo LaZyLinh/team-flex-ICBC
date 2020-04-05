@@ -166,12 +166,16 @@ paths:
         - Admin
       summary: Delete a location
       operationId: adminDeleteLocationMethod
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: "#/components/schemas/body_6"
-        required: true
+      parameters:
+        - name: locationName
+          in: query
+          description: Location Name
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+          example: Vancouver
       responses:
         "200":
           description: Successful Operation
@@ -185,8 +189,102 @@ paths:
                 x-content-type: text/plain
               example: "Error: Location name doesn't exist"
       x-swagger-router-controller: Admin
-
-
+  /admin/floors:
+    get:
+      tags:
+        - Admin
+      summary: Gets list of floors 
+      operationId: adminGetFloorsByCityMethod
+      parameters:
+        - name: city
+          in: query
+          description: City Name
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+          example: Vancouver
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                example:
+                  - Floor 1
+                  - Floor 2
+                items:
+                  type: string
+                x-content-type: application/json
+      x-swagger-router-controller: Admin
+    post:
+      tags:
+        - Admin
+      summary: Adds a new floor
+      operationId: adminAddFloorMethod
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/body_7"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminPostFloor"
+      x-swagger-router-controller: Admin
+    delete:
+      tags:
+        - Admin
+      summary: Delete a Floor
+      operationId: adminDeleteFloorMethod
+      parameters:
+        - name: id
+          in: query
+          description: Floor Id
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Successful Operation
+          content: {}
+      x-swagger-router-controller: Admin
+    put:
+      tags:
+        - Admin
+      summary: Updates a floor
+      operationId: adminUpdateFloorMethod
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/body_8"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminPostFloor"
+        "400":
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                x-content-type: text/plain
+              example: "Error: Missing floor id"
+      x-swagger-router-controller: Admin
   /features:
     get:
       tags:
@@ -895,6 +993,40 @@ components:
       properties:
         locationName:
           type: string
+    body_7:
+      required:
+        - floorNo
+        - building
+        - city
+        - location
+      type: object
+      properties:
+        floorNo:
+          type: integer
+        building:
+          type: string
+        city:
+          type: string
+        location:
+          type: string
+        floorplanImage:
+          type: string
+          format: binary
+    body_8:
+      required:
+        - floorId
+      type: object
+      properties:
+        floorId:
+          type: integer
+        floorNo:
+          type: integer
+        building:
+          type: string
+        city:
+          type: string
+        location:
+          type: string
     LoginResponse:
       type: object
       properties:
@@ -905,6 +1037,15 @@ components:
           type: string
           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwiZXhwIjoxNTg5NTAyMDA0LCJpYXQiOjE1ODQzMTgwMDR9.PyJvSoQzOtjkKknE0FqrARp2_hsD06aoGzo98uM5WWc
       example:
-        message: 2000-01-23
+        message: success
         token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwiZXhwIjoxNTg5NTAyMDA0LCJpYXQiOjE1ODQzMTgwMDR9.PyJvSoQzOtjkKknE0FqrARp2_hsD06aoGzo98uM5WWc
+    AdminPostFloor:
+      type: object
+      properties:
+        floorId:
+          type: integer
+          example: 1
+        example:
+        floorId: 1
+
 
