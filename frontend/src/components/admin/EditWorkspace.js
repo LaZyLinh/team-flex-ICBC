@@ -2,13 +2,15 @@ import React from "react";
 import { getFloorsByCity, deleteWorkspace, getWorkspacesByFloorId } from "../../api/AdminApi";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core";
-import WorkspaceTable from "../display/WorkspaceTable"
+import WorkspaceTable from "../display/WorkspaceTable";
+import FormDialog from "../display/newWorkspaceForm"
 
 class EditWorkspace extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             floorId: props.floorId,
+
             workspaces: [],
             deleteButtonClicked: false
         };
@@ -117,22 +119,26 @@ class EditWorkspace extends React.Component {
                             alt="No FloorPlan found"
                         />
                     </div>
-                    <Button className={`${classes.uploadCSVBut}`}>Upload New Work Station CVS File</Button>
+                    {/*<Button className={`${classes.uploadCSVBut}`}>Upload New Work Station CVS File</Button>*/}
                     <div className={`${classes.tableBox}`}>
                         <div style={{ dispaly: "flex", paddingTop: "15px", paddingBottom: "15px" }}>
                             <span style={{ fontSize: "25px", marginLeft: "2%", widith: "50%", }}>WorkSpace Table</span>
-                            <Button className={classes.bButton} onClick={this.addFloorHandler} variant="outlined" color="primary">
-                                Add new Workspace
-                            </Button></div>
+                            {/*<Button className={classes.bButton} onClick={this.addFloorHandler} variant="outlined" color="primary">*/}
+                                {/*Add new Workspace*/}
+                            {/*</Button></div>*/}
+
                             {/*<Button className={classes.cButton} onClick={this.addFloorHandler} variant="outlined" color="primary">*/}
                                 {/*delete selected workspace*/}
-                            {/*</Button></div>*/}
-                        {/*{this.showWorkspaces()}*/}
-                        <WorkspaceTable  rows={this.state.workspaces}/>
-                        <Button onClick={()=>console.log(this.state.workspaces)}>Click Me</Button>
+                            {/*</Button>*/}
+                        {/*{this.showWorkspaces()}</div>*/}
+                            <FormDialog floorIdFromMain={this.state.floorId} />
+                          </div>
+                        <WorkspaceTable  rows={this.state.workspaces}/></div>
+
                     </div>
 
-                </div>
+
+
             </React.Fragment >
         );
     }
@@ -188,6 +194,11 @@ const editWsStyle = {
         "&:hover": {
             border: "1px solid rgba(10, 101, 255, 1)"
         }
+    },
+    formSty:{
+        position:"absolute",
+        right:"60%",
+        top:"30%"
     },
     cButton: {
         color: "#002D7D",

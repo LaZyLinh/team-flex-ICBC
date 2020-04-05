@@ -348,7 +348,8 @@ export default function WorkspaceTable (props) {
 
                                             <TableCell>
                                                 <DeleteIcon onClick={async ()=>{
-                                                   await deleteWorkspace(row.wsId)
+                                                   await deleteWorkspace(row.wsId);
+                                                    // window.location.reload(false);
                                                 }}/>
 
                                             </TableCell>
