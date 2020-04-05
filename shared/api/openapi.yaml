@@ -89,6 +89,29 @@ paths:
                 x-content-type: text/plain
               example: "Error: Floor with ID 9000 does not exist"
       x-swagger-router-controller: Admin
+  /admin/login:
+    post:
+      tags:
+        - Admin
+      summary: Login to admin portal
+      operationId: adminLoginMethod
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/body_5"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "403":
+          description: Forbidden
+          content: {}
+      x-swagger-router-controller: Admin
   /features:
     get:
       tags:
@@ -783,3 +806,23 @@ components:
         floorplanImage:
           type: string
           format: binary
+    body_5:
+      required:
+        - password
+    type: object
+    properties:
+      password:
+        type: string
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: success
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwiZXhwIjoxNTg5NTAyMDA0LCJpYXQiOjE1ODQzMTgwMDR9.PyJvSoQzOtjkKknE0FqrARp2_hsD06aoGzo98uM5WWc
+      example:
+        message: 2000-01-23
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwiZXhwIjoxNTg5NTAyMDA0LCJpYXQiOjE1ODQzMTgwMDR9.PyJvSoQzOtjkKknE0FqrARp2_hsD06aoGzo98uM5WWc
+
