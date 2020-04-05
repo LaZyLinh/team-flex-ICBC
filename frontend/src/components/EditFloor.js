@@ -8,7 +8,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
-import { getFloorsByCity } from "../api/AdminApi";
+import { getFloorsByCity, addFloor, deleteFloor } from "../api/AdminApi";
 import FloorList from "./admin/FloorList";
 import Popup from "reactjs-popup";
 
@@ -26,8 +26,12 @@ class EditFloor extends React.Component {
       city: props.locationName,
       locations: [],
       windowOpen: false,
-      openDialog: false
+      openDialog: false,
+
     };
+
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentWillMount = async () => {
@@ -61,11 +65,12 @@ class EditFloor extends React.Component {
     this.forceUpdate();
   };
 
-  deleteFloor = (fidx) => {
+  deleteFloor = async (fidx) => {
     console.log(fidx);
     if (window.confirm(`Are you sure you wish to delete Floor ${this.state.allFloors[fidx].FloorId} in ${this.state.allFloors[fidx].Location}? All workspaces and Lendings on that floor will be deleted.`)) {
       console.log("click yes");
-      // TODO request delete
+      // TODO test delete
+      await deleteFloor(this.state.allFloors[fidx].FloorId)
       this.forceUpdate();
     }
   }
@@ -78,6 +83,44 @@ class EditFloor extends React.Component {
     this.setState(prevState => {
       return { openDialog: !prevState.openDialog };
     });
+  }
+
+  handleInputChange(event) {
+    const target = event.target;
+    const value = target.value;
+    const name = "new" + target.name;
+    if (name && value) {
+      this.setState({
+        [name]: value
+      });
+    }
+
+  }
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+    const data = {
+      floorNo: this.state.newFloorNo,
+      building: this.state.newBuilding,
+      city: this.state.city,
+      location: this.state.newLocation
+    }
+    addFloor(data).then(() => {
+      // TODO wait for fix
+
+      console.log("OK");
+      // TODO 
+      this.setState({ errMsg: "" })
+      this.setState(prevState => {
+        return { openDialog: !prevState.openDialog };
+      });
+    }).catch(error => {
+      console.log(error)
+      this.setState({ errMsg: "there is an error adding floors" })
+    })
+
+
+    console.log(JSON.stringify(data))
   }
 
   render() {
@@ -116,14 +159,16 @@ class EditFloor extends React.Component {
                 <DialogTitle className={classes.dialogTitle} disableTypography={true}>
                   Add New Floor
                  </DialogTitle>
-                <form className={classes.addFloorForm} onSubmit={this.handleNewFloor}>
+                <form className={classes.addFloorForm} onSubmit={this.handleSubmit}>
                   <div style={{ display: "flex", paddingLeft: "10px" }}>
                     <p style={{ width: "30%" }}>Floor Number</p>
                     <input
+                      name="FloorNo"
                       variant="filled"
                       type="number"
                       margin="none"
                       className={`${classes.field}`}
+                      onChange={this.handleInputChange}
                       value={this.state.comment} required
                     ></input>
                   </div>
@@ -131,26 +176,32 @@ class EditFloor extends React.Component {
                   <div style={{ display: "flex", paddingLeft: "10px" }}>
                     <p style={{ width: "30%" }}>Location</p>
                     <input
+                      name="Location"
                       variant="filled"
                       margin="none"
                       className={`${classes.field}`}
+                      onChange={this.handleInputChange}
                       value={this.state.comment} required
                     ></input>
                   </div>
                   <div style={{ display: "flex", paddingLeft: "10px" }}>
                     <p style={{ width: "30%" }}>City</p>
                     <input
+                      name="City"
                       variant="filled"
                       margin="none"
                       className={`${classes.field}`}
                       value={this.state.city}
+                      onChange={this.handleInputChange}
                       readonly></input>
                   </div>
                   <div style={{ display: "flex", paddingLeft: "10px" }}>
                     <p style={{ width: "30%" }}>Building Number</p>
                     <input
+                      name="Building"
                       variant="filled"
                       type="number"
+                      onChange={this.handleInputChange}
                       margin="none"
                       className={`${classes.field}`} required
                     ></input>
@@ -158,11 +209,14 @@ class EditFloor extends React.Component {
                   <div style={{ display: "flex", paddingLeft: "10px" }}>
                     <label style={{ width: "30%" }}>Floor Plan</label>
                     <input
+                      name="FloorPlan"
                       type="file" name="file"
+                      onChange={this.handleInputChange}
                       margin="none"
                       className={`${classes.field}`} required></input>
                   </div>
-                  <button style={{ display: "flex", margin: "10px 10px 10px 10px" }}>submit</button>
+                  <button type="submit" style={{ display: "flex", margin: "10px 10px 10px 10px" }}>submit</button>
+                  <p style={{ color: "red", paddingLeft: "5%" }}>{this.state.errMsg}</p>
                 </form>
               </Dialog>
 
@@ -174,6 +228,19 @@ class EditFloor extends React.Component {
     );
   }
 }
+
+const inputParsers = {
+  date(input) {
+    const [month, day, year] = input.split('/');
+    return `${year}-${month}-${day}`;
+  },
+  uppercase(input) {
+    return input.toUpperCase();
+  },
+  number(input) {
+    return parseFloat(input);
+  },
+};
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

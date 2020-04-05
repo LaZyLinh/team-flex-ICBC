@@ -88,7 +88,7 @@ async function api(verb, path, body = undefined) {
     return (await axios.get(path, config))
   }
   if (verb === 'delete') {
-    return (await axios.delete(path, body, config)).data
+    return (await axios.delete(path, config))
   }
   if (verb === 'put') {
     return (await axios.put(path, body, config)).data
@@ -187,6 +187,24 @@ export async function getFloorsByCity(city) {
   try {
     return (await api('get', '/floors?city=\"' + city + '\"')).data
     // return (await api('get', '/floors?city=' + city)).data
+  } catch (err) {
+    localStorage.setItem("admin_error", JSON.stringify(err))
+    console.log(err)
+  }
+}
+
+export async function addFloor(data) {
+  try {
+    await api('post', '/floors', data);
+  } catch (err) {
+    localStorage.setItem("admin_error", JSON.stringify(err))
+    throw err
+  }
+}
+
+export async function deleteFloor(id) {
+  try {
+    await api('delete', `/floors?id=${id}`);
   } catch (err) {
     localStorage.setItem("admin_error", JSON.stringify(err))
     console.log(err)
