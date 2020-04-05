@@ -180,6 +180,24 @@ router.get('/floors', (req, res) => {
   }
 })
 
+// w = raw SQLDB row
+async function deleteWorkspaceHelper(w) {
+  const selectAvailabilitiesQuery = `SELECT AvailabilityId FROM availability WHERE WorkspaceId='${w.WorkspaceId}'`
+  const availabilitiesRaw = await knexHelper(selectAvailabilitiesQuery)
+  for (const a of availabilitiesRaw) {
+    const selectBookingsQuery = `SELECT BookingId FROM booking WHERE AvailabilityId=${a.AvailabilityId}`
+    const bookingsRaw = await knexHelper(selectBookingsQuery)
+    for (const b of bookingsRaw) {
+      const deleteBookingQuery = `DELETE FROM booking WHERE BookingId=${b.BookingId}`
+      await knexHelper(deleteBookingQuery)
+    }
+    const deleteAvailabilityQuery = `DELETE FROM availability WHERE AvailabilityId=${a.AvailabiliityId}`
+    await knexHelper(deleteAvailabilityQuery)
+  }
+  const deleteWorkspaceQuery = `DELETE FROM workspace WHERE WorkspaceId='${w.WorkspaceId}'`
+  await knexHelper(deleteWorkspaceQuery)
+}
+
 async function adminDeleteFloor(floorId) {
   if (floorId == null) {
     throw {
@@ -195,25 +213,11 @@ async function adminDeleteFloor(floorId) {
       status: 400
     }
   }
-  // Select workspaces
   try {
     const selectWorkspacesQuery = `SELECT WorkspaceId FROM workspace WHERE FloorId=${floorId}`
     const workspacesRaw = await knexHelper(selectWorkspacesQuery)
     for (const w of workspacesRaw) {
-      const selectAvailabilitiesQuery = `SELECT AvailabilityId FROM availability WHERE WorkspaceId='${w.WorkspaceId}'`
-      const availabilitiesRaw = await knexHelper(selectAvailabilitiesQuery)
-      for (const a of availabilitiesRaw) {
-        const selectBookingsQuery = `SELECT BookingId FROM booking WHERE AvailabilityId=${a.AvailabilityId}`
-        const bookingsRaw = await knexHelper(selectBookingsQuery)
-        for (const b of bookingsRaw) {
-          const deleteBookingQuery = `DELETE FROM booking WHERE BookingId=${b.BookingId}`
-          await knexHelper(deleteBookingQuery)
-        }
-        const deleteAvailabilityQuery = `DELETE FROM availability WHERE AvailabilityId=${a.AvailabiliityId}`
-        await knexHelper(deleteAvailabilityQuery)
-      }
-      const deleteWorkspaceQuery = `DELETE FROM workspace WHERE WorkspaceId='${w.WorkspaceId}'`
-      await knexHelper(deleteWorkspaceQuery)
+      await deleteWorkspaceHelper(w);
     }
     const deleteFloorQuery = `DELETE FROM floor WHERE FloorId=${floorId}`
 
@@ -337,18 +341,11 @@ async function adminDeleteWorkspace(id) {
     if (workspace[0].length === 0) {
       throw { message: "ID doesn't exist", status: 403 }
     }
-
-    // query all availabilities related to this workspace
-    let availabilities = await Availabilities.getByWorkspaceId(id);
-    for (const availability of availabilities[0]) {
-      let result = await OfficeLendingService.cancelAvailability({ id: availability.AvailabilityId });
-    }
-
-    result = await Workspaces.deleteWorkspace(id);
+    await deleteWorkspaceHelper(id);
     return;
   } catch (e) {
     console.log(e.message)
-    return;
+    throw (e);
   }
 }
 
@@ -370,38 +367,83 @@ router.delete('/deleteWorkspace', (req, res) => {
   })
 })
 
+async function getFeatureIdHelper(featureName) {
+  const featureIdQuery = `SELECT FeatureId FROM feature WHERE FeatureName=${featureName}`;
+  const rows = await knexHelper(featureIdQuery);
+  if (rows.length === 0) {
+    throw {
+      error: `feature name: ${featureName} doesn't exist`,
+      status: 400
+    }
+  }
+  return rows[0].FeatureId
+}
+
+router.post('/workspacefeature/add', async (req, res) => {
+  try {
+    const workspaceId = req.body.workspaceId
+    const featureName = req.body.featureName
+    const featureId = await getFeatureIdHelper(featureName)
+    const insertQuery = `INSERT IGNORE INTO workspaceFeature (WorkspaceId, FeatureId) VALUES ('${workspaceId}', ${featureId})`
+    await knexHelper(insertQuery)
+    res.send("OK")
+  } catch (e) {
+    res.status(err.status || 500).json(err)
+  }
+})
+
+router.post('/workspacefeature/delete', async (req, res) => {
+  try {
+    const workspaceId = req.body.workspaceId
+    const featureName = req.body.featureName
+    const featureId = await getFeatureIdHelper(featureName)
+    const deleteQuery = `DELETE FROM workspaceFeature WHERE WorkspaceId = '${workspaceId}' AND FeatureID = ${featureId}`
+    await knexHelper(deleteQuery)
+    res.send("OK")
+  } catch (e) {
+    res.status(err.status || 500).json(err)
+  }
+})
+
+async function getStaffIdByEmail(email) {
+  const query = `SELECT StaffId FROM user WHERE Email  = '${email}'`
+  const results = await knexHelper(query)
+  if (results.length === 0) {
+    throw {
+      error: `No user exists in DB with email: ${email}`,
+      status: 400
+    }
+  }
+  return results[0].StaffId
+}
+
 /**
    * Updates a Workspace's name, staffId, or floorId
-
+ 
    * id Integer ID of the Workspace to update
    **/
-async function adminUpdateWorkspace(id, workspaceName, staffId, floorId) {
-  try {
-    // check to see if workspace exists
-    let workspace = await Workspaces.getByWorkspaceId(id);
-    if (workspace[0].length === 0) {
-      throw { message: "ID doesn't exist", status: 403 }
-    }
-
-    // update workspace with new information
-    result = await Workspaces.updateWorkspace(id, workspaceName, staffId, floorId);
-    return;
-  } catch (e) {
-    throw { message: "Unauthorized", status: 401 }
-    return;
+async function adminUpdateWorkspace(id, workspaceName, email) {
+  // check to see if workspace exists
+  const workspace = await Workspaces.getByWorkspaceId(id);
+  if (workspace[0].length === 0) {
+    throw { message: "workspace doesn't exist", status: 403 }
   }
+  const staffId = await getStaffIdByEmail(email)
+  // update workspace with new information
+  await Workspaces.updateWorkspace(id, workspaceName, staffId, floorId);
+  return;
 }
 
 /*
  * Update workspace with specified id
- * query example: https://localhost:8080/admin/workspaces?id=NC1-02D&name=Vancouver, Building 1, 1st floor, 01D&staffId=2&floorId=4
+ * query example: https://localhost:8080/admin/workspaces?id=NC1-02D&name=Vancouver, Building 1, 1st floor, 01D&email=example@acme.com&floorId=4
  * Response:  200 OK
  * 401 Unauthorized ​(missing, wrong, or expired security token) – Front end will show admin login screen in response  
  * 403 Forbidden (workspace doesn’t exist)
 */
 router.put('/workspaces', (req, res) => {
   let params = req.body;
-  adminUpdateWorkspace(req.query.id, params.workspaceName, params.staffId, params.floorId).then(() => {
+  adminUpdateWorkspace(req.query.id, params.workspaceName, params.email, params.floorId).then(() => {
     res.status(200);
     res.sendStatus(200);
   }).catch(err => {
