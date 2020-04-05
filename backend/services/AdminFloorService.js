@@ -84,15 +84,15 @@ async function validateColumnNamesFromCSV(columnNames, featureNames) {
  * If there is one, return its userId
  * If there isn't one, create it, then return its userId
  * 
- * @param {string} employeeId 
+ * @param {string} email 
  */
-async function getOrCreateUserId(employeeId) {
-  const selectQuery = `select StaffId from user where EmployeeId = '${employeeId}')`;
+async function getOrCreateUserId(email) {
+  const selectQuery = `select StaffId from user where Email = '${email}')`;
   const selectResults = await db(selectQuery);
   let staffId;
   if (selectResults.length === 0) {
     // Create a new user
-    const insertQuery = `insert into user(EmployeeId) values (${employeeId})`;
+    const insertQuery = `insert into user(Email) values ('${email}')`;
     const insertResults = await db(insertQuery);
     staffId = insertResults.insertId;
   } else {
@@ -130,12 +130,17 @@ async function updateWorkspaceFeatures(row, workspaceId, featureMap, featureName
 }
 
 async function processCSVRow(row, { floorId, floorName }, featureMap, featureNames) {
-  const officeId = row[OFFICE_ID_COLUMN_NAME];
-  const employeeId = row[EMPLOYEE_ID_COLUMN_NAME];
-  const workspaceId = floorName + "-" + officeId;
-  if (employeeId !== "") {
+  const officeId = (row[OFFICE_ID_COLUMN_NAME]).trim();
+  if (officeId === "") {
+    // Empty field, ignore
+    return;
+  }
+  const email = (row[EMPLOYEE_ID_COLUMN_NAME]).trim();
+  // const workspaceId = floorName + "-" + officeId;
+  const workspaceId = officeId;
+  if (email !== "") {
     // There is an employee associated with this. Get the employee's userID.
-    const userId = await getOrCreateUserId(employeeId);
+    const userId = await getOrCreateUserId(email);
     await insertIgnoreWorkspace(workspaceId, floorId, userId);
   } else {
     await insertIgnoreWorkspace(workspaceId, floorId);
@@ -177,9 +182,9 @@ async function uploadFloorData(req, res) {
   validateUploadRequest(req, FORM_ID_CSV_UPLOAD);
   const features = await getFeaturesFromDatabase();
   const floorId = req.body.floorId;
-  const floorName = await getFloorNameFromDatabase(floorId);
+  // const floorName = await getFloorNameFromDatabase(floorId);
   const file = req.file[FORM_ID_CSV_UPLOAD];
-  await processFloorData(file, features, { floorId, floorName });
+  await processFloorData(file, features, { floorId });
 }
 
 async function uploadFloorPlan(req, res) {
