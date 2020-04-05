@@ -341,7 +341,7 @@ async function adminDeleteWorkspace(id) {
     if (workspace[0].length === 0) {
       throw { message: "ID doesn't exist", status: 403 }
     }
-    await deleteWorkspaceHelper(id);
+    await deleteWorkspaceHelper({ WorkspaceId: id });
     return;
   } catch (e) {
     console.log(e.message)
