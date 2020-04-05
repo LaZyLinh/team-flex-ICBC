@@ -63,26 +63,16 @@ class Booking extends React.Component {
     console.log(res);
   };
 
-  handleDateChange = dateRange => {
-    this.setState({
-      startDate: dateRange.selection.startDate,
-      endDate: dateRange.selection.endDate
-    });
-    const sdStr = dateRange.selection.startDate.toISOString().slice(0, 10);
-    const edStr = dateRange.selection.endDate.toISOString().slice(0, 10);
-    let packages;
-    if (this.state.floor) {
-      packages = OfficeBookingApi.getPackages(sdStr, edStr, {
-        floorIds: this.state.floors.filter(f => f.floorId === this.state.floor.floorId)
-      });
-    } else if (this.state.location) {
-      packages = OfficeBookingApi.getPackages(sdStr, edStr, {
-        floorIds: this.state.floors.map(f => f.floorId)
-      });
-    } else {
-      packages = OfficeBookingApi.getPackages(sdStr, edStr);
-    }
-    this.setState({ packages });
+  handleDateChange = async dateRange => {
+    this.setState(
+      {
+        startDate: dateRange.selection.startDate,
+        endDate: dateRange.selection.endDate
+      },
+      async () => {
+        await this.updatePackages();
+      }
+    );
   };
 
   handleSelectLocation = async event => {
@@ -112,25 +102,27 @@ class Booking extends React.Component {
   };
 
   handleCheckFeature = async event => {
-    for (const feature of this.state.features) {
-      this.setState(
-        {
-          features: this.state.features.map(f => {
-            if (feature.name === event.target.value) {
-              return {
-                name: f.name,
-                checked: !f.checked
-              };
-            } else {
-              return f;
-            }
-          })
-        },
-        async () => {
-          await this.updatePackages();
-        }
-      );
-    }
+    console.log("event.target.value --- " + event.target.value);
+    console.log(this.state);
+    this.setState(
+      {
+        features: this.state.features.map(f => {
+          console.log(`Testing ${f.name} === ${event.target.value} --- ${f.name === event.target.value}`);
+          if (f.name === event.target.value) {
+            return {
+              name: f.name,
+              checked: !f.checked
+            };
+          } else {
+            return f;
+          }
+        })
+      },
+      async () => {
+        console.log(this.state);
+        await this.updatePackages();
+      }
+    );
   };
 
   updatePackages = async () => {
@@ -223,7 +215,6 @@ class Booking extends React.Component {
           </FormControl>
           <div className={classes.featureSelection}>
             {this.state.features.map((feature, i) => {
-              console.log(feature);
               return (
                 <FormControlLabel
                   className={`${classes.featureLabel}`}
