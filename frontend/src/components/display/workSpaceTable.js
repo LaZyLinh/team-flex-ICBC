@@ -229,7 +229,7 @@ function createData(wsId,officeOwner) {
 //   return originalDate.substring(0, 9);
 // }
 
-export default function ManageTables(props) {
+export default function workSpaceTable (props) {
     const rows = props.rows.map(r =>
         createData(r.workspaceId,r.staff)
     );

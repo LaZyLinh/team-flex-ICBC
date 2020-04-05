@@ -2,6 +2,7 @@ import React from "react";
 import { deleteWorkspace, getWorkspacesByFloorId } from "../../api/AdminApi";
 import Button from "@material-ui/core/Button";
 import {withStyles} from "@material-ui/core";
+import workSpaceTable from "../display/workSpaceTable"
 
  class EditWorkspace extends React.Component {
   constructor(props) {
@@ -92,7 +93,7 @@ import {withStyles} from "@material-ui/core";
           <Button  className={`${classes.uploadMapBut}`}>Upload New Map</Button>
           <Button  className={`${classes.uploadCSVBut}`}>Upload New Work Station CVS File</Button>
           <div className={`${classes.tableBox}`}>
-              <h1>WorkSpaceTable</h1>
+              <workSpaceTable rows={this.state.workspaces}/>
           </div>
 
       </React.Fragment >
@@ -111,8 +112,8 @@ import {withStyles} from "@material-ui/core";
       },
       imgBox:{
           backgroundColor: "#EBF0F8",
-          height: "400px",
-          width:"400px",
+          height: "40%",
+          width:"26%",
           position:"absolute",
           left:"8%",
           top:"15%"
@@ -120,27 +121,34 @@ import {withStyles} from "@material-ui/core";
       uploadMapBut:{
           backgroundColor:"#EBF0F8",
           position:"absolute",
-          top:"55%",
+          top:"60%",
           left:"10%",
-          width:"340px",
-          height:"60px"
+          width:"22%",
+          height:"7%"
       },
       uploadCSVBut:{
           backgroundColor:"#EBF0F8",
           position:"absolute",
-          top:"65%",
+          top:"70%",
           left:"10%",
-          width:"340px",
-          height:"60px"
+          width:"22%",
+          height:"7%"
       },
       tableBox:{
           backgroundColor:"#EBF0F8",
           position:"absolute",
-          left:"50%",
+          left:"49%",
           top:"100px",
-          width:"600px",
-          height:"800px"
+          width:"35%",
+          height:"75%"
 
+      },
+      tableSty:{
+          position:"relative",
+          left:"49%",
+          top:"100px",
+          width:"32%",
+          height:"70%"
       }
     };
 
