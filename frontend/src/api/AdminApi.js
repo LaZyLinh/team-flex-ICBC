@@ -127,13 +127,18 @@ export async function deleteLocationName(name) {
 
 // file must in binary
 export async function uploadFloorData(floorid, csvFile) {
-  try {
-    await api('post', "/upload-floor-data", { floorId: floorid, floorData: csvFile })
-  } catch (err) {
-    localStorage.setItem("admin_error", JSON.stringify(err))
-    console.log(err)
-    throw err;
-  }
+  var bodyFormData = new FormData();
+  bodyFormData.append("floorId", floorid);
+  bodyFormData.append("floorData", csvFile);
+  jwt = localStorage.getItem("admin_jwt")
+  await Axios({
+    method: 'POST',
+    url: 'https://icbcflexwork.me:8080/admin/upload-floor-data',
+    data: bodyFormData,
+    headers: {
+      "Authorization": `Bearer ${jwt}`
+    }
+  })
 }
 
 // img must in binary
@@ -160,10 +165,11 @@ export async function deleteWorkspace(workspaceId) {
   console.log(workspaceId)
   try {
     console.log("HEY")
-    await api('delete', '/deleteWorkspace?' + workspaceId);
+    await api('delete', '/deleteWorkspace?id=' + workspaceId);
   } catch (err) {
-    localStorage.setItem("admin_error", JSON.stringify(err))
+    localStorage.setItem("admin_delete_error", JSON.stringify(err))
     console.log(err)
+    throw err;
   }
 }
 

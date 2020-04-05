@@ -41,13 +41,14 @@ class FormDialog extends React.Component {
 
     handleSubmit = async (event) => {
         // TODO send upload file request
+        console.log("floor id: " + this.state.floorId)
         try {
             await uploadFloorData(this.state.floorId, this.state.file);
             this.setState({ errMsg: "" })
             this.setState(prevState => {
                 return { open: !prevState.open };
             });
-            window.location.reload();
+            this.props.reloadCallback();
         } catch (err) {
             console.log(err)
             this.setState({ errMsg: "there is an error uploading csv" })

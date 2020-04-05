@@ -22,7 +22,7 @@ import CreateIcon from "@material-ui/icons/Create"
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { withStyles } from "@material-ui/core/styles";
 import { confirmAlert } from "react-confirm-alert";
-import {deleteWorkspace} from "../../api/AdminApi";
+import { deleteWorkspace } from "../../api/AdminApi";
 
 const StyledTableCell = withStyles(theme => ({
     head: {
@@ -98,8 +98,8 @@ function EnhancedTableHead(props) {
                             {headCell.label}
                             {orderBy === headCell.id ? (
                                 <span className={classes.visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </span>
+                                    {order === "desc" ? "sorted descending" : "sorted ascending"}
+                                </span>
                             ) : null}
                         </TableSortLabel>
                     </TableCell>
@@ -155,10 +155,10 @@ const EnhancedTableToolbar = props => {
                     {numSelected} selected
                 </Typography>
             ) : (
-                <Typography className={classes.title} variant="h6" id="tableTitle">
-                    Nutrition
-                </Typography>
-            )}
+                    <Typography className={classes.title} variant="h6" id="tableTitle">
+                        Nutrition
+                    </Typography>
+                )}
 
             {numSelected > 0 ? (
                 <Tooltip title="Delete">
@@ -167,12 +167,12 @@ const EnhancedTableToolbar = props => {
                     {/*</IconButton>*/}
                 </Tooltip>
             ) : (
-                <Tooltip title="Filter list">
-                    <IconButton aria-label="filter list">
-                        <FilterListIcon />
-                    </IconButton>
-                </Tooltip>
-            )}
+                    <Tooltip title="Filter list">
+                        <IconButton aria-label="filter list">
+                            <FilterListIcon />
+                        </IconButton>
+                    </Tooltip>
+                )}
         </Toolbar>
     );
 };
@@ -222,18 +222,18 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function createData(wsId,officeOwner) {
+function createData(wsId, officeOwner) {
 
-    return {wsId,officeOwner};
+    return { wsId, officeOwner };
 }
 
 //  function reformatDate(originalDate) {
 //   return originalDate.substring(0, 9);
 // }
 
-export default function WorkspaceTable (props) {
+export default function WorkspaceTable(props) {
     const rows = props.rows.map(r =>
-        createData(r.WorkspaceId,r.FirstName+"  "+r.LastName)
+        createData(r.WorkspaceId, r.FirstName + "  " + r.LastName)
     );
     const classes = useStyles();
     const [order, setOrder] = React.useState("asc");
@@ -322,7 +322,7 @@ export default function WorkspaceTable (props) {
                                     return (
                                         <StyledTableRow
                                             hover
-                                            onClick={event => handleClick(event, row.name)}
+                                            // onClick={event => handleClick(event, row.name)}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
@@ -348,14 +348,25 @@ export default function WorkspaceTable (props) {
                                                 {row.officeOwner}
                                             </TableCell>
                                             <TableCell>
-                                                <CreateIcon/>
+                                                <CreateIcon onClick={props.showEditPopup(row)} />
                                             </TableCell>
 
                                             <TableCell>
-                                                <DeleteIcon onClick={async ()=>{
-                                                   await deleteWorkspace(row.wsId);
-                                                    // window.location.reload(false);
-                                                }}/>
+                                                <DeleteIcon style={{ "&:hover": { cursor: "pointer" } }}
+                                                    onClick={async () => {
+                                                        console.log(row.wsId);
+                                                        if (window.confirm(`Are you sure you wish to delete Workspace ${row.wsId}.`)) {
+                                                            console.log("click yes");
+                                                            try {
+                                                                await deleteWorkspace(row.wsId);
+                                                                // props.reloadCallback()
+                                                            }
+                                                            catch (err) {
+                                                                console.log(err);
+                                                                alert("workspace delete failed")
+                                                            }
+                                                        }
+                                                    }} />
 
                                             </TableCell>
                                         </StyledTableRow>

@@ -10,7 +10,7 @@ class EditWorkspace extends React.Component {
     super(props);
     this.state = {
       floorId: props.floorId,
-
+      editPopup: false,
       workspaces: [],
       deleteButtonClicked: false
     };
@@ -19,9 +19,13 @@ class EditWorkspace extends React.Component {
 
   async componentWillMount() {
     this.setState({
-      // workspaces: await getWorkspacesByFloorId(this.props.floorId)
-      workspaces: await getWorkspacesByFloorId(1)
+      workspaces: await getWorkspacesByFloorId(this.props.floorId)
+      // workspaces: await getWorkspacesByFloorId(1)
     });
+
+  }
+
+  editWorkspacePopup(workspace) {
 
   }
 
@@ -104,6 +108,10 @@ class EditWorkspace extends React.Component {
     }
   };
 
+  reloadCallback = () => {
+    window.location.reload();
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -131,9 +139,9 @@ class EditWorkspace extends React.Component {
               {/*delete selected workspace*/}
               {/*</Button>*/}
               {/*{this.showWorkspaces()}</div>*/}
-              <FormDialog floorIdFromMain={this.state.floorId} />
+              <FormDialog floorIdFromMain={this.state.floorId} reloadCallback={this.reloadCallback} />
             </div>
-            <WorkspaceTable rows={this.state.workspaces} /></div>
+            <WorkspaceTable rows={this.state.workspaces} reloadCallback={this.reloadCallback} showEditPopup={this.editWorkspacePopup} /></div>
 
         </div>
 

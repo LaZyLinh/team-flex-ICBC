@@ -394,7 +394,7 @@ async function adminUpdateWorkspace(id, workspaceName, staffId, floorId) {
 
 /*
  * Update workspace with specified id
- * query example: https://localhost:8080/admin/workspaces?id=NC1-02D&name=Vancouver, Building 1, 1st floor, 01D&staffId=2&floorId=4
+ * query example: https://localhost:8080/admin/workspaces?id=NC1-02D name=Vancouver, Building 1, 1st floor, 01D&staffId=2&floorId=4
  * Response:  200 OK
  * 401 Unauthorized ​(missing, wrong, or expired security token) – Front end will show admin login screen in response  
  * 403 Forbidden (workspace doesn’t exist)
