@@ -7,58 +7,75 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { withStyles } from "@material-ui/core";
+import Slide from "@material-ui/core/Slide";
 
-export default function FormDialog(props) {
-    console.log(props)
-    const [open, setOpen] = React.useState(false);
+class FormDialog extends React.Component {
+    constructor(props) {
+        super(props);
+        console.log(props)
+        this.state = {
+            open: false,
+        }
+        this.handleFileChange = this.handleFileChange.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this)
+    }
 
-    const handleClickOpen = () => {
-        setOpen(true);
+
+
+    handleClickOpen = () => {
+        this.setState({ open: true })
     };
 
-    const handleClose = () => {
-        setOpen(false);
+    handleClose = () => {
+        this.setState(prevState => {
+            return { open: !prevState.open };
+        });
     };
 
-    return (
-        <div>
-            <Button  style={{position:"absolute",right:"0%",top:"2.7%"}} variant="outlined" color="primary" onClick={handleClickOpen}>
-                Add New Workspace
+    handleFileChange = (e) => {
+        this.setState({ file: e.target.files[0] });
+    }
+
+    handleSubmit = (event) => {
+        // TODO send upload file request
+    }
+
+    render() {
+        return (
+            <div>
+                <Button style={{ position: "absolute", right: "0%", top: "2.7%" }} variant="outlined" color="primary" onClick={this.handleClickOpen}>
+                    Upload Workspaces CSV
             </Button>
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Add workspace</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Please enter the following information to add a new workspace
+                <Dialog TransitionComponent={Transition} open={this.state.open}
+                    onClose={this.handleClose} aria-labelledby="form-dialog-title">
+                    <DialogTitle id="form-dialog-title">Add workspace</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Please enter the following information to add a new workspace
                     </DialogContentText>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="staffId"
-                        label="StaffId"
-                        type="text"
-                        fullWidth
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="wsId"
-                        label="WorkspaceID"
-                        type="text"
-                        fullWidth
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="primary">
-                        Cancel
+                        <input
+                            name="Workspaces CSV file"
+                            type="file"
+                            onChange={this.handleFileChange}
+                            margin="none"
+                            required></input>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleClose} color="primary">
+                            Cancel
                     </Button>
-                    <Button onClick={handleClose} color="primary">
-                        Confirm
+                        <Button onClick={this.handleSubmit} color="primary">
+                            Confirm
                     </Button>
-                </DialogActions>
-            </Dialog>
-        </div>
-    );
+                    </DialogActions>
+                </Dialog>
+            </div>
+        );
+    }
 }
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
+export default FormDialog;
