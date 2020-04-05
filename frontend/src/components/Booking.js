@@ -2,7 +2,6 @@ import React from "react";
 import { withStyles } from "@material-ui/core";
 import Select from "@material-ui/core/Select";
 import Link from "@material-ui/core/Link";
-import Drawer from "@material-ui/core/Drawer";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
@@ -13,13 +12,6 @@ import Typography from "@material-ui/core/Typography";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-import Divider from "@material-ui/core/Divider";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
@@ -41,6 +33,7 @@ class Booking extends React.Component {
       location: "",
       locations: [],
       floor: "",
+      floorId: 0,
       floors: [],
       startDate: new Date(),
       endDate: new Date(),
@@ -63,12 +56,9 @@ class Booking extends React.Component {
       locations: results[0],
       features
     });
-    let floors = await OfficeBookingApi.getFloors({ location: "Vancouver" });
-    const floorIds = floors.map(f => f.floorId);
-    console.log(floorIds);
     const sdStr = this.state.startDate.toISOString().slice(0, 10);
     const edStr = this.state.endDate.toISOString().slice(0, 10);
-    const res = await OfficeBookingApi.getPackages("2020-03-30", "2020-05-27");
+    const res = await OfficeBookingApi.getPackages(sdStr, edStr);
     this.setState({ packages: res });
     console.log(res);
   };
@@ -78,25 +68,88 @@ class Booking extends React.Component {
       startDate: dateRange.selection.startDate,
       endDate: dateRange.selection.endDate
     });
-    if (this.state.location) {
-      // OfficeBookingApi.getPackages("2020-03-30", "2020-05-27", { floorIds });
+    const sdStr = dateRange.selection.startDate.toISOString().slice(0, 10);
+    const edStr = dateRange.selection.endDate.toISOString().slice(0, 10);
+    let packages;
+    if (this.state.floor) {
+      packages = OfficeBookingApi.getPackages(sdStr, edStr, {
+        floorIds: this.state.floors.filter(f => f.floorId === this.state.floor.floorId)
+      });
+    } else if (this.state.location) {
+      packages = OfficeBookingApi.getPackages(sdStr, edStr, {
+        floorIds: this.state.floors.map(f => f.floorId)
+      });
+    } else {
+      packages = OfficeBookingApi.getPackages(sdStr, edStr);
+    }
+    this.setState({ packages });
+  };
+
+  handleSelectLocation = async event => {
+    this.setState({ location: event.target.value, floor: "", floorId: 0 });
+    const floors = await OfficeBookingApi.getFloors({ location: event.target.value });
+    this.setState({ floors });
+    const sdStr = this.state.startDate.toISOString().slice(0, 10);
+    const edStr = this.state.endDate.toISOString().slice(0, 10);
+    const packages = await OfficeBookingApi.getPackages(sdStr, edStr, {
+      floorIds: floors.map(f => f.floorId)
+    });
+    this.setState({ packages });
+  };
+
+  handleSelectFloor = async (event, child) => {
+    for (const floor of this.state.floors) {
+      if (parseInt(child.key) === floor.floorId) {
+        this.setState({ floor: `${floor.prefix} Floor ${floor.floorNo}`, floorId: floor.floorId });
+        const sdStr = this.state.startDate.toISOString().slice(0, 10);
+        const edStr = this.state.endDate.toISOString().slice(0, 10);
+        const packages = await OfficeBookingApi.getPackages(sdStr, edStr, {
+          floorIds: [floor.floorId]
+        });
+        this.setState({ packages });
+      }
     }
   };
 
-  handleSelectLocation = event => {
-    this.setState({ location: event.target.value });
-    OfficeBookingApi.getFloors({ location: event.target.value }).then(floors => {
-      const floorIds = floors.map(f => console.log(f));
-      this.setState({ floors: floorIds });
-    });
+  handleCheckFeature = async event => {
+    for (const feature of this.state.features) {
+      this.setState(
+        {
+          features: this.state.features.map(f => {
+            if (feature.name === event.target.value) {
+              return {
+                name: f.name,
+                checked: !f.checked
+              };
+            } else {
+              return f;
+            }
+          })
+        },
+        async () => {
+          await this.updatePackages();
+        }
+      );
+    }
   };
 
-  handleSelectFloor = event => {
-    console.log(event);
-  };
-
-  handleCheckFeature = event => {
-    console.log(event);
+  updatePackages = async () => {
+    const sdStr = this.state.startDate.toISOString().slice(0, 10);
+    const edStr = this.state.endDate.toISOString().slice(0, 10);
+    const features = [];
+    for (const f of this.state.features) {
+      if (f.checked) {
+        features.push(f.name);
+      }
+    }
+    let floorIds = [];
+    if (this.state.floor) {
+      floorIds = this.state.floors.filter(f => f.floorId === this.state.floor.floorId);
+    } else if (this.state.location) {
+      floorIds = this.state.floors.map(f => f.floorId);
+    }
+    const packages = await OfficeBookingApi.getPackages(sdStr, edStr, { floorIds, features });
+    this.setState({ packages });
   };
 
   getLocationItems = () => {
@@ -114,12 +167,12 @@ class Booking extends React.Component {
 
   getFloorItems = () => {
     let menuItems = [];
-    let i = 0;
     for (const floor of this.state.floors) {
       menuItems.push(
-        <MenuItem value={floor} key={i++}>
-          {floor}
-        </MenuItem>
+        <MenuItem
+          value={`${floor.prefix} Floor ${floor.floorNo}`}
+          key={floor.floorId}
+        >{`${floor.prefix} Floor ${floor.floorNo}`}</MenuItem>
       );
     }
     return menuItems;
@@ -168,20 +221,21 @@ class Booking extends React.Component {
               {this.getFloorItems()}
             </Select>
           </FormControl>
-          {/* <div className="featureSelection">
+          <div className={classes.featureSelection}>
             {this.state.features.map((feature, i) => {
               console.log(feature);
               return (
-                <Checkbox
+                <FormControlLabel
+                  className={`${classes.featureLabel}`}
+                  control={
+                    <Checkbox value={feature.name} onChange={this.handleCheckFeature} checked={feature.checked} />
+                  }
                   label={feature.name}
-                  value={feature.name}
-                  onChange={this.handleCheckFeature}
-                  checked={feature.checked}
                   key={i}
                 />
               );
             })}
-          </div> */}
+          </div>
           <div className={classes.pkgsContainer}>{this.renderPackages(classes)}</div>
         </div>
       </div>
@@ -189,7 +243,7 @@ class Booking extends React.Component {
   };
 
   renderPackages = classes => {
-    if (!this.state.packages) {
+    if (this.state.packages.length === 0) {
       return <div className={`${classes.noAvailText}`}>No availabilities for this filter. Search again.</div>;
     }
     const pkgItems = [];
@@ -229,10 +283,17 @@ class Booking extends React.Component {
         <ExpansionPanel key={i}>
           <ExpansionPanelSummary className={classes.pkgSummary} expandIcon={<ExpandMoreIcon />}>
             <div className={classes.packageHeading}>
-              <Typography variant="h4" component="h4">
+              <Typography variant="h4" component="h4" style={{ fontFamily: "Inter" }}>
                 Booking Option #{i}
               </Typography>
             </div>
+            <Button
+              style={{ position: "absolute", right: "8%", borderColor: "rgb(172, 223, 249)" }}
+              variant="outlined"
+              color="primary"
+            >
+              Place booking
+            </Button>
           </ExpansionPanelSummary>
           <div className={classes.availContainer}>{availItems}</div>
         </ExpansionPanel>

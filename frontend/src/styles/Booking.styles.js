@@ -48,41 +48,47 @@ export default {
   },
   calendar: {
     position: "absolute",
-    top: "150px",
+    top: "132px",
     left: "11px",
     boxShadow: "0px 2px 2px 0px rgba(0,0,0,.2)",
     fontSize: "10px"
   },
   locationInput: {
     position: "absolute",
-    top: "15px",
+    top: "8px",
     left: "11px",
     width: "293px",
-    backgroundColor: "rgb(248, 248, 248)"
-    // boxShadow: "0px 2px 2px 0px rgba(0,0,0,.2)"
+    backgroundColor: "rgb(248, 248, 248)",
+    boxShadow: "0px 1px 1px 0px rgba(0,0,0,.1)"
   },
   floorInput: {
     position: "absolute",
-    top: "80px",
+    top: "70px",
     left: "11px",
     width: "293px",
-    backgroundColor: "rgb(248, 248, 248)"
-    // boxShadow: "0px 2px 2px 0px rgba(0,0,0,.2)"
+    backgroundColor: "rgb(248, 248, 248)",
+    boxShadow: "0px 1px 1px 0px rgba(0,0,0,.1)"
   },
   featureSelection: {
-    postion: "absolute",
+    position: "absolute",
     overflow: "scroll",
     backgroundColor: "#ffffff",
-    top: "300px",
-    bottom: "5%"
+    top: "475px",
+    bottom: "10%",
+    left: "11px",
+    right: "11px",
+    padding: "3px 10px",
+    boxShadow: "0px 2px 2px 0px rgba(0,0,0,.2)"
   },
   pkgsContainer: {
     position: "absolute",
     overflow: "scroll",
     left: "316px",
+    height: "100%",
     width: "100%",
     minWidth: "950px",
-    padding: "8px 5px"
+    padding: "8px 5px",
+    minHeight: "300px"
   },
   pkgSummary: {
     backgroundColor: "rgb(248, 248, 248)",
@@ -113,6 +119,9 @@ export default {
   availabilityItem: {
     width: "220px",
     boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.3)"
+  },
+  featureLabel: {
+    color: "#2663b5"
   }
 };
 
