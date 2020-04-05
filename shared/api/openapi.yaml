@@ -238,26 +238,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/AdminPostFloor"
       x-swagger-router-controller: Admin
-    delete:
-      tags:
-        - Admin
-      summary: Delete a Floor
-      operationId: adminDeleteFloorMethod
-      parameters:
-        - name: id
-          in: query
-          description: Floor Id
-          required: true
-          style: form
-          explode: true
-          schema:
-            type: integer
-          example: 1
-      responses:
-        "200":
-          description: Successful Operation
-          content: {}
-      x-swagger-router-controller: Admin
     put:
       tags:
         - Admin
@@ -285,6 +265,28 @@ paths:
                 x-content-type: text/plain
               example: "Error: Missing floor id"
       x-swagger-router-controller: Admin
+  /admin/floors/{id}:
+    delete:
+      tags:
+        - Admin
+      summary: Delete a Floor
+      operationId: adminDeleteFloorMethod
+      parameters:
+        - name: id
+          in: query
+          description: Floor Id
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Successful Operation
+          content: {}
+      x-swagger-router-controller: Admin
+    
   /features:
     get:
       tags:
