@@ -11,6 +11,8 @@ import Slide from "@material-ui/core/Slide";
 import { getFloorsByCity, addFloor, deleteFloor } from "../api/AdminApi";
 import FloorList from "./admin/FloorList";
 import Popup from "reactjs-popup";
+import logo from "../assets/home_logo.png";
+import Link from "@material-ui/core/Link";
 
 // router.post("/upload-floor-data", AdminFloorService.uploadFloorData);
 // backend has this which takes a (spread sheet file) and puts the whole floor's data into the database
@@ -32,6 +34,7 @@ class EditFloor extends React.Component {
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleFileChange = this.handleFileChange.bind(this)
   }
 
   componentWillMount = async () => {
@@ -71,7 +74,7 @@ class EditFloor extends React.Component {
       console.log("click yes");
       // TODO test delete
       await deleteFloor(this.state.allFloors[fidx].FloorId)
-      this.forceUpdate();
+      window.location.reload();
     }
   }
 
@@ -97,30 +100,34 @@ class EditFloor extends React.Component {
 
   }
 
+  handleFileChange(e) {
+    this.setState({ file: e.target.files[0] });
+  }
+
   handleSubmit = (event) => {
     event.preventDefault();
-    const data = {
-      floorNo: this.state.newFloorNo,
-      building: this.state.newBuilding,
-      city: this.state.city,
-      location: this.state.newLocation
-    }
-    addFloor(data).then(() => {
+    var bodyFormData = new FormData();
+    bodyFormData.append("floorNo", this.state.newFloorNo);
+    bodyFormData.append("building", this.state.newBuilding);
+    bodyFormData.append("city", this.state.city);
+    bodyFormData.append("location", this.state.newLocation);
+    bodyFormData.append('floorPlanImg', this.state.file);
+
+    addFloor(bodyFormData).then((rsp) => {
       // TODO wait for fix
 
-      console.log("OK");
+      console.log(rsp);
       // TODO 
       this.setState({ errMsg: "" })
       this.setState(prevState => {
         return { openDialog: !prevState.openDialog };
       });
+      window.location.reload();
     }).catch(error => {
       console.log(error)
       this.setState({ errMsg: "there is an error adding floors" })
     })
 
-
-    console.log(JSON.stringify(data))
   }
 
   render() {
@@ -130,6 +137,9 @@ class EditFloor extends React.Component {
       <div className={`${classes.mainStyle}`}>
         <div className={`${classes.headerStyle}`}>
           <h1 style={{ color: "white", position: "absolute", left: "2.78%", fontSize: 48 }}>Edit Floor</h1>
+          <Link href="/adminPage">
+            <img className={classes.logo} src={logo} alt="Logo"></img>
+          </Link>
         </div>
         <div className={`${classes.split}`}>
           <div className={`${classes.left}`}>
@@ -210,8 +220,8 @@ class EditFloor extends React.Component {
                     <label style={{ width: "30%" }}>Floor Plan</label>
                     <input
                       name="FloorPlan"
-                      type="file" name="file"
-                      onChange={this.handleInputChange}
+                      type="file"
+                      onChange={this.handleFileChange}
                       margin="none"
                       className={`${classes.field}`} required></input>
                   </div>
@@ -249,6 +259,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const muiStyles = {
   mainStyle: {
     display: "block"
+  },
+  logo: {
+    width: "95px",
+    height: "40px",
+    position: "absolute",
+    right: "1%",
+    top: "25%"
   },
   field: {
     background: "#f8f8f8",

@@ -193,13 +193,17 @@ export async function getFloorsByCity(city) {
   }
 }
 
-export async function addFloor(data) {
-  try {
-    await api('post', '/floors', data);
-  } catch (err) {
-    localStorage.setItem("admin_error", JSON.stringify(err))
-    throw err
-  }
+export async function addFloor(bdata) {
+  jwt = localStorage.getItem("admin_jwt")
+  await Axios({
+    method: 'POST',
+    url: 'https://icbcflexwork.me:8080/admin/floors',
+    data: bdata,
+    headers: {
+      "Authorization": `Bearer ${jwt}`
+    }
+  })
+
 }
 
 export async function deleteFloor(id) {
