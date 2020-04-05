@@ -44,4 +44,4 @@ function generate(sql, numEmployees = 5000) {
   }
 }
 
-module.exports = { generate }
+module.exports = { generate, randomPokemon }

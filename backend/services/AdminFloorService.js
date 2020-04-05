@@ -1,5 +1,6 @@
 const csv = require("csvtojson");
 const knex = require("../db/mysqlDB");
+const { randomPokemon } = require("../sql/generator/EmployeeGenerator");
 
 const FORM_ID_IMAGE_UPLOAD = "floorPlanImage";
 const FORM_ID_CSV_UPLOAD = "floorData";
@@ -51,10 +52,11 @@ function validateUploadRequest(req, formId) {
   if (!floorExists(id)) {
     throw new Error(`Invalid floor ID: ${id}`);
   }
+  console.log(req.files);
   if (req.files.length === 0) {
     throw new Error("No files uploaded at all");
   }
-  const file = req.files[FORM_ID_IMAGE_UPLOAD];
+  const file = req.files[formId];
   if (!file) {
     throw new Error(`No file found for form ID ${formId}`);
   }
@@ -64,16 +66,18 @@ function validateUploadRequest(req, formId) {
 }
 
 async function validateColumnNamesFromCSV(columnNames, featureNames) {
+  console.log("validateColumnNamesFromCSV");
+  console.log(columnNames);
   // Check for mandatory columns
-  for (const colName of MANDATORY_COLUMN_NAMES) {
-    if (!columnNames.includes(colName)) {
+  for (const mandatoryColName of MANDATORY_COLUMN_NAMES) {
+    if (!columnNames.includes(mandatoryColName)) {
       // Does not include a mandatory column name
-      throw new Error(`Missing column name in CSV: ${colName}`);
+      throw new Error(`Missing column name in CSV: ${mandatoryColName}`);
     }
   }
   // Check for missing features
   for (const featureName of featureNames) {
-    if (!columnNamesFromCSV.includes(featureName)) {
+    if (!columnNames.includes(featureName)) {
       throw new Error(`Missing information about feature: ${featureName}`);
     }
   }
@@ -84,15 +88,15 @@ async function validateColumnNamesFromCSV(columnNames, featureNames) {
  * If there is one, return its userId
  * If there isn't one, create it, then return its userId
  * 
- * @param {string} employeeId 
+ * @param {string} email 
  */
-async function getOrCreateUserId(employeeId) {
-  const selectQuery = `select StaffId from user where EmployeeId = '${employeeId}')`;
+async function getOrCreateUserId(email) {
+  const selectQuery = `select StaffId from user where Email = '${email}'`;
   const selectResults = await db(selectQuery);
   let staffId;
   if (selectResults.length === 0) {
     // Create a new user
-    const insertQuery = `insert into user(EmployeeId) values (${employeeId})`;
+    const insertQuery = `insert into user(Email, FirstName, LastName, Valid) values ('${email}', '${randomPokemon()}', '${randomPokemon()}', 1)`;
     const insertResults = await db(insertQuery);
     staffId = insertResults.insertId;
   } else {
@@ -105,7 +109,7 @@ async function getOrCreateUserId(employeeId) {
 async function insertIgnoreWorkspace(workspaceId, floorId, staffId) {
   const query =
     staffId ?
-      `insert ignore into workspace(WorkspaceId, StaffId, FloorId) values ('${workspaceId}', ${staffId}, ${floorId})`
+      `insert ignore into workspace(WorkspaceId, WorkspaceName, StaffId, FloorId) values ('${workspaceId}', '${workspaceId}', ${staffId}, ${floorId})`
       : `insert ignore into workspace(WorkspaceId, FloorId) values ('${workspaceId}', ${floorId})`;
   await db(query);
 }
@@ -130,12 +134,17 @@ async function updateWorkspaceFeatures(row, workspaceId, featureMap, featureName
 }
 
 async function processCSVRow(row, { floorId, floorName }, featureMap, featureNames) {
-  const officeId = row[OFFICE_ID_COLUMN_NAME];
-  const employeeId = row[EMPLOYEE_ID_COLUMN_NAME];
-  const workspaceId = floorName + "-" + officeId;
-  if (employeeId !== "") {
+  const officeId = (row[OFFICE_ID_COLUMN_NAME]).trim();
+  if (officeId === "") {
+    // Empty field, ignore
+    return;
+  }
+  const email = (row[EMPLOYEE_ID_COLUMN_NAME]).trim();
+  // const workspaceId = floorName + "-" + officeId;
+  const workspaceId = officeId;
+  if (email !== "") {
     // There is an employee associated with this. Get the employee's userID.
-    const userId = await getOrCreateUserId(employeeId);
+    const userId = await getOrCreateUserId(email);
     await insertIgnoreWorkspace(workspaceId, floorId, userId);
   } else {
     await insertIgnoreWorkspace(workspaceId, floorId);
@@ -160,15 +169,15 @@ async function processFloorData(file, features, floor) {
   const featureNames = features.map(f => f.name);
   const parsedArray = await csv().fromString(str);
   if (!parsedArray || parsedArray.length === 0) {
-    return false;
+    return "There were no rows to parse it seems";
   }
+  const columnNames = Object.keys(parsedArray[0]);
   await validateColumnNamesFromCSV(columnNames, featureNames);
-
   const featureMap = makeFeatureMap(features);
   // Lots of trips to the database
   const proms = [];
-  for (const row of parsedArray) {
-    proms.push(processCSVRow(row, floor, featureMap, featureNames));
+  for (let i = 1; i < parsedArray.length; ++i) {
+    proms.push(processCSVRow(parsedArray[i], floor, featureMap, featureNames));
   }
   await Promise.all(proms);
 }
@@ -176,10 +185,13 @@ async function processFloorData(file, features, floor) {
 async function uploadFloorData(req, res) {
   validateUploadRequest(req, FORM_ID_CSV_UPLOAD);
   const features = await getFeaturesFromDatabase();
-  const floorId = req.body.floorId;
-  const floorName = await getFloorNameFromDatabase(floorId);
-  const file = req.file[FORM_ID_CSV_UPLOAD];
-  await processFloorData(file, features, { floorId, floorName });
+  const floorId = parseInt(req.body.floorId);
+  if (floorId === NaN) {
+    throw new Error(`given floorId: ${floorId}, parseInt returned NaN. (Bad/missing floorId)`)
+  }
+  // const floorName = await getFloorNameFromDatabase(floorId);
+  const file = req.files[FORM_ID_CSV_UPLOAD];
+  await processFloorData(file, features, { floorId });
 }
 
 async function uploadFloorPlan(req, res) {
