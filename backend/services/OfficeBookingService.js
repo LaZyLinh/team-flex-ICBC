@@ -484,7 +484,7 @@ class OfficeBookingService {
       try {
         const result = await knexHelper(createBookingQuery);
         return {
-          bookingId: result.InsertId,
+          bookingId: result.insertId,
           startDate, endDate,
         }
       } catch (e) {
