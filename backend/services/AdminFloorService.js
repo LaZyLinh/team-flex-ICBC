@@ -1,5 +1,6 @@
 const csv = require("csvtojson");
 const knex = require("../db/mysqlDB");
+const { randomPokemon } = require("../sql/generator/EmployeeGenerator");
 
 const FORM_ID_IMAGE_UPLOAD = "floorPlanImage";
 const FORM_ID_CSV_UPLOAD = "floorData";
@@ -90,12 +91,12 @@ async function validateColumnNamesFromCSV(columnNames, featureNames) {
  * @param {string} email 
  */
 async function getOrCreateUserId(email) {
-  const selectQuery = `select StaffId from user where Email = '${email}')`;
+  const selectQuery = `select StaffId from user where Email = '${email}'`;
   const selectResults = await db(selectQuery);
   let staffId;
   if (selectResults.length === 0) {
     // Create a new user
-    const insertQuery = `insert into user(Email) values ('${email}')`;
+    const insertQuery = `insert into user(Email, FirstName, LastName, Valid) values ('${email}', '${randomPokemon()}', '${randomPokemon()}', 1)`;
     const insertResults = await db(insertQuery);
     staffId = insertResults.insertId;
   } else {
@@ -108,7 +109,7 @@ async function getOrCreateUserId(email) {
 async function insertIgnoreWorkspace(workspaceId, floorId, staffId) {
   const query =
     staffId ?
-      `insert ignore into workspace(WorkspaceId, StaffId, FloorId) values ('${workspaceId}', ${staffId}, ${floorId})`
+      `insert ignore into workspace(WorkspaceId, WorkspaceName, StaffId, FloorId) values ('${workspaceId}', '${workspaceId}', ${staffId}, ${floorId})`
       : `insert ignore into workspace(WorkspaceId, FloorId) values ('${workspaceId}', ${floorId})`;
   await db(query);
 }
@@ -170,7 +171,8 @@ async function processFloorData(file, features, floor) {
   if (!parsedArray || parsedArray.length === 0) {
     return "There were no rows to parse it seems";
   }
-  await validateColumnNamesFromCSV(parsedArray, featureNames);
+  const columnNames = Object.keys(parsedArray[0]);
+  await validateColumnNamesFromCSV(columnNames, featureNames);
   const featureMap = makeFeatureMap(features);
   // Lots of trips to the database
   const proms = [];
