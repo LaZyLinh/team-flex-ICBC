@@ -2,10 +2,15 @@ import React from "react";
 import Img from "react-image";
 import Button from "@material-ui/core/Button";
 import { TextField, withStyles } from "@material-ui/core";
-import { confirmAlert } from 'react-confirm-alert';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Slide from "@material-ui/core/Slide";
 import { getFloorsByCity } from "../api/AdminApi";
 import FloorList from "./admin/FloorList";
-
+import Popup from "reactjs-popup";
 
 // router.post("/upload-floor-data", AdminFloorService.uploadFloorData);
 // backend has this which takes a (spread sheet file) and puts the whole floor's data into the database
@@ -20,7 +25,8 @@ class EditFloor extends React.Component {
     this.state = {
       city: props.locationName,
       locations: [],
-      windowOpen: false
+      windowOpen: false,
+      openDialog: false
     };
   }
 
@@ -62,8 +68,16 @@ class EditFloor extends React.Component {
       // TODO request delete
       this.forceUpdate();
     }
+  }
 
+  addFloorHandler = () => {
+    this.setState({ openDialog: true })
+  }
 
+  handleClosePopup = () => {
+    this.setState(prevState => {
+      return { openDialog: !prevState.openDialog };
+    });
   }
 
   render() {
@@ -87,9 +101,71 @@ class EditFloor extends React.Component {
           <div className={`${classes.right}`}>
             <h2>{"Floors in " + this.state.city}</h2>
             <div className={classes.floorBar}>
-              <Button className={classes.aButton} onClick={this.handleUploadMap} variant="outlined" color="primary">
+              <Button className={classes.aButton} onClick={this.addFloorHandler} variant="outlined" color="primary">
                 Add new Floor
               </Button>
+              <Dialog
+                TransitionComponent={Transition}
+                open={this.state.openDialog}
+                onClose={this.handleClosePopup}
+                PaperProps={{
+                  style: {
+                    backgroundColor: "#EBF2FF"
+                  }
+                }}>
+                <DialogTitle className={classes.dialogTitle} disableTypography={true}>
+                  Add New Floor
+                 </DialogTitle>
+                <form className={classes.addFloorForm} onSubmit={this.handleNewFloor}>
+                  <div style={{ display: "flex", paddingLeft: "10px" }}>
+                    <p style={{ width: "30%" }}>Floor Number</p>
+                    <input
+                      variant="filled"
+                      type="number"
+                      margin="none"
+                      className={`${classes.field}`}
+                      value={this.state.comment} required
+                    ></input>
+                  </div>
+
+                  <div style={{ display: "flex", paddingLeft: "10px" }}>
+                    <p style={{ width: "30%" }}>Location</p>
+                    <input
+                      variant="filled"
+                      margin="none"
+                      className={`${classes.field}`}
+                      value={this.state.comment} required
+                    ></input>
+                  </div>
+                  <div style={{ display: "flex", paddingLeft: "10px" }}>
+                    <p style={{ width: "30%" }}>City</p>
+                    <input
+                      variant="filled"
+                      margin="none"
+                      className={`${classes.field}`}
+                      value={this.state.city}
+                      readonly></input>
+                  </div>
+                  <div style={{ display: "flex", paddingLeft: "10px" }}>
+                    <p style={{ width: "30%" }}>Building Number</p>
+                    <input
+                      variant="filled"
+                      type="number"
+                      margin="none"
+                      className={`${classes.field}`} required
+                    ></input>
+                  </div>
+                  <div style={{ display: "flex", paddingLeft: "10px" }}>
+                    <label style={{ width: "30%" }}>Floor Plan</label>
+                    <input
+                      type="file" name="file"
+                      margin="none"
+                      className={`${classes.field}`} required></input>
+                  </div>
+                  <button style={{ display: "flex", margin: "10px 10px 10px 10px" }}>submit</button>
+                </form>
+              </Dialog>
+
             </div>
             {this.state.allFloors ? <FloorList floors={this.state.allFloors} callback={this.changeCurrent} deleteCallback={this.deleteFloor} /> : <span>"loading..."</span>}
           </div>
@@ -99,13 +175,35 @@ class EditFloor extends React.Component {
   }
 }
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 const muiStyles = {
   mainStyle: {
     display: "block"
   },
+  field: {
+    background: "#f8f8f8",
+    borderRadius: "2px",
+    margin: "10px 10px",
+  },
+  addFloorForm: {
+    width: "400px"
+  },
+  dialogTitle: {
+    fontFamily: "Inter",
+    fontSize: "1.5em",
+    fontWeight: "bold"
+  },
   floorplanImg: {
     height: "100%",
     width: "100%"
+  },
+
+  popContainer: {
+    position: "fixed",
+    zIndex: 1
   },
   split: {
     display: "flex",
