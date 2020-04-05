@@ -233,23 +233,10 @@ async function adminEditFloor({ floorId, floorNo, building, city, location }) {
       status: 400
     }
   }
-  if (!floorNo && !building && !city && !location) {
+  if (floorNo == null && building == null && city == null && location == null) {
     throw {
       error: "none of { floorNo, building, city, location } are set",
       status: 400
-    }
-  }
-  if (floorNo) {
-    if (typeof floorNo !== number) {
-      throw {
-        error: "floorNo must be a number",
-        status: 400
-      }
-    } else if (floorNo < -100 || floorNo > 1000) {
-      throw {
-        error: "floorNo must be in [-100, 1000] ",
-        status: 400
-      }
     }
   }
   const floorNoUpdate = floorNo ? `FloorNo = ${floorNo}` : ""
@@ -261,7 +248,7 @@ async function adminEditFloor({ floorId, floorNo, building, city, location }) {
   await knexHelper(updateQuery)
 }
 
-async function adminCreateFloor({ floorNo, building, city, location }) {
+async function adminCreateFloor({ floorNo, building, city, location }, floorPlanImg) {
   for (const item in [city, building]) {
     if (!item || typeof item !== 'string' || item.trim() === '') {
       throw {
@@ -270,9 +257,9 @@ async function adminCreateFloor({ floorNo, building, city, location }) {
       }
     }
   }
-  if (floorNo == null || typeof floorNo !== "number" || floorNo < -100 || floorNo > 1000) {
+  if (floorNo == null || floorNo.trim() === "") {
     throw {
-      error: "Floor must be a number between -100 and 1000",
+      error: "Must have floor number",
       status: 400
     }
   }
@@ -285,12 +272,19 @@ async function adminCreateFloor({ floorNo, building, city, location }) {
     }
   }
   const insertQuery = `INSERT INTO floor (FloorNo, Building, City, Location) VALUES (${floorNo}, '${building}', '${city}' ,'${location}')`
-  return await knexHelper(insertQuery).insertId
+  const insertId = await knexHelper(insertQuery).insertId
+  if (floorPlanImg) {
+    const file = req.files[FORM_ID_IMAGE_UPLOAD];
+    const path = `./public/${FLOORPLANS_PUBLIC_FOLDER}/${insertId}.jpg`;
+    file.mv(path);
+  }
+  return insertId
 }
 
 router.post('/floors', async (req, res) => {
   try {
-    const createdFloorId = await adminCreateFloor(req.body)
+    console.log(req.body)
+    const createdFloorId = await adminCreateFloor(req.body, req.files.floorPlanImg)
     res.json({ floorId: createdFloorId })
   } catch (err) {
     res.status(err.status || 500).json(err);
