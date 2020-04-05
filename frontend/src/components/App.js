@@ -42,21 +42,15 @@ function App(props) {
         <Route exact path="/editFloor">
           <EditFloor />
         </Route>
-        <Route exact path="/editWorkspace/:workspaceId">
-          component=
-          {({ match }) => (
-            <EditWorkspace
-              workspaceId={match.params.workspaceId}
-              workspaceName={match.params.workspaceName}
-              floorId={match.params.floorId}
-            />
-          )}
-        </Route>
+        <Route
+          path="/editWorkspace/:floorId"
+          component={({ match }) => <EditWorkspace floorId={match.params.floorId} />}
+        />
         <Route exact path="/editWs">
           <EditWorkspace />
         </Route>
       </div>
-    </Router>
+    </Router >
   );
 }
 

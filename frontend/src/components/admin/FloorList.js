@@ -15,7 +15,7 @@ class FloorList extends React.Component {
   }
 
   handleEdit = (index) => {
-    // TODO go to edit workspace page
+    this.props.editFloorCallback(index)
   }
 
   handleDelete = (index) => {

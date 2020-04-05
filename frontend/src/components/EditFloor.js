@@ -21,6 +21,8 @@ import Link from "@material-ui/core/Link";
 // Choice 1 - integrate this UI into this page
 // Choice 2 - have a button that leads to a page that handles it
 
+const EDIT_WORKSPACE_PATH = "/editWorkspace/"
+
 class EditFloor extends React.Component {
   constructor(props) {
     super(props);
@@ -75,6 +77,11 @@ class EditFloor extends React.Component {
       await deleteFloor(this.state.allFloors[fidx].FloorId)
       window.location.reload();
     }
+  }
+
+  editFloor = (index) => {
+    const id = this.state.allFloors[index].FloorId;
+    window.location.href = EDIT_WORKSPACE_PATH + id;
   }
 
   addFloorHandler = () => {
@@ -228,7 +235,10 @@ class EditFloor extends React.Component {
               </Dialog>
 
             </div>
-            {this.state.allFloors ? <FloorList floors={this.state.allFloors} callback={this.changeCurrent} deleteCallback={this.deleteFloor} /> : <span>"loading..."</span>}
+            {this.state.allFloors ? <FloorList floors={this.state.allFloors}
+              callback={this.changeCurrent}
+              editFloorCallback={this.editFloor}
+              deleteCallback={this.deleteFloor} /> : <span>"loading..."</span>}
           </div>
         </div>
       </div>
@@ -277,6 +287,7 @@ const muiStyles = {
     fontSize: "1.5em",
     fontWeight: "bold"
   },
+
   floorplanImg: {
     height: "100%",
     width: "100%"
