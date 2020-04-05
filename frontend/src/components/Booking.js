@@ -21,6 +21,7 @@ import { GiDesk } from "react-icons/gi";
 import Button from "@material-ui/core/Button"; // only needs to be imported once
 import EnhancedTable from "./Table.js";
 import OfficeBookingApi from "../api/OfficeBookingApi";
+import featureMap from "../api/FeatureMap";
 import { createData } from "./Table";
 import { DateRange } from "react-date-range";
 import styles from "../styles/Booking.styles";
@@ -38,14 +39,14 @@ class Booking extends React.Component {
       startDate: new Date(),
       endDate: new Date(),
       features: [],
+      fm: {},
       packages: []
     };
   }
 
   componentDidMount = async () => {
-    const reqs = [OfficeBookingApi.getLocations(), OfficeBookingApi.getFeatures()];
+    const reqs = [OfficeBookingApi.getLocations(), OfficeBookingApi.getFeatures(), featureMap()];
     const results = await Promise.all(reqs);
-    console.log(results[1]);
     const features = results[1].map(f => {
       return {
         name: f,
@@ -54,7 +55,8 @@ class Booking extends React.Component {
     });
     this.setState({
       locations: results[0],
-      features
+      features,
+      fm: results[2]
     });
     const sdStr = this.state.startDate.toISOString().slice(0, 10);
     const edStr = this.state.endDate.toISOString().slice(0, 10);
@@ -79,24 +81,14 @@ class Booking extends React.Component {
     this.setState({ location: event.target.value, floor: "", floorId: 0 });
     const floors = await OfficeBookingApi.getFloors({ location: event.target.value });
     this.setState({ floors });
-    const sdStr = this.state.startDate.toISOString().slice(0, 10);
-    const edStr = this.state.endDate.toISOString().slice(0, 10);
-    const packages = await OfficeBookingApi.getPackages(sdStr, edStr, {
-      floorIds: floors.map(f => f.floorId)
-    });
-    this.setState({ packages });
+    await this.updatePackages();
   };
 
   handleSelectFloor = async (event, child) => {
     for (const floor of this.state.floors) {
       if (parseInt(child.key) === floor.floorId) {
         this.setState({ floor: `${floor.prefix} Floor ${floor.floorNo}`, floorId: floor.floorId });
-        const sdStr = this.state.startDate.toISOString().slice(0, 10);
-        const edStr = this.state.endDate.toISOString().slice(0, 10);
-        const packages = await OfficeBookingApi.getPackages(sdStr, edStr, {
-          floorIds: [floor.floorId]
-        });
-        this.setState({ packages });
+        await this.updatePackages();
       }
     }
   };
@@ -131,7 +123,7 @@ class Booking extends React.Component {
     const features = [];
     for (const f of this.state.features) {
       if (f.checked) {
-        features.push(f.name);
+        features.push(this.state.fm[f.name]);
       }
     }
     let floorIds = [];
