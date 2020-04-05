@@ -44,7 +44,7 @@ function buildSubquery({ startDate, endDate, desiredFloors, requiredFeatures }) 
         query += `
                                                                      AND `
       }
-      query += `WorkspaceId IN (SELECT WorkspaceId FROM workspacefeature WHERE FeatureId = ${requiredFeatures[i]})`
+      query += `WorkspaceId IN (SELECT WorkspaceId FROM workspaceFeature WHERE FeatureId = ${requiredFeatures[i]})`
     }
     query += `))`
   }
