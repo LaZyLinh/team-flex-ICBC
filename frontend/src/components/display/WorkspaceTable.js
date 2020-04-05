@@ -18,6 +18,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
+import CreateIcon from "@material-ui/icons/Create"
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { withStyles } from "@material-ui/core/styles";
 import { confirmAlert } from "react-confirm-alert";
@@ -103,6 +104,7 @@ function EnhancedTableHead(props) {
                         </TableSortLabel>
                     </TableCell>
                 ))}
+                <TableCell className={`${classes.headText}`}>Edit</TableCell>
                 <TableCell className={`${classes.headText}`}>Delete</TableCell>
             </TableRow>
         </TableHead>
@@ -344,6 +346,9 @@ export default function WorkspaceTable (props) {
                                             </TableCell>
                                             <TableCell align="left" className={`${classes.rowText}`} padding={"none"}>
                                                 {row.officeOwner}
+                                            </TableCell>
+                                            <TableCell>
+                                                <CreateIcon/>
                                             </TableCell>
 
                                             <TableCell>
