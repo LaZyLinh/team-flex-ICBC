@@ -144,8 +144,9 @@ export async function uploadFloorImage(floorid, img) {
 }
 
 export async function getWorkspacesByFloorId(floorId) {
+  console.log("hi");
   try {
-    return (await api('get', '/workpaces?=' + floorId)).data
+    return (await api('get', '/workspaces?floorId=' + floorId)).data
   } catch (err) {
     localStorage.setItem("admin_error", JSON.stringify(err))
     console.log(err)
