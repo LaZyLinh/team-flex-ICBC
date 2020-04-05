@@ -21,7 +21,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { withStyles } from "@material-ui/core/styles";
 import { confirmAlert } from "react-confirm-alert";
-import OfficeBookingApi from "../../api/OfficeBookingApi";
+import {deleteWorkspace} from "../../api/AdminApi";
 
 const StyledTableCell = withStyles(theme => ({
     head: {
@@ -230,11 +230,9 @@ function createData(wsId,officeOwner) {
 // }
 
 export default function WorkspaceTable (props) {
-    console.log(props.rows);
     const rows = props.rows.map(r =>
         createData(r.WorkspaceId,r.FirstName+"  "+r.LastName)
     );
-    console.log(rows);
     const classes = useStyles();
     const [order, setOrder] = React.useState("asc");
     const [orderBy, setOrderBy] = React.useState("name");
@@ -258,7 +256,7 @@ export default function WorkspaceTable (props) {
     };
 
     const handleClick = (event, name) => {
-        console.log("Handle Clicked" + name);
+
         const selectedIndex = selected.indexOf(name);
         let newSelected = [];
 
@@ -349,7 +347,9 @@ export default function WorkspaceTable (props) {
                                             </TableCell>
 
                                             <TableCell>
-                                                <DeleteIcon/>
+                                                <DeleteIcon onClick={async ()=>{
+                                                   await deleteWorkspace(row.wsId)
+                                                }}/>
 
                                             </TableCell>
                                         </StyledTableRow>
