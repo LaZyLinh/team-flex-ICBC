@@ -2,6 +2,7 @@ import React from "react";
 import { getFloorsByCity, deleteWorkspace, getWorkspacesByFloorId } from "../../api/AdminApi";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core";
+import WorkspaceTable from "../display/WorkspaceTable"
 
 class EditWorkspace extends React.Component {
     constructor(props) {
@@ -19,7 +20,7 @@ class EditWorkspace extends React.Component {
             // workspaces: await getWorkspacesByFloorId(this.props.floorId)
             workspaces: await getWorkspacesByFloorId(1)
         });
-        console.log(this.state.workspaces);
+
     }
 
     showWorkspace = workspace => {
@@ -122,12 +123,15 @@ class EditWorkspace extends React.Component {
                             <span style={{ fontSize: "25px", marginLeft: "2%", widith: "50%", }}>WorkSpace Table</span>
                             <Button className={classes.bButton} onClick={this.addFloorHandler} variant="outlined" color="primary">
                                 Add new Workspace
-                            </Button>
-                            <Button className={classes.cButton} onClick={this.addFloorHandler} variant="outlined" color="primary">
-                                delete selected workspace
                             </Button></div>
-                        {this.showWorkspaces()}
+                            {/*<Button className={classes.cButton} onClick={this.addFloorHandler} variant="outlined" color="primary">*/}
+                                {/*delete selected workspace*/}
+                            {/*</Button></div>*/}
+                        {/*{this.showWorkspaces()}*/}
+                        <WorkspaceTable  rows={this.state.workspaces}/>
+                        <Button onClick={()=>console.log(this.state.workspaces)}>Click Me</Button>
                     </div>
+
                 </div>
             </React.Fragment >
         );
@@ -197,6 +201,7 @@ const editWsStyle = {
             border: "1px solid rgba(10, 101, 255, 1)"
         }
     },
+
 };
 
 export default withStyles(editWsStyle)(EditWorkspace);

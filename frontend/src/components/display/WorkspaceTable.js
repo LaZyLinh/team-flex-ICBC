@@ -229,10 +229,12 @@ function createData(wsId,officeOwner) {
 //   return originalDate.substring(0, 9);
 // }
 
-export default function workSpaceTable (props) {
+export default function WorkspaceTable (props) {
+    console.log(props.rows);
     const rows = props.rows.map(r =>
-        createData(r.workspaceId,r.staff)
+        createData(r.WorkspaceId,r.FirstName+"  "+r.LastName)
     );
+    console.log(rows);
     const classes = useStyles();
     const [order, setOrder] = React.useState("asc");
     const [orderBy, setOrderBy] = React.useState("name");
