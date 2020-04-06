@@ -286,6 +286,33 @@ paths:
           description: Successful Operation
           content: {}
       x-swagger-router-controller: Admin
+  /admin/workspaces?{floorId}:
+    get:
+      tags:
+        - Admin
+      summary: Gets list of workspaces 
+      operationId: adminGetWorkspacesMethod
+      parameters:
+        - name: floorId
+          in: path
+          description: Floor Id
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: workspace
+                x-content-type: application/json
+      x-swagger-router-controller: Admin
     
   /features:
     get:
