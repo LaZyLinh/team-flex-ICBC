@@ -56,7 +56,8 @@ class Booking extends React.Component {
       seconds: 1200,
       confirmed: false,
       imgUrl: "",
-      openModal: false
+      openModal: false,
+      updateTime: new Date()
     };
     this.timer = 0;
   }
@@ -227,8 +228,12 @@ class Booking extends React.Component {
     } else if (this.state.location) {
       floorIds = this.state.floors.map(f => f.floorId);
     }
-    const packages = await OfficeBookingApi.getPackages(sdStr, edStr, { floorIds, features });
-    this.setState({ packages });
+    const reqTime = new Date();
+    this.setState({ updateTime: reqTime });
+    const results = await OfficeBookingApi.getPackagesTimed(reqTime, sdStr, edStr, { floorIds, features });
+    if (results.time.getTime() === this.state.updateTime.getTime()) {
+      this.setState({ packages: results.packages });
+    }
   };
 
   getLocationItems = () => {
