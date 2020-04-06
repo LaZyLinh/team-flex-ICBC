@@ -313,7 +313,62 @@ paths:
                   type: workspace
                 x-content-type: application/json
       x-swagger-router-controller: Admin
-    
+  /admin/deleteWorkspace?{id}:
+    delete:
+      tags:
+        - Admin
+      summary: Delete a Workspace
+      operationId: adminDeleteWorkspaceMethod
+      parameters:
+        - name: id
+          in: query
+          description: Workspace Id
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+          example: "NV1-20A"
+      responses:
+        "200":
+          description: Successful Operation
+          content: {}
+      x-swagger-router-controller: Admin
+  /admin/workspaces?{id}:
+    put:
+      tags:
+        - Admin
+      summary: Updates a workspace
+      operationId: adminUpdateWorkspaceMethod
+      parameters:
+        - name: id
+          in: path
+          description: Workspace Id
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+          example: "NV1-20A"        
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/body_9"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content: {}
+        "403":
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                x-content-type: text/plain
+              example: "Error: Workspace doesn't exist"
+      x-swagger-router-controller: Admin
   /features:
     get:
       tags:
@@ -1055,6 +1110,13 @@ components:
         city:
           type: string
         location:
+          type: string
+    body_9:
+      required:
+        - email
+      type: object
+      properties:
+        email:
           type: string
     LoginResponse:
       type: object
