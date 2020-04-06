@@ -2,6 +2,10 @@ import React from "react";
 import withStyles from "@material-ui/styles/withStyles";
 import Button from "@material-ui/core/Button";
 import { deleteLocationName } from "../../api/AdminApi";
+import Grid from "@material-ui/core/Grid";
+import Snackbar from "@material-ui/core/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
 
 const EDIT_FLOORS_PATH = "/admin/edit-floors/";
 
@@ -31,38 +35,59 @@ class Display_Square extends React.Component {
     await this.props.updateLocations();
   };
 
-  onHover = () => {
-    this.setState();
-  };
-
-  showCorrectButton = location => {
+  showDeleteButton = location => {
     if (this.state.deleteClicked[location]) {
       return (
-        <Button variant="contained" color="secondary" size="small" onClick={this.onClickConfirmDelete(location)}>
+        <Button
+          variant="contained"
+          style={{ width: "200px" }}
+          color="secondary"
+          size="small"
+          onClick={this.onClickConfirmDelete(location)}
+        >
           Confirm Delete
         </Button>
       );
     } else {
       return (
-        <Button variant="contained" color="secondary" size="small" onClick={this.onClickDelete(location)}>
+        <Button
+          variant="contained"
+          style={{ width: "200px" }}
+          color="secondary"
+          size="small"
+          onClick={this.onClickDelete(location)}
+        >
           Delete
         </Button>
       );
     }
   };
 
+  onCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    this.setState({ openSnackbar: false });
+  };
+
   render() {
     const { classes } = this.props;
-    // const allLocationsP = OfficeBookingApi.getLocations();
-    // Promise.all([allLocationsP]).then(messages => {
-    //   // console.log(messages);
-    //   const locations = messages[0];
-    // });
     return (
-      <div>
+      <Grid container direction="row" alignItems="center" justify="center">
         {this.props.locations.map((location, i) => {
           return (
-            <div className={`${classes.eachOne}`} key={i}>
+            <Grid
+              item
+              container
+              xs={12}
+              sm={6}
+              md={4}
+              lg={3}
+              key={i}
+              direction="column"
+              justify="center"
+              alignItems="center"
+            >
               <Button
                 variant="contained"
                 color="primary"
@@ -81,26 +106,32 @@ class Display_Square extends React.Component {
                 </h1>
               </Button>
               <div />
-              {this.showCorrectButton(location)}
+              {this.showDeleteButton(location)}
               <div style={{ height: "20px" }} />
-            </div>
+              {/* <Snackbar
+                anchorOrigin={{
+                  vertical: "center",
+                  horizontal: "center"
+                }}
+                open={this.state.openSnackbar}
+                autoHideDuration={6000}
+                message="Location deleted (restore by re-adding this location)"
+                action={
+                  <React.Fragment>
+                    <IconButton size="small" aria-label="close" color="inherit" onClick={this.onCloseSnackbar}>
+                      <CloseIcon fontSize="small" />
+                    </IconButton>
+                  </React.Fragment>
+                }
+              /> */}
+            </Grid>
           );
         })}
-      </div>
+      </Grid>
     );
   }
 }
 const DisplayStyle = {
-  eachOne: {
-    width: "20%",
-    display: "inline-block",
-    marginLeft: "10%",
-    textAlign: "center",
-    "&:hover": {
-      cursor: "pointer"
-    }
-
-  },
   eachPart: {
     backgroundColor: "#002D7D",
     width: "200px",

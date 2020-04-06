@@ -449,7 +449,6 @@ router.put('/workspaces', (req, res) => {
     res.status(200);
     res.sendStatus(200);
   }).catch(err => {
-    res.status(500);
     res.status(err.status || 500).json(err)
   })
 })
@@ -475,7 +474,46 @@ router.post('/reset-features', (req, res) => {
   })
 })
 
+router.post('/createfeature', async (req, res) => {
+  try {
+    if (req.body.featureName == null || req.body.featureName.trim() === '') {
+      throw {
+        error: "featureName is missing or empty string or all whitespace",
+        status: 400,
+      }
+    }
+    const featureName = req.body.featureName.trim();
+    const countRaw = await knexHelper(`SELECT COUNT(*) FROM feature WHERE LOWER(FeatureName) = '${featureName.toLowerCase()}'`)
+    const count = countRaw[0]["COUNT(*)"]
+    if (count > 0) {
+      throw {
+        error: "This feature already exists",
+        status: 400,
+      }
+    }
+    const insertRaw = await knexHelper(`INSERT INTO feature (FeatureName) VALUES ('${featureName}')`)
+    const featureId = insertRaw.insertId;
+    res.json({ featureId })
+  } catch (err) {
+    res.status(err.status || 500).json(err)
+  }
+});
 
+router.post('/deletefeature', async (req, res) => {
+  try {
+    if (req.body.featureId == null) {
+      throw {
+        error: "featureId missing",
+        status: 400,
+      }
+    }
+    await knexHelper(`DELETE FROM workspaceFeature WHERE FeatureId=${req.body.featureId}`)
+    await knexHelper(`DELETE FROM feature WHERE FeatureId=${req.body.featureId}`)
+    res.send("OK Deleted")
+  } catch (err) {
+    res.status(err.status || 500).json(err)
+  }
+});
 
 router.post("/upload-floorplan-image", AdminFloorService.uploadFloorPlan);
 router.post("/upload-floor-data", AdminFloorService.uploadFloorData);
