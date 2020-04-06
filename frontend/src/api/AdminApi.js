@@ -74,7 +74,6 @@ async function api(verb, path, body = undefined) {
   if (jwtExpiresMillis < Date.now()) {
     // TODO: handle expired token after opening admin page
   }
-  console.log(jwt)
   const config = {
     headers: {
       "Authorization": `Bearer ${jwt}`,
@@ -173,12 +172,12 @@ export async function deleteWorkspace(workspaceId) {
   }
 }
 
-export async function updateWorkspace(body) {
+export async function updateWorkspace(workspaceId, email) {
   try {
-    await api('put', '/workspaces', body);
+    await api('put', '/workspaces?id=' + workspaceId, { email: email });
   } catch (err) {
     localStorage.setItem("admin_error", JSON.stringify(err))
-    console.log(err)
+    throw err;
   }
 }
 

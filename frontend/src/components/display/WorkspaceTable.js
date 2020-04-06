@@ -222,9 +222,9 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function createData(wsId, officeOwner,loc,fId,fNo,staffId,city) {
+function createData(wsId, officeOwner, loc, fId, fNo, staffId, city) {
 
-    return { wsId, officeOwner,loc,fId,fNo,staffId,city};
+    return { wsId, officeOwner, loc, fId, fNo, staffId, city };
 }
 
 //  function reformatDate(originalDate) {
@@ -232,9 +232,8 @@ function createData(wsId, officeOwner,loc,fId,fNo,staffId,city) {
 // }
 
 export default function WorkspaceTable(props) {
-    console.log(props.rows);
     const rows = props.rows.map(r =>
-        createData(r.WorkspaceId, r.FirstName + "  " + r.LastName, r.Location,r.FloorId,r.FloorNo, r.StaffId,r.City)
+        createData(r.WorkspaceId, r.FirstName + "  " + r.LastName, r.Location, r.FloorId, r.FloorNo, r.StaffId, r.City)
     );
 
     const classes = useStyles();

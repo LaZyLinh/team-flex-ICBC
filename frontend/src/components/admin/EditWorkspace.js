@@ -1,5 +1,5 @@
 import React from "react";
-import { getFloorsByCity, deleteWorkspace, getWorkspacesByFloorId } from "../../api/AdminApi";
+import { updateWorkspace, getFloorsByCity, deleteWorkspace, getWorkspacesByFloorId } from "../../api/AdminApi";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core";
 import WorkspaceTable from "../display/WorkspaceTable";
@@ -20,7 +20,8 @@ class EditWorkspace extends React.Component {
       editPopup: false,
       workspaces: [],
       deleteButtonClicked: false,
-      editWorkspace: []
+      editWorkspace: [],
+      errorMsg: ""
     };
   }
 
@@ -35,7 +36,6 @@ class EditWorkspace extends React.Component {
   }
 
   editWorkspacePopup = (workspace) => {
-    console.log(workspace)
     this.setState({ editPopup: true, editWorkspace: workspace })
   }
 
@@ -122,6 +122,37 @@ class EditWorkspace extends React.Component {
     window.location.reload();
   }
 
+  handleClosePopup = () => {
+    this.setState(prevState => {
+      return { editPopup: !prevState.editPopup };
+    });
+  }
+
+  handleSubmit = async (workspaceId) => {
+    console.log(this.state.newEmail)
+    try {
+      await updateWorkspace(workspaceId, this.state.newEmail);
+      this.setState(prevState => {
+        return { editPopup: !prevState.editPopup };
+      });
+      this.reloadCallback();
+    } catch (err) {
+      console.log(err);
+      this.setState({ errorMsg: "update workspace failed!" })
+    }
+
+  }
+
+  handleEmailChange = (event) => {
+    const target = event.target;
+    const value = target.value;
+    if (value) {
+      this.setState({
+        newEmail: value
+      });
+    }
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -172,38 +203,32 @@ class EditWorkspace extends React.Component {
             </DialogTitle>
             <DialogContent>
               {/*<p style={{lineHeight:"20px"}}>*/}
-              <h4 style={{ position: "absolute", left: "15%", width: "50%", top: "10%" }} >{"City:" + this.state.editWorkspace.city}</h4>
-              <h4 style={{ position: "absolute", left: "55%", width: "50%", top: "10%" }}>{"Location:" + this.state.editWorkspace.loc}</h4>
-              <h4 style={{ position: "absolute", left: "15%", width: "50%", top: "22%" }}>{"Owner:" + this.state.editWorkspace.officeOwner}</h4>
-              <h4 style={{ position: "absolute", left: "55%", width: "50%", top: "22%" }}>{"staffID:" + this.state.editWorkspace.staffId}</h4>
-              <h4 style={{ position: "absolute", left: "15%", width: "50%", top: "34%" }}>{"FloorID:" + this.state.editWorkspace.fId}</h4>
-              <h4 style={{ position: "absolute", left: "55%", width: "50%", top: "34%" }}>{"FloorNo:" + this.state.editWorkspace.fNo}</h4>
+              <h4 style={{ position: "absolute", left: "15%", width: "50%", top: "10%" }} >{"City: " + this.state.editWorkspace.city}</h4>
+              <h4 style={{ position: "absolute", left: "55%", width: "50%", top: "10%" }}>{"Location: " + this.state.editWorkspace.loc}</h4>
+              <h4 style={{ position: "absolute", left: "15%", width: "50%", top: "22%" }}>{"Owner: " + this.state.editWorkspace.officeOwner}</h4>
+              <h4 style={{ position: "absolute", left: "55%", width: "50%", top: "22%" }}>{"staffID: " + this.state.editWorkspace.staffId}</h4>
+              <h4 style={{ position: "absolute", left: "15%", width: "50%", top: "34%" }}>{"FloorID: " + this.state.editWorkspace.fId}</h4>
+              <h4 style={{ position: "absolute", left: "55%", width: "50%", top: "34%" }}>{"FloorNo: " + this.state.editWorkspace.fNo}</h4>
             </DialogContent>
-            <h4 style={{ position: "absolute", bottom: "25%", left: "15%" }}>Enter the new Email address below </h4>
-            <DialogContentText style={{ width: "70%", position: "absolute", left: "15%", bottom: "10%" }}> <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Email Address"
-              type="email"
-              fullWidth
-            /></DialogContentText>     <DialogActions>
-              {/* TransitionComponent={Transition}
-            open={this.state.editPopup}
-            onClose={this.handleClosePopup}
-            PaperProps={{
-              style: {
-                backgroundColor: "#EBF2FF"
-              }
-            }}> */}
-
-
-              <Button color="primary">
+            <h4 style={{ position: "absolute", bottom: "25%", left: "15%" }}> Assign it to someone else: </h4>
+            <DialogContentText style={{ width: "70%", position: "absolute", left: "15%", bottom: "10%" }}>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Email Address"
+                type="email"
+                onChange={this.handleEmailChange}
+                fullWidth
+              /></DialogContentText>
+            <DialogActions>
+              <Button color="primary" onClick={this.handleClosePopup}>
                 Cancel
               </Button>
-              <Button color="primary">
+              <Button color="primary" onClick={() => this.handleSubmit(this.state.editWorkspace.wsId)}>
                 Confirm
               </Button>
+              <p style={{ color: "red", paddingLeft: "5%" }}>{this.state.errorMsg}</p>
             </DialogActions>
           </Dialog>
         </div>
