@@ -316,7 +316,7 @@ export default function ManageTables(props) {
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
+              // onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
@@ -330,7 +330,7 @@ export default function ManageTables(props) {
                   return (
                     <StyledTableRow
                       hover
-                      onClick={event => handleClick(event, row.name)}
+                      // onClick={event => handleClick(event, row.name)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
