@@ -41,7 +41,7 @@ class OfficeBookingService {
       * id Integer ID of the Booking to delete
       * no response value expected for this operation
       **/
-  static cancelBooking(id) {
+  static cancelBooking({ id }) {
     return new Promise(
       async (resolve) => {
         try {
