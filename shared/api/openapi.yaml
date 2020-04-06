@@ -265,7 +265,7 @@ paths:
                 x-content-type: text/plain
               example: "Error: Missing floor id"
       x-swagger-router-controller: Admin
-  /admin/floors/{id}:
+  /admin/floors?{id}:
     delete:
       tags:
         - Admin
@@ -369,6 +369,79 @@ paths:
                 x-content-type: text/plain
               example: "Error: Workspace doesn't exist"
       x-swagger-router-controller: Admin
+  admin/workspacefeature/add:
+    post:
+      tags:
+        - Admin
+      summary: Add a workspace feature
+      operationId: adminAddWorkspaceFeatureMethod
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/body_10"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content: {}
+        "400":
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                x-content-type: text/plain
+              example: "Error: Feature name doesn't exist"
+      x-swagger-router-controller: Admin
+  admin/workspacefeature/delete:
+    post:
+      tags:
+        - Admin
+      summary: Delete a workspace feature
+      operationId: adminDeleteWorkspaceFeatureMethod
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/body_10"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content: {}
+        "400":
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                x-content-type: text/plain
+              example: "Error: Workspace Id or Feature name doesn't exist"
+      x-swagger-router-controller: Admin
+  /admin/reset-features:
+    post:
+      tags:
+        - Admin
+      summary: Resets the list of features to a custom specified list
+      description: "Sets the list of features in the system. Previous features that do not exist in this list are deleted, and new features are added. Does not affect features that exist both previously and in this list"
+      operationId: adminResetFeatures
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: Successful Operation
+        '400':
+          description: Bad Request
+
+  
+
   /features:
     get:
       tags:
@@ -1118,6 +1191,19 @@ components:
       properties:
         email:
           type: string
+          example: employee@icbc.com
+    body_10:
+      required:
+        - workspaceId
+        - featureName
+      type: object
+      properties:
+        workspaceId:
+          type: string
+          example: "NV4-02H"
+        featureName:
+          type: string
+          example: "Conference Phone"
     LoginResponse:
       type: object
       properties:
