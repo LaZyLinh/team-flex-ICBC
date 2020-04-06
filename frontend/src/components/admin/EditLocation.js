@@ -84,7 +84,6 @@ class EditLocation extends React.Component {
   };
 
   onClickConfirmDelete = async () => {
-    // TODO: fix this -- not sure why this is returning 401 unauthorized
     await deleteLocationName(this.props.locationName);
     window.location.href = "/adminPage";
   };

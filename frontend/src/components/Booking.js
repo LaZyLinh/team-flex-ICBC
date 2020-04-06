@@ -29,6 +29,9 @@ import OfficeBookingApi from "../api/OfficeBookingApi";
 import ApiClient from "../ApiClient";
 import featureMap from "../api/FeatureMap";
 import { DateRange } from "react-date-range";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
 import styles from "../styles/Booking.styles";
 import logo from "../assets/home_logo.png";
 
@@ -382,7 +385,9 @@ class Booking extends React.Component {
         onClose={this.handleCloseFloorPlan}
         style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
       >
-        <img src={this.state.imgUrl} alt="Floor Plan" height="500" width="700"></img>
+        <Zoom>
+          <img src={this.state.imgUrl} alt="Floor Plan" height="500" width="700"></img>
+        </Zoom>
       </Modal>
     );
   };
