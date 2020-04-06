@@ -311,66 +311,67 @@ class Booking extends React.Component {
 
   render = () => {
     const { classes } = this.props;
-    this.redirectIfConfirmed();
     return (
-      <div>
-        <div className={classes.header}>
-          <Link href="/">
-            <img className={classes.logo} src={logo} alt="Logo"></img>
-          </Link>
-          <div className={classes.title}>BOOKING</div>
-          <GiDesk className={classes.icon} />
-        </div>
-        <div className={classes.leftPanel}>
-          <DateRange
-            scroll={{ enabled: true, monthHeight: 190 }}
-            className={`${classes.calendar}`}
-            direction="vertical"
-            fixedHeight={false}
-            editableDateInputs={false}
-            onChange={this.handleDateChange}
-            moveRangeOnFirstSelection={false}
-            minDate={new Date()}
-            ranges={[
-              {
-                startDate: this.state.startDate,
-                endDate: this.state.endDate,
-                key: "selection",
-                color: "#0048a8d9"
-              }
-            ]}
-          />
-          <FormControl variant="filled" className={classes.locationInput}>
-            <InputLabel id="location">Location</InputLabel>
-            <Select labelId="location" value={this.state.location} onChange={this.handleSelectLocation}>
-              {this.getLocationItems()}
-            </Select>
-          </FormControl>
-          <FormControl variant="filled" className={classes.floorInput}>
-            <InputLabel id="floor">Floor</InputLabel>
-            <Select labelId="floor" value={this.state.floor} onChange={this.handleSelectFloor}>
-              {this.getFloorItems()}
-            </Select>
-          </FormControl>
-          <div className={classes.featureSelection}>
-            {this.state.features.map((feature, i) => {
-              return (
-                <FormControlLabel
-                  className={`${classes.featureLabel}`}
-                  control={
-                    <Checkbox value={feature.name} onChange={this.handleCheckFeature} checked={feature.checked} />
-                  }
-                  label={feature.name}
-                  key={i}
-                />
-              );
-            })}
+      this.redirectIfConfirmed() || (
+        <div>
+          <div className={classes.header}>
+            <Link href="/">
+              <img className={classes.logo} src={logo} alt="Logo"></img>
+            </Link>
+            <div className={classes.title}>BOOKING</div>
+            <GiDesk className={classes.icon} />
           </div>
-          <div className={classes.pkgsContainer}>{this.renderPackages(classes)}</div>
+          <div className={classes.leftPanel}>
+            <DateRange
+              scroll={{ enabled: true, monthHeight: 190 }}
+              className={`${classes.calendar}`}
+              direction="vertical"
+              fixedHeight={false}
+              editableDateInputs={false}
+              onChange={this.handleDateChange}
+              moveRangeOnFirstSelection={false}
+              minDate={new Date()}
+              ranges={[
+                {
+                  startDate: this.state.startDate,
+                  endDate: this.state.endDate,
+                  key: "selection",
+                  color: "#0048a8d9"
+                }
+              ]}
+            />
+            <FormControl variant="filled" className={classes.locationInput}>
+              <InputLabel id="location">Location</InputLabel>
+              <Select labelId="location" value={this.state.location} onChange={this.handleSelectLocation}>
+                {this.getLocationItems()}
+              </Select>
+            </FormControl>
+            <FormControl variant="filled" className={classes.floorInput}>
+              <InputLabel id="floor">Floor</InputLabel>
+              <Select labelId="floor" value={this.state.floor} onChange={this.handleSelectFloor}>
+                {this.getFloorItems()}
+              </Select>
+            </FormControl>
+            <div className={classes.featureSelection}>
+              {this.state.features.map((feature, i) => {
+                return (
+                  <FormControlLabel
+                    className={`${classes.featureLabel}`}
+                    control={
+                      <Checkbox value={feature.name} onChange={this.handleCheckFeature} checked={feature.checked} />
+                    }
+                    label={feature.name}
+                    key={i}
+                  />
+                );
+              })}
+            </div>
+            <div className={classes.pkgsContainer}>{this.renderPackages(classes)}</div>
+          </div>
+          {this.renderConfirmationDailog(classes)}
+          {this.renderFloorPlanModal(classes)}
         </div>
-        {this.renderConfirmationDailog(classes)}
-        {this.renderFloorPlanModal(classes)}
-      </div>
+      )
     );
   };
 
