@@ -512,7 +512,7 @@ class OfficeBookingService {
   static async unlockBooking({ id }) {
     try {
       const selectQuery = `SELECT * FROM booking WHERE BookingId=${id}`
-      const rawResults = knexHelper(selectQuery)
+      const rawResults = await knexHelper(selectQuery)
       if (rawResults.length === 0) {
         throw {
           message: "ID doesn't exist.",
