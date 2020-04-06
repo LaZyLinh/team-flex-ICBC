@@ -89,6 +89,359 @@ paths:
                 x-content-type: text/plain
               example: "Error: Floor with ID 9000 does not exist"
       x-swagger-router-controller: Admin
+  /admin/login:
+    post:
+      tags:
+        - Admin
+      summary: Login to admin portal
+      operationId: adminLoginMethod
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/body_5"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "403":
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                type: string
+                x-content-type: text/plain
+              example: "Error: Invalid Password"
+      x-swagger-router-controller: Admin
+  /admin/locations:
+    get:
+      tags:
+        - Admin
+      summary: A list of all the location names
+      operationId: adminGetLocationsMethod
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                example:
+                  - North Vancouver, BC
+                  - Vancouver, BC
+                items:
+                  type: string
+                x-content-type: application/json
+      x-swagger-router-controller: Admin
+    post:
+      tags:
+        - Admin
+      summary: Add a location
+      operationId: adminAddLocationMethod
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/body_6"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content: {}
+        "400":
+          description: Empty String, All Whitespaces, or Duplicate Name 
+          content:
+            text/plain:
+              schema:
+                type: string
+                x-content-type: text/plain
+              example: "Error: Location name already exists"
+      x-swagger-router-controller: Admin
+    delete:
+      tags:
+        - Admin
+      summary: Delete a location
+      operationId: adminDeleteLocationMethod
+      parameters:
+        - name: locationName
+          in: query
+          description: Location Name
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+          example: Vancouver
+      responses:
+        "200":
+          description: Successful Operation
+          content: {}
+        "400":
+          description: Bad Request 
+          content:
+            text/plain:
+              schema:
+                type: string
+                x-content-type: text/plain
+              example: "Error: Location name doesn't exist"
+      x-swagger-router-controller: Admin
+  /admin/floors:
+    get:
+      tags:
+        - Admin
+      summary: Gets list of floors 
+      operationId: adminGetFloorsByCityMethod
+      parameters:
+        - name: city
+          in: query
+          description: City Name
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+          example: Vancouver
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                example:
+                  - Floor 1
+                  - Floor 2
+                items:
+                  type: string
+                x-content-type: application/json
+      x-swagger-router-controller: Admin
+    post:
+      tags:
+        - Admin
+      summary: Adds a new floor
+      operationId: adminAddFloorMethod
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/body_7"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminPostFloor"
+      x-swagger-router-controller: Admin
+    put:
+      tags:
+        - Admin
+      summary: Updates a floor
+      operationId: adminUpdateFloorMethod
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/body_8"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminPostFloor"
+        "400":
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                x-content-type: text/plain
+              example: "Error: Missing floor id"
+      x-swagger-router-controller: Admin
+  /admin/floors?{id}:
+    delete:
+      tags:
+        - Admin
+      summary: Delete a Floor
+      operationId: adminDeleteFloorMethod
+      parameters:
+        - name: id
+          in: query
+          description: Floor Id
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Successful Operation
+          content: {}
+      x-swagger-router-controller: Admin
+  /admin/workspaces?{floorId}:
+    get:
+      tags:
+        - Admin
+      summary: Gets list of workspaces 
+      operationId: adminGetWorkspacesMethod
+      parameters:
+        - name: floorId
+          in: path
+          description: Floor Id
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: workspace
+                x-content-type: application/json
+      x-swagger-router-controller: Admin
+  /admin/deleteWorkspace?{id}:
+    delete:
+      tags:
+        - Admin
+      summary: Delete a Workspace
+      operationId: adminDeleteWorkspaceMethod
+      parameters:
+        - name: id
+          in: query
+          description: Workspace Id
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+          example: "NV1-20A"
+      responses:
+        "200":
+          description: Successful Operation
+          content: {}
+      x-swagger-router-controller: Admin
+  /admin/workspaces?{id}:
+    put:
+      tags:
+        - Admin
+      summary: Updates a workspace
+      operationId: adminUpdateWorkspaceMethod
+      parameters:
+        - name: id
+          in: path
+          description: Workspace Id
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+          example: "NV1-20A"        
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/body_9"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content: {}
+        "403":
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                x-content-type: text/plain
+              example: "Error: Workspace doesn't exist"
+      x-swagger-router-controller: Admin
+  admin/workspacefeature/add:
+    post:
+      tags:
+        - Admin
+      summary: Add a workspace feature
+      operationId: adminAddWorkspaceFeatureMethod
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/body_10"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content: {}
+        "400":
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                x-content-type: text/plain
+              example: "Error: Feature name doesn't exist"
+      x-swagger-router-controller: Admin
+  admin/workspacefeature/delete:
+    post:
+      tags:
+        - Admin
+      summary: Delete a workspace feature
+      operationId: adminDeleteWorkspaceFeatureMethod
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/body_10"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content: {}
+        "400":
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                x-content-type: text/plain
+              example: "Error: Workspace Id or Feature name doesn't exist"
+      x-swagger-router-controller: Admin
+  /admin/reset-features:
+    post:
+      tags:
+        - Admin
+      summary: Resets the list of features to a custom specified list
+      description: "Sets the list of features in the system. Previous features that do not exist in this list are deleted, and new features are added. Does not affect features that exist both previously and in this list"
+      operationId: adminResetFeatures
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: Successful Operation
+        '400':
+          description: Bad Request
+
+  
+
   /features:
     get:
       tags:
@@ -783,3 +1136,91 @@ components:
         floorplanImage:
           type: string
           format: binary
+    body_5:
+      required:
+        - password
+      type: object
+      properties:
+        password:
+          type: string
+    body_6:
+      required:
+        - locationName
+      type: object
+      properties:
+        locationName:
+          type: string
+    body_7:
+      required:
+        - floorNo
+        - building
+        - city
+        - location
+      type: object
+      properties:
+        floorNo:
+          type: integer
+        building:
+          type: string
+        city:
+          type: string
+        location:
+          type: string
+        floorplanImage:
+          type: string
+          format: binary
+    body_8:
+      required:
+        - floorId
+      type: object
+      properties:
+        floorId:
+          type: integer
+        floorNo:
+          type: integer
+        building:
+          type: string
+        city:
+          type: string
+        location:
+          type: string
+    body_9:
+      required:
+        - email
+      type: object
+      properties:
+        email:
+          type: string
+          example: employee@icbc.com
+    body_10:
+      required:
+        - workspaceId
+        - featureName
+      type: object
+      properties:
+        workspaceId:
+          type: string
+          example: "NV4-02H"
+        featureName:
+          type: string
+          example: "Conference Phone"
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: success
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwiZXhwIjoxNTg5NTAyMDA0LCJpYXQiOjE1ODQzMTgwMDR9.PyJvSoQzOtjkKknE0FqrARp2_hsD06aoGzo98uM5WWc
+      example:
+        message: success
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwiZXhwIjoxNTg5NTAyMDA0LCJpYXQiOjE1ODQzMTgwMDR9.PyJvSoQzOtjkKknE0FqrARp2_hsD06aoGzo98uM5WWc
+    AdminPostFloor:
+      type: object
+      properties:
+        floorId:
+          type: integer
+          example: 1
+        example:
+          floorId: 1
