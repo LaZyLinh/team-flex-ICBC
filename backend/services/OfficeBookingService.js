@@ -70,7 +70,7 @@ class OfficeBookingService {
           let bookingInfo = {
             startDate: new Date(booking2.StartDate).toLocaleDateString(),
             endDate: new Date(booking2.EndDate).toLocaleDateString(),
-            workspaceId: booking.WorkspaceId
+            workspaceId: booking2.WorkspaceId
           };
 
           emailService.sendEmailDeleteBookingBooker(bookerEmail.Email, bookingInfo);
