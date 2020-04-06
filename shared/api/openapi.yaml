@@ -1,8 +1,8 @@
 openapi: 3.0.1
 info:
-  title: ICBC Flex Work
-  description: ICBC Flex Work REST Back End, Employee End Points
-  version: 0.0.14
+  title: ICBC Flex Work, by Team Flex
+  description: ICBC Flex Work REST Back End, End Points for Employee and Admin Use Cases
+  version: 1.0.0
 servers:
   - url: https://icbcflexwork.me:8080/
 tags:
@@ -11,7 +11,7 @@ tags:
   - name: OfficeLending
     description: As an ICBC office owner, create **Availabilities** for fellow employees
   - name: Admin
-    description: As an ICBC facility admin, manage locations and floor plans (There are end points not listed here, to be added)
+    description: As an ICBC facility admin, manage locations and floor plans, workspace features, and more
 paths:
   /floors:
     get:
