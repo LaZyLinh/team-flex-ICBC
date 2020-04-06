@@ -4,6 +4,7 @@ import { withStyles } from "@material-ui/core";
 import Select from "@material-ui/core/Select";
 import Link from "@material-ui/core/Link";
 import Slide from "@material-ui/core/Slide";
+import Modal from "@material-ui/core/Modal";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
@@ -53,7 +54,9 @@ class Booking extends React.Component {
       redirectHome: false,
       time: {},
       seconds: 1200,
-      confirmed: false
+      confirmed: false,
+      imgUrl: "",
+      openModal: false
     };
     this.timer = 0;
   }
@@ -163,10 +166,23 @@ class Booking extends React.Component {
       this.setState({ error: true, errorText: "Could not book. Try again." });
       await this.updatePackages();
     }
+  };
 
-    // await OfficeBookingApi.cancelBooking(bookingid);
-    // await OfficeBookingApi.lockBooking(availabilityId, staffId, startDate, endDate);
-    // await OfficeBookingApi.unlockBooking(bookingid);
+  handleClickFloorPlan = async event => {
+    const i = event.currentTarget.dataset.id;
+    const floorId = ((parseInt(i) % 4) + 1).toString();
+
+    this.setState({
+      openModal: true,
+      imgUrl: `https://icbcflexwork.me:8080/floorplans/${floorId}.jpg`
+    });
+  };
+
+  handleCloseFloorPlan = event => {
+    this.setState({
+      openModal: false,
+      imgUrl: ""
+    });
   };
 
   handleCancelBooking = async event => {
@@ -350,7 +366,20 @@ class Booking extends React.Component {
           <div className={classes.pkgsContainer}>{this.renderPackages(classes)}</div>
         </div>
         {this.renderConfirmationDailog(classes)}
+        {this.renderFloorPlanModal(classes)}
       </div>
+    );
+  };
+
+  renderFloorPlanModal = classes => {
+    return (
+      <Modal
+        open={this.state.openModal}
+        onClose={this.handleCloseFloorPlan}
+        style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
+        <img src={this.state.imgUrl} alt="Floor Plan" height="500" width="700"></img>
+      </Modal>
     );
   };
 
@@ -426,7 +455,7 @@ class Booking extends React.Component {
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button size="small" onClick={this.handleClickFloorPlan}>
+                <Button size="small" onClick={this.handleClickFloorPlan} data-id={availability.floor.floorId}>
                   Floor Plan
                 </Button>
               </CardActions>
