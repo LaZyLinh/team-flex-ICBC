@@ -7,8 +7,8 @@ import Grid from "@material-ui/core/Grid";
 import Snackbar from "@material-ui/core/Snackbar";
 
 export default class AddFeature extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       featureName: "",
       openSnackbar: false,
@@ -40,7 +40,7 @@ export default class AddFeature extends React.Component {
         snackbarSeverity: "success",
         snackbarMessage: `New feature ${featureNameTrimmed} added!`
       });
-      this.props.updateFeatures(); // Parent
+      this.props.updateFeaturesCallback(); // Parent
     } catch (err) {
       console.log(err);
       this.setState({ showUnknownError: true });
