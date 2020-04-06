@@ -74,7 +74,6 @@ async function api(verb, path, body = undefined) {
   if (jwtExpiresMillis < Date.now()) {
     // TODO: handle expired token after opening admin page
   }
-  console.log(jwt)
   const config = {
     headers: {
       "Authorization": `Bearer ${jwt}`,
@@ -127,12 +126,18 @@ export async function deleteLocationName(name) {
 
 // file must in binary
 export async function uploadFloorData(floorid, csvFile) {
-  try {
-    await api('post', "/upload-floor-data", { floorId: floorid, floorData: csvFile })
-  } catch (err) {
-    localStorage.setItem("admin_error", JSON.stringify(err))
-    console.log(err)
-  }
+  var bodyFormData = new FormData();
+  bodyFormData.append("floorId", floorid);
+  bodyFormData.append("floorData", csvFile);
+  jwt = localStorage.getItem("admin_jwt")
+  await Axios({
+    method: 'POST',
+    url: 'https://icbcflexwork.me:8080/admin/upload-floor-data',
+    data: bodyFormData,
+    headers: {
+      "Authorization": `Bearer ${jwt}`
+    }
+  })
 }
 
 // img must in binary
@@ -147,7 +152,7 @@ export async function uploadFloorImage(floorid, img) {
 
 export async function getWorkspacesByFloorId(floorId) {
   try {
-    return (await api('get', '/workpaces?=' + floorId)).data
+    return (await api('get', '/workspaces?floorId=' + floorId)).data
   } catch (err) {
     localStorage.setItem("admin_error", JSON.stringify(err))
     console.log(err)
@@ -155,20 +160,24 @@ export async function getWorkspacesByFloorId(floorId) {
 }
 
 export async function deleteWorkspace(workspaceId) {
+  console.log("call delete")
+  console.log(workspaceId)
   try {
-    await api('delete', '/deleteWorkpace?=' + workspaceId);
+    console.log("HEY")
+    await api('delete', '/deleteWorkspace?id=' + workspaceId);
   } catch (err) {
-    localStorage.setItem("admin_error", JSON.stringify(err))
+    localStorage.setItem("admin_delete_error", JSON.stringify(err))
     console.log(err)
+    throw err;
   }
 }
 
-export async function updateWorkspace(body) {
+export async function updateWorkspace(workspaceId, email) {
   try {
-    await api('put', '/workspaces', body);
+    await api('put', '/workspaces?id=' + workspaceId, { email: email });
   } catch (err) {
     localStorage.setItem("admin_error", JSON.stringify(err))
-    console.log(err)
+    throw err;
   }
 }
 

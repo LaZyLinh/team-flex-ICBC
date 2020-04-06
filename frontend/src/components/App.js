@@ -8,6 +8,7 @@ import ConfirmBooking from "./ConfirmBooking";
 import Finished from "./Finished";
 import EditFloor from "./EditFloor";
 import AdminPage from "./AdminPage";
+import EditWorkspace from "./admin/EditWorkspace";
 
 function App(props) {
   return (
@@ -38,8 +39,17 @@ function App(props) {
           path="/admin/edit-floors/:locationName"
           component={({ match }) => <EditFloor locationName={match.params.locationName} />}
         />
+        <Route exact path="/editFloor">
+          <EditFloor />
+        </Route>
+        <Route
+          path="/editWorkspace/:floorId"
+          component={({ match }) => <EditWorkspace floorId={match.params.floorId} />}/>
+        <Route exact path="/editWs">
+          <EditWorkspace />
+        </Route>
       </div>
-    </Router>
+    </Router >
   );
 }
 

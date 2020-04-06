@@ -95,7 +95,11 @@ const DisplayStyle = {
     width: "20%",
     display: "inline-block",
     marginLeft: "10%",
-    textAlign: "center"
+    textAlign: "center",
+    "&:hover": {
+      cursor: "pointer"
+    }
+
   },
   eachPart: {
     backgroundColor: "#002D7D",

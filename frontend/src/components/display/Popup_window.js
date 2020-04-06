@@ -9,8 +9,9 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import {Input} from "@material-ui/core";
 
-export default function FormDialog() {
+export default function FormDialog(props) {
   const [open, setOpen] = React.useState(false);
+
   const [value, enterValue] = React.useState("");
   const handleClickOpen = () => {
     setOpen(true);
@@ -37,7 +38,7 @@ export default function FormDialog() {
         <DialogTitle id="form-dialog-title">Add a new Location</DialogTitle>
         <DialogContent>
           <DialogContentText>Please enter the name of new Location</DialogContentText>
-          {/*<TextField autoFocus margin="dense" id="name" label="newLocation" type="string" fullWidth />*/}
+
           <Input />
         </DialogContent>
         <DialogActions>
