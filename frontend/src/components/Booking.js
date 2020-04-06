@@ -150,11 +150,9 @@ class Booking extends React.Component {
 
   handleClickBooking = async event => {
     const reqs = [];
-    const i = event.currentTarget.dataset.id;
+    const i = event.currentTarget.dataset.id - 1;
     for (const avail of this.state.packages[i]) {
-      const sdStr = this.state.startDate.toISOString().slice(0, 10);
-      const edStr = this.state.endDate.toISOString().slice(0, 10);
-      reqs.push(OfficeBookingApi.lockBooking(avail.availabilityId, this.state.staffId, sdStr, edStr));
+      reqs.push(OfficeBookingApi.lockBooking(avail.availabilityId, this.state.staffId, avail.startDate, avail.endDate));
     }
     try {
       const results = await Promise.all(reqs);
