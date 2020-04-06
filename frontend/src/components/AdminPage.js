@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-pascal-case */
 import React from "react";
 import Display_Square from "./display/Display_Square";
-import logo from "../assets/home_logo.png";
+import logo from "../assets/house_flexwork_logo.png";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -61,7 +61,7 @@ class AdminPage extends React.Component {
           </Grid>
           <Grid item xs={2}>
             <Link href="/">
-              <img src={logo} style={{ height: "48px" }} alt="Logo"></img>
+              <img src={logo} style={{ height: "80px" }} alt="Logo"></img>
             </Link>
           </Grid>
         </Grid>
