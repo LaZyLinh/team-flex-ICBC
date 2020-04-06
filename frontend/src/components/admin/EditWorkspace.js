@@ -10,6 +10,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
+import TextField from '@material-ui/core/TextField';
 
 class EditWorkspace extends React.Component {
   constructor(props) {
@@ -18,9 +19,11 @@ class EditWorkspace extends React.Component {
       floorId: props.floorId,
       editPopup: false,
       workspaces: [],
-      deleteButtonClicked: false
+      deleteButtonClicked: false,
+        editWorkspace:[]
     };
   }
+
 
 
   async componentWillMount() {
@@ -121,6 +124,7 @@ class EditWorkspace extends React.Component {
 
   render() {
     const { classes } = this.props;
+
     return (
       <React.Fragment >
 
@@ -148,21 +152,54 @@ class EditWorkspace extends React.Component {
               {/*{this.showWorkspaces()}</div>*/}
               <FormDialog floorIdFromMain={this.state.floorId} reloadCallback={this.reloadCallback} />
             </div>
+
+
             <WorkspaceTable rows={this.state.workspaces} reloadCallback={this.reloadCallback} showEditPopup={this.editWorkspacePopup} /></div>
           <Dialog
-            TransitionComponent={Transition}
-            open={this.state.editPopup}
-            onClose={this.handleClosePopup}
-            PaperProps={{
-              style: {
-                backgroundColor: "#EBF2FF"
-              }
-            }}>
-            <DialogTitle className={classes.dialogTitle} disableTypography={true}>
-              {this.state.editWorkspace ? "Edit Workspace " + this.state.editWorkspace.wsId : "Edit Workspace"}
-            </DialogTitle>
+              TransitionComponent={Transition}
+              open={this.state.editPopup}
+              onClose={this.handleClosePopup}
+              PaperProps={{
+                  style: {
+                      backgroundColor: "#EBF2FF",
+                      height:"40%",
+                      width:"30%"
+                  }
+              }}>
+              {/* TODO finsihed this part */}
+              <DialogTitle className={classes.dialogTitle} disableTypography={true}>
+                  {this.state.editWorkspace ? "Edit Workspace " + this.state.editWorkspace.wsId : "Edit Workspace"}
+              </DialogTitle>
+            <DialogContent>
+            {/*<p style={{lineHeight:"20px"}}>*/}
+                <h4 style={{position:"absolute", left:"15%",width:"50%",top:"10%"}} >{"City:"+ this.state.editWorkspace.city}</h4>
+                  <h4 style={{position:"absolute", left:"55%",width:"50%",top:"10%"}}>{"Location:"+ this.state.editWorkspace.loc}</h4>
+                <h4 style={{position:"absolute", left:"15%",width:"50%",top:"22%"}}>{"Owner:"+this.state.editWorkspace.officeOwner}</h4>
+              <h4 style={{position:"absolute", left:"55%",width:"50%",top:"22%"}}>{"staffID:"+this.state.editWorkspace.staffId}</h4>
+                <h4 style={{position:"absolute", left:"15%",width:"50%",top:"34%"}}>{"FloorID:"+this.state.editWorkspace.fId}</h4>
+                <h4  style={{position:"absolute", left:"55%",width:"50%",top:"34%"}}>{"FloorNo:"+this.state.editWorkspace.fNo}</h4>
+           </DialogContent>
+                <h4 style={{position:"absolute",bottom:"25%",left:"15%"}}>Enter the new Email address below </h4>
+              <DialogContentText style={{width:"70%",position:"absolute",left:"15%",bottom:"10%"}}> <TextField
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="Email Address"
+                  type="email"
+                  fullWidth
+              /></DialogContentText>     <DialogActions>
+
+
+              <Button  color="primary">
+                  Cancel
+              </Button>
+              <Button  color="primary">
+                 Confirm
+              </Button>
+          </DialogActions>
           </Dialog>
-        </div>
+      </div>
+
 
 
 
@@ -239,6 +276,13 @@ const editWsStyle = {
       border: "1px solid rgba(10, 101, 255, 1)"
     }
   },
+    // windowText:{
+    // position:"absolute",
+    //     left:"15%",
+    //     width:"100%",
+    //
+    //
+    // }
 
 };
 
