@@ -1,6 +1,6 @@
 'use strict';
 
-const VERSION = "2:51PM Apr 5, last change: workspaces PUT"
+const VERSION = "5:22PM fix unlockbooking"
 
 const config = require('./config')
 const authenticator = require('./auth/authenticator')

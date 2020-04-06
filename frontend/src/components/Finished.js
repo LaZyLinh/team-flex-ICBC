@@ -1,6 +1,5 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
 import { withStyles } from "@material-ui/core";
 import { Home } from "@material-ui/icons";
 
@@ -10,7 +9,7 @@ class Finished extends React.Component {
     return (
       <div className={`${classes.bg}`}>
         <div className={`${classes.text} ${classes.label}`}>
-          Your request is recorded. Please check your inbox for confirmation email
+          Your request is recorded. A confirmation email has been sent.
         </div>
         <Button className={`${classes.btn} ${classes.btn1} ${classes.label1}`} variant="contained" href="/">
           <Home className={`${classes.home}`}></Home>
