@@ -48,12 +48,14 @@ class EditFloor extends React.Component {
     let currentFloor = 0;
     const location = floors[currentFloor] ? floors[currentFloor].Location : "N/A";
     const currentFloorId = floors[currentFloor] ? floors[currentFloor].FloorId : 0;
+    const currentFloorNo = floors[currentFloor] ? floors[currentFloor].FloorNo : 0;
 
     this.setState({
       allFloors: floors,
       currentFloorIndex: currentFloor,
       currentLocation: location,
-      currentFloorId: currentFloorId
+      currentFloorId: currentFloorId,
+      currentFloorNo: currentFloorNo
     });
   };
 
@@ -67,6 +69,7 @@ class EditFloor extends React.Component {
     this.state.currentFloorIndex = data;
     this.state.currentLocation = this.state.allFloors[data].Location;
     this.state.currentFloorId = this.state.allFloors[data].FloorId;
+    this.state.currentFloorNo = this.state.allFloors[data].FloorNo;
     this.forceUpdate();
   };
 
@@ -158,7 +161,9 @@ class EditFloor extends React.Component {
                 alt="No FloorPlan found"
               />
             </Zoom>
-            <h3>{this.state.currentLocation}</h3>
+            <h3>
+              {this.state.currentLocation} Floor {this.state.currentFloorNo}
+            </h3>
             <div className={`${classes.buttens}`}></div>
           </div>
           <div className={`${classes.right}`}>
