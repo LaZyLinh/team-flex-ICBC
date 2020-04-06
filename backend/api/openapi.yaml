@@ -265,7 +265,7 @@ paths:
                 x-content-type: text/plain
               example: "Error: Missing floor id"
       x-swagger-router-controller: Admin
-  /admin/floors?{id}:
+  /admin/floors/{id}:
     delete:
       tags:
         - Admin
@@ -273,10 +273,10 @@ paths:
       operationId: adminDeleteFloorMethod
       parameters:
         - name: id
-          in: query
+          in: path
           description: Floor Id
           required: true
-          style: form
+          style: simple
           explode: true
           schema:
             type: integer
@@ -286,7 +286,7 @@ paths:
           description: Successful Operation
           content: {}
       x-swagger-router-controller: Admin
-  /admin/workspaces?{floorId}:
+  /admin/workspaces/{floorId}:
     get:
       tags:
         - Admin
@@ -297,7 +297,7 @@ paths:
           in: path
           description: Floor Id
           required: true
-          style: form
+          style: simple
           explode: true
           schema:
             type: integer
@@ -310,10 +310,10 @@ paths:
               schema:
                 type: array
                 items:
-                  type: workspace
+                  type: object
                 x-content-type: application/json
       x-swagger-router-controller: Admin
-  /admin/deleteWorkspace?{id}:
+  /admin/deleteWorkspace/{id}:
     delete:
       tags:
         - Admin
@@ -321,10 +321,10 @@ paths:
       operationId: adminDeleteWorkspaceMethod
       parameters:
         - name: id
-          in: query
+          in: path
           description: Workspace Id
           required: true
-          style: form
+          style: simple
           explode: true
           schema:
             type: string
@@ -334,7 +334,7 @@ paths:
           description: Successful Operation
           content: {}
       x-swagger-router-controller: Admin
-  /admin/workspaces?{id}:
+  /admin/workspaces/{id}:
     put:
       tags:
         - Admin
@@ -345,7 +345,7 @@ paths:
           in: path
           description: Workspace Id
           required: true
-          style: form
+          style: simple
           explode: true
           schema:
             type: string
@@ -369,7 +369,7 @@ paths:
                 x-content-type: text/plain
               example: "Error: Workspace doesn't exist"
       x-swagger-router-controller: Admin
-  admin/workspacefeature/add:
+  /admin/workspacefeature/add:
     post:
       tags:
         - Admin
@@ -394,7 +394,7 @@ paths:
                 x-content-type: text/plain
               example: "Error: Feature name doesn't exist"
       x-swagger-router-controller: Admin
-  admin/workspacefeature/delete:
+  /admin/workspacefeature/delete:
     post:
       tags:
         - Admin
@@ -439,9 +439,6 @@ paths:
           description: Successful Operation
         '400':
           description: Bad Request
-
-  
-
   /features:
     get:
       tags:
@@ -1222,5 +1219,3 @@ components:
         floorId:
           type: integer
           example: 1
-        example:
-          floorId: 1
