@@ -1,6 +1,6 @@
 'use strict';
 
-const VERSION = "3:57PM Apr 5, last change: lockBooking => return bookingId"
+const VERSION = "5:22PM fix unlockbooking"
 
 const config = require('./config')
 const authenticator = require('./auth/authenticator')
