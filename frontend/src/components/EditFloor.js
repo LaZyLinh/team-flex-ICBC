@@ -13,6 +13,8 @@ import FloorList from "./admin/FloorList";
 import Popup from "reactjs-popup";
 import logo from "../assets/home_logo.png";
 import Link from "@material-ui/core/Link";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 
 // router.post("/upload-floor-data", AdminFloorService.uploadFloorData);
 // backend has this which takes a (spread sheet file) and puts the whole floor's data into the database
@@ -21,7 +23,7 @@ import Link from "@material-ui/core/Link";
 // Choice 1 - integrate this UI into this page
 // Choice 2 - have a button that leads to a page that handles it
 
-const EDIT_WORKSPACE_PATH = "/editWorkspace/"
+const EDIT_WORKSPACE_PATH = "/editWorkspace/";
 
 class EditFloor extends React.Component {
   constructor(props) {
@@ -30,29 +32,30 @@ class EditFloor extends React.Component {
       city: props.locationName,
       locations: [],
       windowOpen: false,
-      openDialog: false,
-
+      openDialog: false
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleFileChange = this.handleFileChange.bind(this)
+    this.handleFileChange = this.handleFileChange.bind(this);
   }
 
   componentWillMount = async () => {
     const floors = await getFloorsByCity(this.state.city);
     if (!floors) {
-      alert("an error occured!")
+      alert("an error occured!");
     }
     let currentFloor = 0;
     const location = floors[currentFloor] ? floors[currentFloor].Location : "N/A";
     const currentFloorId = floors[currentFloor] ? floors[currentFloor].FloorId : 0;
+    const currentFloorNo = floors[currentFloor] ? floors[currentFloor].FloorNo : 0;
 
     this.setState({
       allFloors: floors,
       currentFloorIndex: currentFloor,
       currentLocation: location,
-      currentFloorId: currentFloorId
+      currentFloorId: currentFloorId,
+      currentFloorNo: currentFloorNo
     });
   };
 
@@ -62,37 +65,41 @@ class EditFloor extends React.Component {
     }
   }
 
-
   changeCurrent = data => {
     this.state.currentFloorIndex = data;
     this.state.currentLocation = this.state.allFloors[data].Location;
     this.state.currentFloorId = this.state.allFloors[data].FloorId;
+    this.state.currentFloorNo = this.state.allFloors[data].FloorNo;
     this.forceUpdate();
   };
 
-  deleteFloor = async (fidx) => {
+  deleteFloor = async fidx => {
     console.log(fidx);
-    if (window.confirm(`Are you sure you wish to delete Floor ${this.state.allFloors[fidx].FloorId} in ${this.state.allFloors[fidx].Location}? All workspaces and Lendings on that floor will be deleted.`)) {
+    if (
+      window.confirm(
+        `Are you sure you wish to delete Floor ${this.state.allFloors[fidx].FloorId} in ${this.state.allFloors[fidx].Location}? All workspaces and Lendings on that floor will be deleted.`
+      )
+    ) {
       console.log("click yes");
-      await deleteFloor(this.state.allFloors[fidx].FloorId)
+      await deleteFloor(this.state.allFloors[fidx].FloorId);
       window.location.reload();
     }
-  }
+  };
 
-  editFloor = (index) => {
+  editFloor = index => {
     const id = this.state.allFloors[index].FloorId;
     window.location.href = EDIT_WORKSPACE_PATH + id;
-  }
+  };
 
   addFloorHandler = () => {
-    this.setState({ openDialog: true })
-  }
+    this.setState({ openDialog: true });
+  };
 
   handleClosePopup = () => {
     this.setState(prevState => {
       return { openDialog: !prevState.openDialog };
     });
-  }
+  };
 
   handleInputChange(event) {
     const target = event.target;
@@ -103,36 +110,35 @@ class EditFloor extends React.Component {
         [name]: value
       });
     }
-
   }
 
   handleFileChange(e) {
     this.setState({ file: e.target.files[0] });
   }
 
-  handleSubmit = (event) => {
+  handleSubmit = event => {
     event.preventDefault();
     var bodyFormData = new FormData();
     bodyFormData.append("floorNo", this.state.newFloorNo);
     bodyFormData.append("building", this.state.newBuilding);
     bodyFormData.append("city", this.state.city);
     bodyFormData.append("location", this.state.newLocation);
-    bodyFormData.append('floorPlanImg', this.state.file);
+    bodyFormData.append("floorPlanImg", this.state.file);
 
-    addFloor(bodyFormData).then((rsp) => {
-
-      console.log(rsp);
-      this.setState({ errMsg: "" })
-      this.setState(prevState => {
-        return { openDialog: !prevState.openDialog };
+    addFloor(bodyFormData)
+      .then(rsp => {
+        console.log(rsp);
+        this.setState({ errMsg: "" });
+        this.setState(prevState => {
+          return { openDialog: !prevState.openDialog };
+        });
+        window.location.reload();
+      })
+      .catch(error => {
+        console.log(error);
+        this.setState({ errMsg: "there is an error adding floors" });
       });
-      window.location.reload();
-    }).catch(error => {
-      console.log(error)
-      this.setState({ errMsg: "there is an error adding floors" })
-    })
-
-  }
+  };
 
   render() {
     const { classes } = this.props;
@@ -147,12 +153,17 @@ class EditFloor extends React.Component {
         </div>
         <div className={`${classes.split}`}>
           <div className={`${classes.left}`}>
-            <img
-              className={`${classes.floorplanImg}`}
-              src={`https://icbcflexwork.me:8080/floorplans/${this.state.currentFloorId}.jpg`}
-              alt="No FloorPlan found"
-            />
-            <h3>{this.state.currentLocation}</h3>
+            <Zoom>
+              <img
+                className={`${classes.floorplanImg}`}
+                src={`https://icbcflexwork.me:8080/floorplans/${this.state.currentFloorId}.jpg`}
+                width="40%"
+                alt="No FloorPlan found"
+              />
+            </Zoom>
+            <h3>
+              {this.state.currentLocation} Floor {this.state.currentFloorNo}
+            </h3>
             <div className={`${classes.buttens}`}></div>
           </div>
           <div className={`${classes.right}`}>
@@ -169,10 +180,11 @@ class EditFloor extends React.Component {
                   style: {
                     backgroundColor: "#EBF2FF"
                   }
-                }}>
+                }}
+              >
                 <DialogTitle className={classes.dialogTitle} disableTypography={true}>
                   Add New Floor
-                 </DialogTitle>
+                </DialogTitle>
                 <form className={classes.addFloorForm} onSubmit={this.handleSubmit}>
                   <div style={{ display: "flex", paddingLeft: "10px" }}>
                     <p style={{ width: "30%" }}>Floor Number</p>
@@ -183,7 +195,8 @@ class EditFloor extends React.Component {
                       margin="none"
                       className={`${classes.field}`}
                       onChange={this.handleInputChange}
-                      value={this.state.comment} required
+                      value={this.state.comment}
+                      required
                     ></input>
                   </div>
 
@@ -195,7 +208,8 @@ class EditFloor extends React.Component {
                       margin="none"
                       className={`${classes.field}`}
                       onChange={this.handleInputChange}
-                      value={this.state.comment} required
+                      value={this.state.comment}
+                      required
                     ></input>
                   </div>
                   <div style={{ display: "flex", paddingLeft: "10px" }}>
@@ -207,7 +221,8 @@ class EditFloor extends React.Component {
                       className={`${classes.field}`}
                       value={this.state.city}
                       onChange={this.handleInputChange}
-                      readonly></input>
+                      readonly
+                    ></input>
                   </div>
                   <div style={{ display: "flex", paddingLeft: "10px" }}>
                     <p style={{ width: "30%" }}>Building Number</p>
@@ -217,7 +232,8 @@ class EditFloor extends React.Component {
                       type="number"
                       onChange={this.handleInputChange}
                       margin="none"
-                      className={`${classes.field}`} required
+                      className={`${classes.field}`}
+                      required
                     ></input>
                   </div>
                   <div style={{ display: "flex", paddingLeft: "10px" }}>
@@ -227,18 +243,27 @@ class EditFloor extends React.Component {
                       type="file"
                       onChange={this.handleFileChange}
                       margin="none"
-                      className={`${classes.field}`} required></input>
+                      className={`${classes.field}`}
+                      required
+                    ></input>
                   </div>
-                  <button type="submit" style={{ display: "flex", margin: "10px 10px 10px 10px" }}>submit</button>
+                  <button type="submit" style={{ display: "flex", margin: "10px 10px 10px 10px" }}>
+                    submit
+                  </button>
                   <p style={{ color: "red", paddingLeft: "5%" }}>{this.state.errMsg}</p>
                 </form>
               </Dialog>
-
             </div>
-            {this.state.allFloors ? <FloorList floors={this.state.allFloors}
-              callback={this.changeCurrent}
-              editFloorCallback={this.editFloor}
-              deleteCallback={this.deleteFloor} /> : <span>"loading..."</span>}
+            {this.state.allFloors ? (
+              <FloorList
+                floors={this.state.allFloors}
+                callback={this.changeCurrent}
+                editFloorCallback={this.editFloor}
+                deleteCallback={this.deleteFloor}
+              />
+            ) : (
+                <span>"loading..."</span>
+              )}
           </div>
         </div>
       </div>
@@ -248,7 +273,7 @@ class EditFloor extends React.Component {
 
 const inputParsers = {
   date(input) {
-    const [month, day, year] = input.split('/');
+    const [month, day, year] = input.split("/");
     return `${year}-${month}-${day}`;
   },
   uppercase(input) {
@@ -256,7 +281,7 @@ const inputParsers = {
   },
   number(input) {
     return parseFloat(input);
-  },
+  }
 };
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -277,7 +302,7 @@ const muiStyles = {
   field: {
     background: "#f8f8f8",
     borderRadius: "2px",
-    margin: "10px 10px",
+    margin: "10px 10px"
   },
   addFloorForm: {
     width: "400px"

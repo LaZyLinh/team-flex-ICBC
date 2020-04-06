@@ -116,13 +116,29 @@ export async function getLocationNames() {
 
 export async function deleteLocationName(name) {
   try {
-    await api('delete', `/locations/${name.trim()}`)
+    await api('delete', `/locations?locationName=${name.trim()}`)
   } catch (err) {
     localStorage.setItem("admin_error", JSON.stringify(err))
     console.log(err)
   }
 }
 
+export async function deleteFeature(featureId) {
+  try {
+    await api('post', `/deletefeature`, { featureId })
+  } catch (err) {
+    localStorage.setItem("admin_error", JSON.stringify(err))
+    console.log(err)
+  }
+}
+
+export async function createFeature(featureName) {
+  try {
+    return await api('post', '/createfeature', { featureName })
+  } catch (err) {
+    throw (err)
+  }
+}
 
 // file must in binary
 export async function uploadFloorData(floorid, csvFile) {

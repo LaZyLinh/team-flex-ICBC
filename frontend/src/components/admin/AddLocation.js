@@ -3,6 +3,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { createLocation } from "../../api/AdminApi";
 import Alert from "@material-ui/lab/Alert";
+import Grid from "@material-ui/core/Grid";
 
 export default class AddLocation extends React.Component {
   constructor() {
@@ -26,7 +27,8 @@ export default class AddLocation extends React.Component {
       // do nothing
       return;
     }
-    if (locations.includes(locationTrimmed)) {
+    const lowercaseLocations = locations.map(l => l.toLowerCase());
+    if (lowercaseLocations.includes(locationTrimmed.toLowerCase())) {
       this.setState({
         showCityAlreadyAddedError: true
       });
@@ -34,7 +36,7 @@ export default class AddLocation extends React.Component {
     }
     try {
       await createLocation(locationTrimmed);
-      this.setState({ showGreen: true });
+      this.setState({ showSuccess: true });
       this.props.updateLocations(); // Parent
     } catch (err) {
       console.log(err);
@@ -46,7 +48,7 @@ export default class AddLocation extends React.Component {
     this.setState({
       location: e.target.value,
       showCityAlreadyAddedError: false,
-      showGreen: false,
+      showSuccess: false,
       showUnknownError: false
     });
   };
@@ -61,7 +63,7 @@ export default class AddLocation extends React.Component {
     } else if (this.state.showSuccess) {
       return (
         <Alert style={{ position: "absolute", top: "40px", left: "55%" }} severity="success">
-          New city "{this.state.location}" successfully added! You rock!
+          New city "{this.state.location}" successfully added.
         </Alert>
       );
     } else if (this.state.showUnknownError) {
@@ -75,22 +77,28 @@ export default class AddLocation extends React.Component {
 
   render() {
     return (
-      <React.Fragment>
-        <TextField
-          id="newLocationName"
-          onChange={this.handleTextChange}
-          style={{ position: "absolute", top: "120px", left: "50%", width: "19.5%" }}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ position: "absolute", top: "120px", left: "70%", width: "10%" }}
-          onClick={this.handleOnClick}
-        >
-          + Location
-        </Button>
+      <Grid
+        container
+        spacing={1}
+        direction="row"
+        justify="flex-start"
+        alignItems="flex-start"
+        alignContent="stretch"
+        wrap="nowrap"
+      >
+        <Grid item xs={7}></Grid>
+        <Grid item container xs={5} direction="row" alignItems="center">
+          <Grid item xs={12} sm={6}>
+            <TextField id="newLocationName" onChange={this.handleTextChange} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Button variant="contained" color="primary" onClick={this.handleOnClick}>
+              + Location
+            </Button>
+          </Grid>
+        </Grid>
         {this.showAlertIfNeeded()}
-      </React.Fragment>
+      </Grid>
     );
   }
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-const VERSION = 6 // Apr 4, 2020, 5:12pm
+const VERSION = "5:22PM fix unlockbooking"
 
 const config = require('./config')
 const authenticator = require('./auth/authenticator')
@@ -13,6 +13,7 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const cors = require('cors');
+const featuremap = require('./controllers/FeatureMap');
 
 const httpsOptions = {
   key: fs.readFileSync('privkey.pem'),
@@ -36,10 +37,11 @@ app.use(cors())
 
 // To test if the right AWS version is deployed
 app.get('/version', function (req, res) {
-  res.send(VERSION.toString())
+  res.send(VERSION);
 })
 
 app.use(fileUpload());
+app.get('/featuremap', featuremap);
 
 // Overrides:
 app.use(express.static("public"));

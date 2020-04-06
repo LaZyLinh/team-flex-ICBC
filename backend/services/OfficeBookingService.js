@@ -70,7 +70,7 @@ class OfficeBookingService {
           let bookingInfo = {
             startDate: new Date(booking2.StartDate).toLocaleDateString(),
             endDate: new Date(booking2.EndDate).toLocaleDateString(),
-            workspaceId: booking.WorkspaceId
+            workspaceId: booking2.WorkspaceId
           };
 
           emailService.sendEmailDeleteBookingBooker(bookerEmail.Email, bookingInfo);
@@ -484,7 +484,7 @@ class OfficeBookingService {
       try {
         const result = await knexHelper(createBookingQuery);
         return {
-          bookingId: result.InsertId,
+          bookingId: result.insertId,
           startDate, endDate,
         }
       } catch (e) {
@@ -512,7 +512,7 @@ class OfficeBookingService {
   static async unlockBooking({ id }) {
     try {
       const selectQuery = `SELECT * FROM booking WHERE BookingId=${id}`
-      const rawResults = knexHelper(selectQuery)
+      const rawResults = await knexHelper(selectQuery)
       if (rawResults.length === 0) {
         throw {
           message: "ID doesn't exist.",
@@ -562,7 +562,7 @@ class OfficeBookingService {
   static async getFeaturesByWorkspaceId(workspaceId) {
     try {
       const query = `select distinct f.FeatureName from workspace w
-                    inner join workspacefeature wf on w.WorkspaceId = wf.WorkspaceId
+                    inner join workspaceFeature wf on w.WorkspaceId = wf.WorkspaceId
                     inner join feature f on f.FeatureId = wf.FeatureId
                     where w.WorkspaceId = '${workspaceId}'`
       const rows = (await knex.raw(query))[0];

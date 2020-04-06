@@ -1,12 +1,19 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
 import { withStyles } from "@material-ui/core";
 import Select from "@material-ui/core/Select";
 import Link from "@material-ui/core/Link";
+import Slide from "@material-ui/core/Slide";
+import Modal from "@material-ui/core/Modal";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
-import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import Checkbox from "@material-ui/core/Checkbox";
 import Typography from "@material-ui/core/Typography";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
@@ -16,13 +23,15 @@ import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { ArrowForwardOutlined, YoutubeSearchedFor } from "@material-ui/icons";
 import { GiDesk } from "react-icons/gi";
-import Button from "@material-ui/core/Button"; // only needs to be imported once
-import EnhancedTable from "./Table.js";
+import Button from "@material-ui/core/Button";
 import OfficeBookingApi from "../api/OfficeBookingApi";
-import { createData } from "./Table";
+import ApiClient from "../ApiClient";
+import featureMap from "../api/FeatureMap";
 import { DateRange } from "react-date-range";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+
 import styles from "../styles/Booking.styles";
 import logo from "../assets/home_logo.png";
 
@@ -30,6 +39,7 @@ class Booking extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      staffId: "",
       location: "",
       locations: [],
       floor: "",
@@ -38,14 +48,44 @@ class Booking extends React.Component {
       startDate: new Date(),
       endDate: new Date(),
       features: [],
-      packages: []
+      fm: {},
+      packages: [],
+      bookings: [],
+      openDialog: false,
+      error: false,
+      errorText: "",
+      redirectHome: false,
+      time: {},
+      seconds: 1200,
+      confirmed: false,
+      imgUrl: "",
+      openModal: false,
+      updateTime: new Date()
     };
+    this.timer = 0;
   }
 
   componentDidMount = async () => {
-    const reqs = [OfficeBookingApi.getLocations(), OfficeBookingApi.getFeatures()];
+    const reqs = [
+      OfficeBookingApi.getLocations(),
+      OfficeBookingApi.getFeatures(),
+      featureMap(),
+      ApiClient.instance.callApi(
+        "/auth/user",
+        "POST",
+        {},
+        {},
+        { Authorization: "Bearer " + this.props.accountInfo.jwtIdToken },
+        { Email: this.props.accountInfo.account.userName },
+        null,
+        [],
+        ["application/x-www-form-urlencoded"],
+        ["application/json"],
+        Object,
+        null
+      )
+    ];
     const results = await Promise.all(reqs);
-    console.log(results[1]);
     const features = results[1].map(f => {
       return {
         name: f,
@@ -54,82 +94,125 @@ class Booking extends React.Component {
     });
     this.setState({
       locations: results[0],
-      features
+      features,
+      fm: results[2],
+      staffId: results[3].StaffId
     });
     const sdStr = this.state.startDate.toISOString().slice(0, 10);
     const edStr = this.state.endDate.toISOString().slice(0, 10);
     const res = await OfficeBookingApi.getPackages(sdStr, edStr);
     this.setState({ packages: res });
-    console.log(res);
   };
 
-  handleDateChange = dateRange => {
-    this.setState({
-      startDate: dateRange.selection.startDate,
-      endDate: dateRange.selection.endDate
-    });
-    const sdStr = dateRange.selection.startDate.toISOString().slice(0, 10);
-    const edStr = dateRange.selection.endDate.toISOString().slice(0, 10);
-    let packages;
-    if (this.state.floor) {
-      packages = OfficeBookingApi.getPackages(sdStr, edStr, {
-        floorIds: this.state.floors.filter(f => f.floorId === this.state.floor.floorId)
-      });
-    } else if (this.state.location) {
-      packages = OfficeBookingApi.getPackages(sdStr, edStr, {
-        floorIds: this.state.floors.map(f => f.floorId)
-      });
-    } else {
-      packages = OfficeBookingApi.getPackages(sdStr, edStr);
-    }
-    this.setState({ packages });
+  handleDateChange = async dateRange => {
+    this.setState(
+      {
+        startDate: dateRange.selection.startDate,
+        endDate: dateRange.selection.endDate
+      },
+      async () => {
+        await this.updatePackages();
+      }
+    );
   };
 
   handleSelectLocation = async event => {
     this.setState({ location: event.target.value, floor: "", floorId: 0 });
     const floors = await OfficeBookingApi.getFloors({ location: event.target.value });
     this.setState({ floors });
-    const sdStr = this.state.startDate.toISOString().slice(0, 10);
-    const edStr = this.state.endDate.toISOString().slice(0, 10);
-    const packages = await OfficeBookingApi.getPackages(sdStr, edStr, {
-      floorIds: floors.map(f => f.floorId)
-    });
-    this.setState({ packages });
+    await this.updatePackages();
   };
 
   handleSelectFloor = async (event, child) => {
     for (const floor of this.state.floors) {
       if (parseInt(child.key) === floor.floorId) {
         this.setState({ floor: `${floor.prefix} Floor ${floor.floorNo}`, floorId: floor.floorId });
-        const sdStr = this.state.startDate.toISOString().slice(0, 10);
-        const edStr = this.state.endDate.toISOString().slice(0, 10);
-        const packages = await OfficeBookingApi.getPackages(sdStr, edStr, {
-          floorIds: [floor.floorId]
-        });
-        this.setState({ packages });
+        await this.updatePackages();
       }
     }
   };
 
   handleCheckFeature = async event => {
-    for (const feature of this.state.features) {
-      this.setState(
-        {
-          features: this.state.features.map(f => {
-            if (feature.name === event.target.value) {
-              return {
-                name: f.name,
-                checked: !f.checked
-              };
-            } else {
-              return f;
-            }
-          })
-        },
-        async () => {
-          await this.updatePackages();
-        }
-      );
+    this.setState(
+      {
+        features: this.state.features.map(f => {
+          if (f.name === event.target.value) {
+            return {
+              name: f.name,
+              checked: !f.checked
+            };
+          } else {
+            return f;
+          }
+        })
+      },
+      async () => {
+        await this.updatePackages();
+      }
+    );
+  };
+
+  handleClickBooking = async event => {
+    const reqs = [];
+    const i = event.currentTarget.dataset.id - 1;
+    for (const avail of this.state.packages[i]) {
+      reqs.push(OfficeBookingApi.lockBooking(avail.availabilityId, this.state.staffId, avail.startDate, avail.endDate));
+    }
+    try {
+      const results = await Promise.all(reqs);
+      this.setState({
+        bookings: results,
+        openDialog: true
+      });
+    } catch (err) {
+      this.setState({ error: true, errorText: "Could not book. Try again." });
+      await this.updatePackages();
+    }
+  };
+
+  handleClickFloorPlan = async event => {
+    const i = event.currentTarget.dataset.id;
+    const floorId = ((parseInt(i) % 4) + 1).toString();
+
+    this.setState({
+      openModal: true,
+      imgUrl: `https://icbcflexwork.me:8080/floorplans/${floorId}.jpg`
+    });
+  };
+
+  handleCloseFloorPlan = event => {
+    this.setState({
+      openModal: false,
+      imgUrl: ""
+    });
+  };
+
+  handleCancelBooking = async event => {
+    const reqs = [];
+    for (const booking of this.state.bookings) {
+      reqs.push(OfficeBookingApi.unlockBooking(booking.bookingId));
+    }
+    try {
+      await Promise.all(reqs);
+      clearInterval(this.timer);
+      this.timer = 0;
+      this.setState({ openDialog: false, booking: [], time: {}, seconds: 1200 });
+    } catch (err) {
+      this.refresh();
+      console.error(`Couldn't cancel booking ${err}`);
+    }
+  };
+
+  handleConfirmBooking = async event => {
+    const reqs = [];
+    for (const booking of this.state.bookings) {
+      reqs.push(OfficeBookingApi.createBooking(booking.bookingId));
+    }
+    try {
+      await Promise.all(reqs);
+      this.setState({ openDialog: false, booking: [], confirmed: true });
+    } catch (err) {
+      console.error(`Couldn't cancel booking ${err}`);
     }
   };
 
@@ -139,7 +222,7 @@ class Booking extends React.Component {
     const features = [];
     for (const f of this.state.features) {
       if (f.checked) {
-        features.push(f.name);
+        features.push(this.state.fm[f.name]);
       }
     }
     let floorIds = [];
@@ -148,8 +231,12 @@ class Booking extends React.Component {
     } else if (this.state.location) {
       floorIds = this.state.floors.map(f => f.floorId);
     }
-    const packages = await OfficeBookingApi.getPackages(sdStr, edStr, { floorIds, features });
-    this.setState({ packages });
+    const reqTime = new Date();
+    this.setState({ updateTime: reqTime });
+    const results = await OfficeBookingApi.getPackagesTimed(reqTime, sdStr, edStr, { floorIds, features });
+    if (results.time.getTime() === this.state.updateTime.getTime()) {
+      this.setState({ packages: results.packages });
+    }
   };
 
   getLocationItems = () => {
@@ -178,67 +265,169 @@ class Booking extends React.Component {
     return menuItems;
   };
 
+  startTimer = () => {
+    if (this.timer === 0 && this.state.seconds > 0) {
+      this.timer = setInterval(this.countDown, 1000);
+    }
+  };
+
+  countDown = () => {
+    // Remove one second, set state so a re-render happens.
+    let seconds = this.state.seconds - 1;
+    this.setState({
+      time: this.secondsToTime(seconds),
+      seconds: seconds
+    });
+
+    if (seconds === 0) {
+      clearInterval(this.timer);
+      this.refresh();
+    }
+  };
+
+  secondsToTime = secs => {
+    let hours = Math.floor(secs / (60 * 60));
+
+    let divisor_for_minutes = secs % (60 * 60);
+    let minutes = Math.floor(divisor_for_minutes / 60);
+
+    let divisor_for_seconds = divisor_for_minutes % 60;
+    let seconds = Math.ceil(divisor_for_seconds);
+
+    let obj = {
+      h: hours,
+      m: minutes,
+      s: seconds
+    };
+    return obj;
+  };
+
+  redirectIfConfirmed = () => {
+    if (this.state.confirmed) {
+      return <Redirect to={{ pathname: "/finished" }} />;
+    }
+  };
+
+  refresh = () => {
+    window.location.reload();
+  };
+
   render = () => {
     const { classes } = this.props;
-
     return (
-      <div>
-        <div className={classes.header}>
-          <Link href="/">
-            <img className={classes.logo} src={logo} alt="Logo"></img>
-          </Link>
-          <div className={classes.title}>BOOKING</div>
-          <GiDesk className={classes.icon} />
-        </div>
-        <div className={classes.leftPanel}>
-          <DateRange
-            scroll={{ enabled: true, monthHeight: 190 }}
-            className={`${classes.calendar}`}
-            direction="vertical"
-            fixedHeight={false}
-            editableDateInputs={false}
-            onChange={this.handleDateChange}
-            moveRangeOnFirstSelection={false}
-            minDate={new Date()}
-            ranges={[
-              {
-                startDate: this.state.startDate,
-                endDate: this.state.endDate,
-                key: "selection",
-                color: "#0048a8d9"
-              }
-            ]}
-          />
-          <FormControl variant="filled" className={classes.locationInput}>
-            <InputLabel id="location">Location</InputLabel>
-            <Select labelId="location" value={this.state.location} onChange={this.handleSelectLocation}>
-              {this.getLocationItems()}
-            </Select>
-          </FormControl>
-          <FormControl variant="filled" className={classes.floorInput}>
-            <InputLabel id="floor">Floor</InputLabel>
-            <Select labelId="floor" value={this.state.floor} onChange={this.handleSelectFloor}>
-              {this.getFloorItems()}
-            </Select>
-          </FormControl>
-          <div className={classes.featureSelection}>
-            {this.state.features.map((feature, i) => {
-              console.log(feature);
-              return (
-                <FormControlLabel
-                  className={`${classes.featureLabel}`}
-                  control={
-                    <Checkbox value={feature.name} onChange={this.handleCheckFeature} checked={feature.checked} />
-                  }
-                  label={feature.name}
-                  key={i}
-                />
-              );
-            })}
+      this.redirectIfConfirmed() || (
+        <div>
+          <div className={classes.header}>
+            <Link href="/">
+              <img className={classes.logo} src={logo} alt="Logo"></img>
+            </Link>
+            <div className={classes.title}>BOOKING</div>
+            <GiDesk className={classes.icon} />
           </div>
-          <div className={classes.pkgsContainer}>{this.renderPackages(classes)}</div>
+          <div className={classes.leftPanel}>
+            <DateRange
+              scroll={{ enabled: true, monthHeight: 190 }}
+              className={`${classes.calendar}`}
+              direction="vertical"
+              fixedHeight={false}
+              editableDateInputs={false}
+              onChange={this.handleDateChange}
+              moveRangeOnFirstSelection={false}
+              minDate={new Date()}
+              ranges={[
+                {
+                  startDate: this.state.startDate,
+                  endDate: this.state.endDate,
+                  key: "selection",
+                  color: "#0048a8d9"
+                }
+              ]}
+            />
+            <FormControl variant="filled" className={classes.locationInput}>
+              <InputLabel id="location">Location</InputLabel>
+              <Select labelId="location" value={this.state.location} onChange={this.handleSelectLocation}>
+                {this.getLocationItems()}
+              </Select>
+            </FormControl>
+            <FormControl variant="filled" className={classes.floorInput}>
+              <InputLabel id="floor">Floor</InputLabel>
+              <Select labelId="floor" value={this.state.floor} onChange={this.handleSelectFloor}>
+                {this.getFloorItems()}
+              </Select>
+            </FormControl>
+            <div className={classes.featureSelection}>
+              {this.state.features.map((feature, i) => {
+                return (
+                  <FormControlLabel
+                    className={`${classes.featureLabel}`}
+                    control={
+                      <Checkbox value={feature.name} onChange={this.handleCheckFeature} checked={feature.checked} />
+                    }
+                    label={feature.name}
+                    key={i}
+                  />
+                );
+              })}
+            </div>
+            <div className={classes.pkgsContainer}>{this.renderPackages(classes)}</div>
+          </div>
+          {this.renderConfirmationDailog(classes)}
+          {this.renderFloorPlanModal(classes)}
         </div>
-      </div>
+      )
+    );
+  };
+
+  renderFloorPlanModal = classes => {
+    return (
+      <Modal
+        open={this.state.openModal}
+        onClose={this.handleCloseFloorPlan}
+        style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
+        <Zoom>
+          <img src={this.state.imgUrl} alt="Floor Plan" height="500" width="700"></img>
+        </Zoom>
+      </Modal>
+    );
+  };
+
+  renderConfirmationDailog = classes => {
+    if (this.state.openDialog) {
+      this.startTimer();
+    }
+    return (
+      <Dialog
+        TransitionComponent={Transition}
+        open={this.state.openDialog}
+        onClose={this.handleCancelBooking}
+        PaperProps={{
+          style: {
+            backgroundColor: "#EBF2FF"
+          }
+        }}
+      >
+        <DialogTitle className={classes.dialogTitle} disableTypography={true}>
+          Confirm Booking
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText className={classes.dialogContext}>
+            <div className={`${classes.timerText}`}>
+              {"Confirm your booking in "}
+              {this.state.time.m < 10 ? `0${this.state.time.m}` : this.state.time.m}:
+              {this.state.time.s < 10 ? `0${this.state.time.s}` : this.state.time.s}
+            </div>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleConfirmBooking} className={classes.dialogButtons} color="primary">
+            Ok
+          </Button>
+          <Button onClick={this.handleCancelBooking} className={classes.dialogButtons} color="primary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     );
   };
 
@@ -265,14 +454,19 @@ class Booking extends React.Component {
                   <strong>End:</strong> {availability.endDate}
                 </Typography>
                 <Typography className={classes.pos}>
-                  <strong>Workspace:</strong> ${availability.workspaceId}
+                  <strong>Location: </strong>
+                  {`${availability.floor.city} Building ${availability.floor.building} Floor ${availability.floor.floorNo}`}
+                  <br />
+                  <strong>Workspace:</strong> {availability.workspaceId}
                 </Typography>
                 <Typography variant="body2" component="p" color="textSecondary">
                   <strong>Owner comments:</strong> {availability.comment || "None"}
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button size="small">Floor Plan</Button>
+                <Button size="small" onClick={this.handleClickFloorPlan} data-id={availability.floor.floorId}>
+                  Floor Plan
+                </Button>
               </CardActions>
             </Card>
           </ExpansionPanelDetails>
@@ -289,8 +483,11 @@ class Booking extends React.Component {
             </div>
             <Button
               style={{ position: "absolute", right: "8%", borderColor: "rgb(172, 223, 249)" }}
+              onClick={this.handleClickBooking}
               variant="outlined"
               color="primary"
+              data-id={i}
+              disabled={!this.state.staffId}
             >
               Place booking
             </Button>
@@ -304,152 +501,8 @@ class Booking extends React.Component {
   };
 }
 
-class Booking2 extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedLocation: "",
-      locations: [],
-      checkingFeatures: [],
-      availabilities: [],
-      hasAvail: false
-    };
-    this.handleInputChange = this.handleInputChange.bind(this);
-  }
-
-  async componentDidMount() {
-    const proms = [
-      OfficeBookingApi.getLocations(),
-      OfficeBookingApi.getFeatures(),
-      OfficeBookingApi.getTopAvailabilities(20)
-    ];
-    const results = await Promise.all(proms);
-    const rows = [];
-    for (const avail of results[2]) {
-      rows.push(createData(avail.workspaceName, "TV", avail.startDate.toString(), avail.endDate.toString()));
-    }
-    this.setState({
-      selectedLocation: "",
-      locations: results[0],
-      checkingFeatures: results[1].map(featureName => {
-        return { name: featureName, checked: false };
-      }),
-      availabilities: rows,
-      hasAvail: true
-    });
-  }
-
-  availabilityItems() {
-    let availabilities = [];
-
-    return availabilities;
-  }
-
-  onSelectLocation = event => {
-    this.setState({ selectedLocation: event.target.value });
-  };
-
-  locationSelectMenuItems() {
-    let menuItems = [];
-    let i = 0;
-    for (const location of this.state.locations) {
-      menuItems.push(
-        <MenuItem value={location} key={i++}>
-          {location}
-        </MenuItem>
-      );
-    }
-    return menuItems;
-  }
-
-  handleInputChange(event) {
-    this.setState({
-      checkingFeatures: this.state.checkingFeatures.map(cf => {
-        if (cf.name === event.target.value) {
-          return { name: cf.name, checked: !cf.checked };
-        } else {
-          return cf;
-        }
-      })
-    });
-  }
-
-  featureSelectionItems() {
-    let featureItems = [];
-    let i = 0;
-    for (const feature of this.state.checkingFeatures) {
-      featureItems.push(
-        <FormControlLabel
-          className={`${this.props.classes.featureLabel}`}
-          control={
-            <Checkbox
-              checked={feature.checked}
-              onChange={this.handleInputChange}
-              value={feature.name}
-              style={{
-                color: "#002D7D"
-              }}
-            />
-          }
-          label={feature.name}
-          key={i++}
-        />
-      );
-    }
-    return featureItems;
-  }
-
-  // Populating the right panel based on this.state.hasAvail
-  rightPanel(classes) {
-    if (this.state.hasAvail) {
-      return <EnhancedTable rows={this.state.availabilities} />;
-    } else {
-      return (
-        <React.Fragment>
-          <YoutubeSearchedFor className={`${classes.searchIcon}`}></YoutubeSearchedFor>
-          <div className={`${classes.noAvailText}`}> No office available. Try again later!</div>
-        </React.Fragment>
-      );
-    }
-  }
-
-  render() {
-    const { classes } = this.props;
-
-    return (
-      <div className={`${classes.container}`}>
-        <div className={`${classes.rightPanel}`}> {this.rightPanel(classes)}</div>
-        {/* Reason for putting bottom bar here: so the left panel goes on top */}
-        <div className={`${classes.bottomBar}`}>
-          <Button className={`${classes.bottomBtn}`} variant="contained" href="/confirm">
-            Next
-          </Button>
-          <ArrowForwardOutlined className={`${classes.arrow1}`}></ArrowForwardOutlined>
-        </div>
-        <div className={`${classes.leftPanel}`}>
-          <div className={`${classes.locationPickerBg}`}></div>
-          {/* Location Selection */}
-          <FormControl color="primary" className={`${classes.locationSelect}`}>
-            <InputLabel style={{ fontSize: "20px", color: "darkblue" }}>Office location</InputLabel>
-            <Select
-              className={`${classes.locationSelectDropdown}`}
-              id="standard-basic"
-              variant="standard"
-              value={this.selectedLocation}
-              onChange={this.onSelectLocation}
-            >
-              {this.locationSelectMenuItems()}
-            </Select>
-          </FormControl>
-
-          {/*Feature Selection*/}
-          <FormControl component="fieldset" className={classes.featureSelection}>
-            <FormGroup>{this.featureSelectionItems()}</FormGroup>
-          </FormControl>
-        </div>
-      </div>
-    );
-  }
-}
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export default withStyles(styles)(Booking);

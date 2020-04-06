@@ -1,21 +1,25 @@
 /* eslint-disable react/jsx-pascal-case */
 import React from "react";
-import { TextField, withStyles } from "@material-ui/core";
-import SearchIcon from "@material-ui/icons/Search";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import OfficeBookingApi from "../api/OfficeBookingApi";
-import FormDialog from "./display/Popup_window";
 import Display_Square from "./display/Display_Square";
-import AddLocation from "./admin/AddLocation";
+import logo from "../assets/house_flexwork_logo.png";
+import Link from "@material-ui/core/Link";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
 
 import { getLocationNames } from "../api/AdminApi";
+import featureMap from "../api/FeatureMap";
+
+import AddLocation from "./admin/AddLocation";
+import AddFeature from "./admin/AddFeature";
+import EditFeatures from "./admin/EditFeatures";
 
 class AdminPage extends React.Component {
   constructor() {
     super();
     this.state = {
       locations: [],
-      windowOpen: false
+      featureMap: {}
     };
   }
 
@@ -24,70 +28,90 @@ class AdminPage extends React.Component {
   };
 
   async componentDidMount() {
-    this.setState({ locations: await getLocationNames() });
+    await this.updateLocations();
+    await this.updateFeatures();
   }
 
   updateLocations = async () => {
     this.setState({ locations: await getLocationNames() });
   };
 
+  updateFeatures = async () => {
+    this.setState({ featureMap: await featureMap() });
+  };
+
   render() {
-    const { classes } = this.props;
     return (
-      <React.Fragment>
-        <div className={`${classes.headerStyle}`}>
-          <h1 style={{ color: "white", position: "absolute", left: "2.78%", fontSize: 48 }}>
-            Admin Page - Manage Locations
-          </h1>
-        </div>
+      <Grid container spacing={1} style={{ height: "100%", width: "100%" }} direction="column" alignItems="center">
+        <Grid item style={{ height: "10px", width: "100%", backgroundColor: "#002D7D" }}></Grid>
+        {/* Header bar */}
+        <Grid
+          item
+          container
+          xs={12}
+          style={{ backgroundColor: "#002D7D", height: "110px" }}
+          spacing={1}
+          alignItems="center"
+        >
+          <Grid item xs={1}></Grid>
+          <Grid item xs={9}>
+            <Typography variant="h3" style={{ color: "white" }}>
+              Admin Page
+            </Typography>
+          </Grid>
+          <Grid item xs={2}>
+            <Link href="/">
+              <img src={logo} style={{ height: "80px" }} alt="Logo"></img>
+            </Link>
+          </Grid>
+        </Grid>
+
+        {/* Spacing */}
+        <Grid item style={{ height: "20px" }} />
+
+        <Grid item>
+          <Box fontSize="h4.fontSize" fontWeight="fontWeightMedium" fontFamily="fontFamily" letterSpacing={2}>
+            Manage Locations
+          </Box>
+        </Grid>
+
+        {/* Spacing */}
+        <Grid item style={{ height: "20px" }} />
+
+        {/* Add Location */}
         <AddLocation getLocations={this.getLocations} updateLocations={this.updateLocations} />
-        <div className={`${classes.showLocationsStyle}`}>
-          <Display_Square />
-        </div>
-      </React.Fragment>
+
+        {/* Spacing */}
+        <Grid item style={{ height: "20px" }} />
+
+        {/* Location Blocks */}
+        <Display_Square locations={this.state.locations} updateLocations={this.updateLocations} />
+
+        {/* Spacing */}
+        <Grid item style={{ height: "30px" }} />
+        <hr style={{ height: "5px", width: "80%" }}></hr>
+        <Grid item style={{ height: "20px" }} />
+
+        {/* Edit Features */}
+        <Grid item>
+          <Box fontSize="h4.fontSize" fontWeight="fontWeightMedium" fontFamily="fontFamily" letterSpacing={2}>
+            Add/Delete Features
+          </Box>
+        </Grid>
+        <AddFeature
+          style={{ height: "100%", width: "100%" }}
+          featureMap={this.state.featureMap}
+          updateFeaturesCallback={this.updateFeatures}
+        />
+        <Grid item style={{ height: "30px" }} />
+        <EditFeatures
+          style={{ height: "100%", width: "100%" }}
+          featureMap={this.state.featureMap}
+          updateFeaturesCallback={this.updateFeatures}
+        />
+      </Grid>
     );
   }
 }
-const muiStyles = {
-  headerStyle: {
-    position: "absolute",
-    left: "0px",
-    right: "0px",
-    top: "0px",
-    height: "100px",
-    backgroundColor: "#002D7D"
-  },
-  searchCellStyle: {
-    position: "absolute",
-    left: "0px",
-    right: "0px",
-    top: "100px",
-    height: "70px",
-    backgroundColor: "#DAE1EC"
-  },
-  searchBarStyle: {
-    position: "absolute",
-    left: "2.78%",
-    top: "20px",
-    height: "38px",
-    right: "82%",
-    backgroundColor: "white",
-    borderRadius: "10px"
-  },
-  addLocationStyle: {
-    backgroundColor: "#0048A8",
-    position: "absolute",
-    left: "82%",
-    right: "2%",
-    height: "55px",
-    top: "7px",
-    borderRadius: "20px"
-  },
-  showLocationsStyle: {
-    position: "absolute",
-    top: "30%",
-    width: "100%"
-  }
-};
 
-export default withStyles(muiStyles)(AdminPage);
+export default AdminPage;
