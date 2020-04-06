@@ -346,6 +346,11 @@ class OfficeBookingApi {
    * @param {String} response The complete HTTP response.
    */
 
+  async getPackagesTimed(time, startDate, endDate, opts) {
+    const packages = await this.getPackages(startDate, endDate, opts);
+    return { packages, time };
+  }
+
   /**
    * Finds Availabilities or Booking Suggestion Packages
    * Finds Availabilities, filtered by start and end dates, optional location (desired floor IDs), and optional required features. will use multiple eligible offices to suggest a booking package if a single desk is not available for the duration.
