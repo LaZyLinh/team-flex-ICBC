@@ -361,7 +361,7 @@ export default function WorkspaceTable(props) {
                                                             console.log("click yes");
                                                             try {
                                                                 await deleteWorkspace(row.wsId);
-                                                                // props.reloadCallback()
+                                                                props.reloadCallback()
                                                             }
                                                             catch (err) {
                                                                 console.log(err);
