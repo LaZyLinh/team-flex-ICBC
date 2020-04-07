@@ -4,7 +4,6 @@ import Home from "./Home";
 import Lending from "./Lending";
 import Booking from "./Booking";
 import Withdraw from "./Withdraw";
-import ConfirmBooking from "./ConfirmBooking";
 import Finished from "./Finished";
 import EditFloor from "./EditFloor";
 import AdminPage from "./AdminPage";
@@ -16,9 +15,6 @@ function App(props) {
       <div>
         <Route exact path="/lending">
           <Lending accountInfo={props.accountInfo} />
-        </Route>
-        <Route exact path="/confirm">
-          <ConfirmBooking accountInfo={props.accountInfo} />
         </Route>
         <Route exact path="/finished">
           <Finished accountInfo={props.accountInfo} />
@@ -44,12 +40,13 @@ function App(props) {
         </Route>
         <Route
           path="/editWorkspace/:floorId"
-          component={({ match }) => <EditWorkspace floorId={match.params.floorId} />}/>
+          component={({ match }) => <EditWorkspace floorId={match.params.floorId} />}
+        />
         <Route exact path="/editWs">
           <EditWorkspace />
         </Route>
       </div>
-    </Router >
+    </Router>
   );
 }
 

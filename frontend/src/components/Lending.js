@@ -261,7 +261,7 @@ class Lending extends React.Component {
         {this.renderConfirmationDailog(classes)}
         <Snackbar open={this.state.error} autoHideDuration={6000} onClose={this.handleCloseAlert}>
           <Alert severity="error" onClose={this.handleCloseAlert}>
-            There was an error confirming your availability.
+            This office has already been lent for the selected period.
           </Alert>
         </Snackbar>
         <Snackbar open={this.state.warning} autoHideDuration={6000} onClose={this.handleCloseWarning}>
