@@ -13,6 +13,16 @@ import Slide from "@material-ui/core/Slide";
 import TextField from "@material-ui/core/TextField";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
+import Modal from "@material-ui/core/Modal";
+import {
+  Magnifier,
+  GlassMagnifier,
+  MagnifierPreview,
+  SideBySideMagnifier,
+  PictureInPictureMagnifier,
+  MOUSE_ACTIVATION,
+  TOUCH_ACTIVATION
+} from "react-image-magnifiers";
 
 class EditWorkspace extends React.Component {
   constructor(props) {
@@ -23,6 +33,7 @@ class EditWorkspace extends React.Component {
       workspaces: [],
       deleteButtonClicked: false,
       editWorkspace: [],
+      openModal: false,
       errorMsg: ""
     };
   }
@@ -164,6 +175,16 @@ class EditWorkspace extends React.Component {
     }
   };
 
+  openModal = () => {
+    console.trace();
+    this.setState({ openModal: true });
+  };
+
+  handleCloseFloorPlan = () => {
+    console.trace();
+    this.setState({ openModal: false });
+  };
+
   render() {
     const { classes } = this.props;
 
@@ -173,13 +194,32 @@ class EditWorkspace extends React.Component {
           <h1 style={{ color: "white", position: "absolute", left: "2.78%", top: "20px" }}>Edit Workspace</h1>
 
           <div className={`${classes.imgBox}`}>
-            <Zoom>
-              <img
-                className={`${classes.floorplanImg}`}
-                src={`https://icbcflexwork.me:8080/floorplans/${this.state.floorId}.jpg`}
-                alt="No FloorPlan found"
-              />
-            </Zoom>
+            {/* <Zoom> */}
+            <img
+              className={`${classes.floorplanImg}`}
+              src={`https://icbcflexwork.me:8080/floorplans/${this.state.floorId}.jpg`}
+              alt="No FloorPlan found"
+              onClick={this.openModal}
+            />
+            {/* </Zoom> */}
+
+            <Modal
+              open={this.state.openModal}
+              onClose={this.handleCloseFloorPlan}
+              style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+            >
+              <div style={{ width: "1350px", height: "900px" }}>
+                <GlassMagnifier
+                  imageSrc={`https://icbcflexwork.me:8080/floorplans/${this.state.floorId}.jpg`}
+                  imageAlt="Floor Plan"
+                  allowOverflow="true"
+                  square="true"
+                  magnifierBorderColor="black"
+                  magnifierBorderSize="3"
+                  magnifierSize="15%"
+                />
+              </div>
+            </Modal>
           </div>
 
           {/* <Button className={`${classes.uploadCSVBut}`}>Upload New Work Station CVS File</Button> */}

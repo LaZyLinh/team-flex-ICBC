@@ -14,7 +14,17 @@ import Popup from "reactjs-popup";
 import logo from "../assets/home_logo.png";
 import Link from "@material-ui/core/Link";
 import Zoom from "react-medium-image-zoom";
+import Modal from "@material-ui/core/Modal";
 import "react-medium-image-zoom/dist/styles.css";
+import {
+  Magnifier,
+  GlassMagnifier,
+  MagnifierPreview,
+  SideBySideMagnifier,
+  PictureInPictureMagnifier,
+  MOUSE_ACTIVATION,
+  TOUCH_ACTIVATION
+} from "react-image-magnifiers";
 
 // router.post("/upload-floor-data", AdminFloorService.uploadFloorData);
 // backend has this which takes a (spread sheet file) and puts the whole floor's data into the database
@@ -32,7 +42,8 @@ class EditFloor extends React.Component {
       city: props.locationName,
       locations: [],
       windowOpen: false,
-      openDialog: false
+      openDialog: false,
+      openModal: false // for opening zoomable image
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -140,6 +151,16 @@ class EditFloor extends React.Component {
       });
   };
 
+  openModal = () => {
+    console.trace();
+    this.setState({ openModal: true });
+  };
+
+  handleCloseFloorPlan = () => {
+    console.trace();
+    this.setState({ openModal: false });
+  };
+
   render() {
     const { classes } = this.props;
 
@@ -153,14 +174,32 @@ class EditFloor extends React.Component {
         </div>
         <div className={`${classes.split}`}>
           <div className={`${classes.left}`}>
-            <Zoom>
-              <img
-                className={`${classes.floorplanImg}`}
-                src={`https://icbcflexwork.me:8080/floorplans/${this.state.currentFloorId}.jpg`}
-                width="40%"
-                alt="No FloorPlan found"
-              />
-            </Zoom>
+            {/* <Zoom> */}
+            <img
+              className={`${classes.floorplanImg}`}
+              src={`https://icbcflexwork.me:8080/floorplans/${this.state.currentFloorId}.jpg`}
+              width="40%"
+              alt="No FloorPlan found"
+              onClick={this.openModal}
+            />
+            {/* </Zoom> */}
+            <Modal
+              open={this.state.openModal}
+              onClose={this.handleCloseFloorPlan}
+              style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+            >
+              <div style={{ width: "1350px", height: "900px" }}>
+                <GlassMagnifier
+                  imageSrc={`https://icbcflexwork.me:8080/floorplans/${this.state.currentFloorId}.jpg`}
+                  imageAlt="Floor Plan"
+                  allowOverflow="true"
+                  square="true"
+                  magnifierBorderColor="black"
+                  magnifierBorderSize="3"
+                  magnifierSize="15%"
+                />
+              </div>
+            </Modal>
             <h3>
               {this.state.currentLocation} Floor {this.state.currentFloorNo}
             </h3>
