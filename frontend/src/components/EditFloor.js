@@ -77,7 +77,7 @@ class EditFloor extends React.Component {
     console.log(fidx);
     if (
       window.confirm(
-        `Are you sure you wish to delete Floor ${this.state.allFloors[fidx].FloorId} in ${this.state.allFloors[fidx].Location}? All workspaces and Lendings on that floor will be deleted.`
+        `Are you sure you wish to delete Floor ${this.state.allFloors[fidx].FloorNo} in ${this.state.allFloors[fidx].Location}? All workspaces and Lendings on that floor will be deleted.`
       )
     ) {
       console.log("click yes");
