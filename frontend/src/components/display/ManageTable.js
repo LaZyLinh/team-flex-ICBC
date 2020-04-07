@@ -22,7 +22,7 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 import { withStyles } from "@material-ui/core/styles";
 import { confirmAlert } from "react-confirm-alert";
 import OfficeBookingApi from "../../api/OfficeBookingApi";
-import NoBooking from "../display/NoBookingFound"
+import NoBooking from "../display/NoBookingFound";
 
 const StyledTableCell = withStyles(theme => ({
   head: {
@@ -52,7 +52,6 @@ function descendingComparator(a, b, property) {
   return 0;
 }
 
-
 function getComparator(order, property) {
   return order == "desc"
     ? (a, b) => descendingComparator(a, b, property)
@@ -72,8 +71,7 @@ const headCells = [
   { id: "WSId", numeric: false, label: "Workspace Id" },
   { id: "sDate", label: "Start Date" },
   { id: "eDate", label: "End Date" },
-  { id: "Office Owner", label: "Office Owner" },
-  { id: "status", label: "Status" }
+  { id: "Office Owner", label: "Office Owner" }
 ];
 
 function EnhancedTableHead(props) {
@@ -131,13 +129,13 @@ const useToolbarStyles = makeStyles(theme => ({
   highlight:
     theme.palette.type === "light"
       ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
-        }
+        color: theme.palette.secondary.main,
+        backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+      }
       : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark
-        },
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.secondary.dark
+      },
   title: {
     flex: "1 1 100%"
   }
@@ -157,10 +155,10 @@ const EnhancedTableToolbar = props => {
           {numSelected} selected
         </Typography>
       ) : (
-        <Typography className={classes.title} variant="h6" id="tableTitle">
-          Nutrition
-        </Typography>
-      )}
+          <Typography className={classes.title} variant="h6" id="tableTitle">
+            Nutrition
+          </Typography>
+        )}
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
@@ -169,12 +167,12 @@ const EnhancedTableToolbar = props => {
           {/*</IconButton>*/}
         </Tooltip>
       ) : (
-        <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+          <Tooltip title="Filter list">
+            <IconButton aria-label="filter list">
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
+        )}
     </Toolbar>
   );
 };
@@ -224,16 +222,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function createData(officeLoc, WSId, sDate, eDate, officeOwner, status, bookingId) {
+function createData(officeLoc, WSId, sDate, eDate, officeOwner, bookingId) {
   if (sDate === undefined || eDate === undefined) return {};
   sDate = sDate.toString().substring(4, 15);
   eDate = eDate.toString().substring(4, 15);
-  if (status == 1) {
-    status = "active";
-  } else {
-    status = "inactive";
-  }
-  return { officeLoc, WSId, sDate, eDate, officeOwner, status, bookingId };
+  return { officeLoc, WSId, sDate, eDate, officeOwner, bookingId };
 }
 
 //  function reformatDate(originalDate) {
@@ -242,9 +235,7 @@ function createData(officeLoc, WSId, sDate, eDate, officeOwner, status, bookingI
 
 export default function ManageTables(props) {
   console.log(props.rows.length);
-  const rows = props.rows.map(r =>
-    createData(r.location, r.workspaceId, r.startDate, r.endDate, r.name, r.confirmed, r.bookingId)
-  );
+  const rows = props.rows.map(r => createData(r.location, r.workspaceId, r.startDate, r.endDate, r.name, r.bookingId));
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
@@ -303,7 +294,6 @@ export default function ManageTables(props) {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
-
     <div className={classes.root}>
       <Paper className={classes.paper}>
         {/*<EnhancedTableToolbar numSelected={selected.length} /> */}
@@ -365,17 +355,15 @@ export default function ManageTables(props) {
                         {row.eDate}
                       </TableCell>
                       <TableCell align="left" className={`${classes.rowText}`}>
-                        {row. officeOwner}
-                      </TableCell>
-                      <TableCell align="left" className={`${classes.rowText}`}>
-                        {row.status}
+                        {row.officeOwner}
                       </TableCell>
                       <TableCell>
-                        <DeleteIcon onClick={async ()=>{
-                          await OfficeBookingApi.cancelBooking(row.bookingId);
-                          window.location.reload(false);}
-                      } />
-
+                        <DeleteIcon
+                          onClick={async () => {
+                            await OfficeBookingApi.cancelBooking(row.bookingId);
+                            window.location.reload(false);
+                          }}
+                        />
                       </TableCell>
                     </StyledTableRow>
                   );
