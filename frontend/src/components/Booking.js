@@ -186,7 +186,7 @@ class Booking extends React.Component {
 
   handleClickFloorPlan = async event => {
     const i = event.currentTarget.dataset.id;
-    const floorId = ((parseInt(i) % 4) + 1).toString();
+    const floorId = parseInt(i);
 
     this.setState({
       openModal: true,
