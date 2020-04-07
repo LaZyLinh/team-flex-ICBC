@@ -30,7 +30,7 @@ const muiStyles = {
     color: "white"
   },
   btn: {
-    background: "#002D7D",
+    background: "rgba(0, 72, 168, 0.85)",
     borderRadius: "20px",
     textAlign: "center",
     height: "10vh",
