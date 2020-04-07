@@ -22,6 +22,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { withStyles } from "@material-ui/core/styles";
 import { confirmAlert } from "react-confirm-alert";
+import MapIcon from "@material-ui/icons/Map";
 
 function createData(officeLoc, WSId, sDate, eDate, officeOwner, status) {
   return { officeLoc, WSId, sDate, eDate, officeOwner, status };
@@ -131,6 +132,7 @@ function EnhancedTableHead(props) {
             </TableSortLabel>
           </TableCell>
         ))}
+        <TableCell className={`${classes.headText}`}>Floor Plan</TableCell>
         <TableCell className={`${classes.headText}`}>Delete</TableCell>
       </TableRow>
     </TableHead>
@@ -155,13 +157,13 @@ const useToolbarStyles = makeStyles(theme => ({
   highlight:
     theme.palette.type === "light"
       ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
-        }
+        color: theme.palette.secondary.main,
+        backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+      }
       : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark
-        },
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.secondary.dark
+      },
   title: {
     flex: "1 1 100%"
   }
@@ -181,10 +183,10 @@ const EnhancedTableToolbar = props => {
           {numSelected} selected
         </Typography>
       ) : (
-        <Typography className={classes.title} variant="h6" id="tableTitle">
-          Nutrition
+          <Typography className={classes.title} variant="h6" id="tableTitle">
+            Nutrition
         </Typography>
-      )}
+        )}
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
@@ -193,12 +195,12 @@ const EnhancedTableToolbar = props => {
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+          <Tooltip title="Filter list">
+            <IconButton aria-label="filter list">
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
+        )}
     </Toolbar>
   );
 };
@@ -305,6 +307,10 @@ export default function ManageTables() {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
+  const openModal = floorId => () => {
+    this.setState({ openModal: true });
+  };
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -370,10 +376,10 @@ export default function ManageTables() {
                         {row.officeOwner}
                       </TableCell>
                       <TableCell align="left" className={`${classes.rowText}`}>
-                        {row.status}
+                        <MapIcon />
                       </TableCell>
                       <TableCell>
-                        <DeleteIcon />
+                        <MapIcon />
                       </TableCell>
                     </StyledTableRow>
                   );

@@ -17,6 +17,12 @@ import Button from "@material-ui/core/Button";
 import Link from "@material-ui/core/Link";
 import ApiClient from "../ApiClient";
 
+import Axios from "axios";
+
+const axios = Axios.create({
+  baseURL: "https://icbcflexwork.me:8080/"
+});
+
 class Withdraw extends React.Component {
   constructor(props) {
     super(props);
@@ -44,13 +50,14 @@ class Withdraw extends React.Component {
     );
     this.setState({ staffId: userInfo.StaffId });
     const reqs = [
-      OfficeBookingApi.getBookingsByUserID(userInfo.StaffId),
+      axios.get(`/bookings?staffId=${userInfo.StaffId}`),
       OfficeLendingApi.getAvailabilitiesByOwnerID(userInfo.StaffId)
     ];
     const results = await Promise.all(reqs);
     const confirmedBookings = [];
-    for (const booking of results[0]) {
-      if (booking.confirmed) {
+    console.table(results[0]);
+    for (const booking of results[0].data) {
+      if (booking.Confirmed) {
         confirmedBookings.push(booking);
       }
     }

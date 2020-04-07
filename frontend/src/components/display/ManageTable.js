@@ -23,6 +23,17 @@ import { withStyles } from "@material-ui/core/styles";
 import { confirmAlert } from "react-confirm-alert";
 import OfficeBookingApi from "../../api/OfficeBookingApi";
 import NoBooking from "../display/NoBookingFound";
+import MapIcon from "@material-ui/icons/Map";
+import Modal from "@material-ui/core/Modal";
+import {
+  Magnifier,
+  GlassMagnifier,
+  MagnifierPreview,
+  SideBySideMagnifier,
+  PictureInPictureMagnifier,
+  MOUSE_ACTIVATION,
+  TOUCH_ACTIVATION
+} from "react-image-magnifiers";
 
 const StyledTableCell = withStyles(theme => ({
   head: {
@@ -105,6 +116,7 @@ function EnhancedTableHead(props) {
             </TableSortLabel>
           </TableCell>
         ))}
+        <TableCell className={`${classes.headText}`}>Floorplan</TableCell>
         <TableCell className={`${classes.headText}`}>Delete</TableCell>
       </TableRow>
     </TableHead>
@@ -157,7 +169,7 @@ const EnhancedTableToolbar = props => {
       ) : (
           <Typography className={classes.title} variant="h6" id="tableTitle">
             Nutrition
-          </Typography>
+        </Typography>
         )}
 
       {numSelected > 0 ? (
@@ -222,11 +234,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function createData(officeLoc, WSId, sDate, eDate, officeOwner, bookingId) {
+function createData(officeLoc, WSId, sDate, eDate, officeOwner, bookingId, floorId) {
   if (sDate === undefined || eDate === undefined) return {};
-  sDate = sDate.toString().substring(4, 15);
-  eDate = eDate.toString().substring(4, 15);
-  return { officeLoc, WSId, sDate, eDate, officeOwner, bookingId };
+  sDate = sDate.substring(0, 10);
+  eDate = eDate.substring(0, 10);
+  return { officeLoc, WSId, sDate, eDate, officeOwner, bookingId, floorId };
 }
 
 //  function reformatDate(originalDate) {
@@ -234,8 +246,19 @@ function createData(officeLoc, WSId, sDate, eDate, officeOwner, bookingId) {
 // }
 
 export default function ManageTables(props) {
-  console.log(props.rows.length);
-  const rows = props.rows.map(r => createData(r.location, r.workspaceId, r.startDate, r.endDate, r.name, r.bookingId));
+  // console.log(props.rows.length);
+  // console.table(props.rows);
+  const rows = props.rows.map(r =>
+    createData(
+      r.City,
+      r.OwnerWorksapceId,
+      r.BookingStartDate,
+      r.BookingEndDate,
+      r.OwnerFirstName + " " + r.OwnerLastName,
+      r.BookingId,
+      r.FloorId
+    )
+  );
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
@@ -243,6 +266,8 @@ export default function ManageTables(props) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [openModal, setOpenModal] = React.useState(false);
+  const [floorId, setFloorId] = React.useState("");
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -259,7 +284,7 @@ export default function ManageTables(props) {
   };
 
   const handleClick = (event, name) => {
-    console.log("Handle Clicked" + name);
+    // console.log("Handle Clicked" + name);
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
 
@@ -292,6 +317,15 @@ export default function ManageTables(props) {
   const isSelected = name => selected.indexOf(name) !== -1;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+
+  const openModalCb = floorId => () => {
+    setOpenModal(true);
+    setFloorId(floorId);
+  };
+
+  const handleCloseFloorPlan = () => {
+    setOpenModal(false);
+  };
 
   return (
     <div className={classes.root}>
@@ -357,6 +391,9 @@ export default function ManageTables(props) {
                       <TableCell align="left" className={`${classes.rowText}`}>
                         {row.officeOwner}
                       </TableCell>
+                      <TableCell align="left" className={`${classes.rowText}`}>
+                        <MapIcon onClick={openModalCb(row.floorId)} />
+                      </TableCell>
                       <TableCell>
                         <DeleteIcon
                           onClick={async () => {
@@ -386,6 +423,23 @@ export default function ManageTables(props) {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
+      <Modal
+        open={openModal}
+        onClose={handleCloseFloorPlan}
+        style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
+        <div style={{ width: "1350px", height: "900px" }}>
+          <GlassMagnifier
+            imageSrc={`https://icbcflexwork.me:8080/floorplans/${floorId}.jpg`}
+            imageAlt="Floor Plan"
+            allowOverflow="true"
+            square="true"
+            magnifierBorderColor="black"
+            magnifierBorderSize="3"
+            magnifierSize="15%"
+          />
+        </div>
+      </Modal>
     </div>
   );
 }
