@@ -398,7 +398,7 @@ class Booking extends React.Component {
           <img src={this.state.imgUrl} alt="Floor Plan" height="500" width="700"></img>
         </Zoom> */}
 
-        <div style={{ width: "700px", height: "500px" }}>
+        <div style={{ width: "1350px", height: "900px" }}>
           <GlassMagnifier
             imageSrc={this.state.imgUrl}
             imageAlt="Floor Plan"
@@ -406,6 +406,7 @@ class Booking extends React.Component {
             square="true"
             magnifierBorderColor="black"
             magnifierBorderSize="3"
+            magnifierSize="15%"
           />
         </div>
       </Modal>
