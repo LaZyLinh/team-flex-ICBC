@@ -48,6 +48,7 @@ export default {
   },
   calendar: {
     position: "absolute",
+    width: "293px",
     top: "132px",
     left: "11px",
     boxShadow: "0px 2px 2px 0px rgba(0,0,0,.2)",
