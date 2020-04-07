@@ -31,6 +31,15 @@ import featureMap from "../api/FeatureMap";
 import { DateRange } from "react-date-range";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
+import {
+  Magnifier,
+  GlassMagnifier,
+  MagnifierPreview,
+  SideBySideMagnifier,
+  PictureInPictureMagnifier,
+  MOUSE_ACTIVATION,
+  TOUCH_ACTIVATION
+} from "react-image-magnifiers";
 
 import styles from "../styles/Booking.styles";
 import logo from "../assets/home_logo.png";
@@ -385,9 +394,20 @@ class Booking extends React.Component {
         onClose={this.handleCloseFloorPlan}
         style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
       >
-        <Zoom>
+        {/* <Zoom>
           <img src={this.state.imgUrl} alt="Floor Plan" height="500" width="700"></img>
-        </Zoom>
+        </Zoom> */}
+
+        <div style={{ width: "700px", height: "500px" }}>
+          <GlassMagnifier
+            imageSrc={this.state.imgUrl}
+            imageAlt="Floor Plan"
+            allowOverflow="true"
+            square="true"
+            magnifierBorderColor="black"
+            magnifierBorderSize="3"
+          />
+        </div>
       </Modal>
     );
   };
