@@ -176,7 +176,7 @@ async function processFloorData(file, features, floor) {
   const featureMap = makeFeatureMap(features);
   // Lots of trips to the database
   const proms = [];
-  for (let i = 1; i < parsedArray.length; ++i) {
+  for (let i = 0; i < parsedArray.length; ++i) {
     proms.push(processCSVRow(parsedArray[i], floor, featureMap, featureNames));
   }
   await Promise.all(proms);
