@@ -191,7 +191,7 @@ async function deleteWorkspaceHelper(w) {
       const deleteBookingQuery = `DELETE FROM booking WHERE BookingId=${b.BookingId}`
       await knexHelper(deleteBookingQuery)
     }
-    const deleteAvailabilityQuery = `DELETE FROM availability WHERE AvailabilityId=${a.AvailabiliityId}`
+    const deleteAvailabilityQuery = `DELETE FROM availability WHERE AvailabilityId=${a.AvailabilityId}`
     await knexHelper(deleteAvailabilityQuery)
   }
   // delete workspacefeatures
