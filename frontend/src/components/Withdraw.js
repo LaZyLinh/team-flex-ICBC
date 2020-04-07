@@ -10,6 +10,7 @@ import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
 import ManageTable from "./display/ManageTable";
 import Display_SmallSquare from "./display/Display_SmallSquare";
+import NoBooking from "./display/NoBookingFound"
 
 import Home from "./Home";
 
@@ -50,12 +51,11 @@ class Withdraw extends React.Component {
         await this.setState({
            staffId:userInfo.StaffId,
        });
+        this.setState({bookings: await OfficeBookingApi.getBookingsByUserID(this.state.staffId)});
        console.log(this.state.staffId);
    };
 
   async onSubmitStaffId() {
-    console.log("onSubmitStaffId");
-    console.log('from AD:');
     console.log(this.state.staffId);
     const staffId = this.state.staffId;
     console.log(staffId);
@@ -63,6 +63,7 @@ class Withdraw extends React.Component {
     console.log(data);
     this.setState({ bookings: data });
     console.log(this.state.bookings);
+    console.log(this.state.bookings.length);
     // , (error, data) => {
     //   if (error) {
     //     console.log("Got an error from API call");
@@ -102,6 +103,16 @@ class Withdraw extends React.Component {
   onAcknowledgeCanceled() {
     this.setState({ showBookingCancelSuccess: false });
   }
+  handleBooking(bookings){
+    console.log(bookings)
+    if (bookings.length == 0){
+      console.log("HEY")
+        return <NoBooking/>}
+    else{
+      return(
+          <ManageTable rows = {bookings}/>)
+    }
+  }
 
   render() {
     const { classes } = this.props;
@@ -126,12 +137,20 @@ class Withdraw extends React.Component {
             {/*name="staffId"*/}
           {/*/>*/}
         {/*</form>*/}
-          <Button  className={`${classes.searchIcon}`} onClick={()=>this.onSubmitStaffId()}>My Booking History</Button>
+          {/*<Button  className={`${classes.searchIcon}`} onClick={ ()=>{*/}
+               {/*this.onSubmitStaffId();*/}
+              {/*}}>My Booking History</Button>*/}
+          <h2 style={{position:"absolute",top:"32%",left:"3%"}}>My Booking History</h2>
+          <div className={`${classes.bookingTable}`}>
 
-        <div className={`${classes.bookingTable}`}>
+            {/*<NoBooking/>*/}
+        {/*<div className={`${classes.bookingTable}`}>*/}
           <ManageTable  rows={this.state.bookings} />
-        </div>
-      </div>
+              {/*{this.state.length==0 &&*/}
+              {/*<NoBooking/>}*/}
+            {/*{this.handleBooking(this.state.bookings)}*/}
+        {/*</div>*/}
+          </div></div>
     );
   }
 }

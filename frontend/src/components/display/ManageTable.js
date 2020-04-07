@@ -22,6 +22,7 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 import { withStyles } from "@material-ui/core/styles";
 import { confirmAlert } from "react-confirm-alert";
 import OfficeBookingApi from "../../api/OfficeBookingApi";
+import NoBooking from "../display/NoBookingFound"
 
 const StyledTableCell = withStyles(theme => ({
   head: {
@@ -240,6 +241,7 @@ function createData(officeLoc, WSId, sDate, eDate, officeOwner, status, bookingI
 // }
 
 export default function ManageTables(props) {
+  console.log(props.rows.length);
   const rows = props.rows.map(r =>
     createData(r.location, r.workspaceId, r.startDate, r.endDate, r.name, r.confirmed, r.bookingId)
   );
@@ -301,6 +303,7 @@ export default function ManageTables(props) {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
+
     <div className={classes.root}>
       <Paper className={classes.paper}>
         {/*<EnhancedTableToolbar numSelected={selected.length} /> */}
@@ -355,13 +358,13 @@ export default function ManageTables(props) {
                       <TableCell align="left" className={`${classes.rowText}`} padding={"none"}>
                         {row.WSId}
                       </TableCell>
-                      <TableCell align="center" className={`${classes.rowText}`}>
+                      <TableCell align="left" className={`${classes.rowText}`}>
                         {row.sDate}
                       </TableCell>
-                      <TableCell align="center" className={`${classes.rowText}`}>
+                      <TableCell align="left" className={`${classes.rowText}`}>
                         {row.eDate}
                       </TableCell>
-                      <TableCell align="center" className={`${classes.rowText}`}>
+                      <TableCell align="left" className={`${classes.rowText}`}>
                         {row. officeOwner}
                       </TableCell>
                       <TableCell align="left" className={`${classes.rowText}`}>
