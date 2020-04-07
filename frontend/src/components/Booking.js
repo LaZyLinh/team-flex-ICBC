@@ -43,6 +43,7 @@ import {
 
 import styles from "../styles/Booking.styles";
 import logo from "../assets/home_logo.png";
+import bookedDates from "../api/BookedDates";
 
 class Booking extends React.Component {
   constructor(props) {
@@ -54,6 +55,7 @@ class Booking extends React.Component {
       floor: "",
       floorId: 0,
       floors: [],
+      disabledDates: [], // Obtained from api/BookedDates
       startDate: new Date(),
       endDate: new Date(),
       features: [],
@@ -101,11 +103,14 @@ class Booking extends React.Component {
         checked: false
       };
     });
+    const staffId = results[3].StaffId;
+    const disabledDates = await bookedDates(staffId);
     this.setState({
       locations: results[0],
       features,
       fm: results[2],
-      staffId: results[3].StaffId
+      staffId,
+      disabledDates
     });
     const sdStr = this.state.startDate.toISOString().slice(0, 10);
     const edStr = this.state.endDate.toISOString().slice(0, 10);
@@ -343,6 +348,7 @@ class Booking extends React.Component {
               onChange={this.handleDateChange}
               moveRangeOnFirstSelection={false}
               minDate={new Date()}
+              disabledDates={this.state.disabledDates}
               ranges={[
                 {
                   startDate: this.state.startDate,
