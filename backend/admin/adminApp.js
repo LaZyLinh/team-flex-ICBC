@@ -18,6 +18,8 @@ const floorDB = require("../db/floors");
 const knex = require('../db/mysqlDB')
 const knexHelper = async (query) => (await knex.raw(query))[0]
 
+let lastAdminError = "No errors!";
+
 require('dotenv').config();
 
 router.get('/', (req, res) => {
@@ -51,6 +53,15 @@ router.post('/login', async (req, res, next) => {
     res.status(500)
     res.json({ message: err })
   }
+})
+
+function handleErr(res, err) {
+  lastAdminError = JSON.stringify(err, null, '    ');
+  res.status(err.status || 500).json(err);
+}
+
+router.get('/last-error', (req, res) => {
+  res.send(lastAdminError)
 })
 
 // all endpoint below here requires admin login token
@@ -96,9 +107,19 @@ router.post('/user', (req, res) => {
   })
 })
 
+router.get('/locations/withaddress', async (req, res) => {
+  try {
+    const query = `SELECT (Location, Address, DateOfBirth) FROM location`
+    const locations = await knexHelper(query)
+    res.json(locations.map(row => { return { city: row.Location, address: row.Address, dob: row.DateOfBirth } }))
+  } catch (err) {
+    res.status(err.status || 500).json(err);
+  }
+})
+
 router.get('/locations', async (req, res) => {
   try {
-    const query = `SELECT * FROM location`
+    const query = `SELECT Location FROM location`
     const locations = await knexHelper(query)
     res.json(locations.map(row => row.Location))
   } catch (err) {
@@ -124,7 +145,7 @@ router.post('/locations', async (req, res) => {
         status: 400
       }
     }
-    const query = `SELECT * FROM location`
+    const query = `SELECT Location FROM location`
     const locations = (await knexHelper(query)).map(row => row.Location)
     if (locations.includes(name)) {
       throw {
