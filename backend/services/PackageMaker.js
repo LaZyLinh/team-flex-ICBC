@@ -71,7 +71,6 @@ async function getAvailabilities(conditions, knex) {
                            INNER JOIN booking b
                            ON a.AvailabilityId = b.AvailabilityId
                            WHERE a.AvailabilityId IN ` + subquery
-
   const results = await Promise.all([resultFromKnex(availabilitiesQuery, knex), resultFromKnex(bookingsQuery, knex)])
   const availabilitiesRows = results[0]
   if (availabilitiesRows.length === 0) {
@@ -156,7 +155,7 @@ function getDay(datestring) {
  * @param {string} startDate "YYYY-MM-DD"
  * @param {string} endDate "YYYY-MM-DD"
  */
-function getRange(startDate, endDate) {
+function getUnixDates(startDate, endDate) {
   return { start: getDay(startDate), end: getDay(endDate) }
 }
 
@@ -177,17 +176,17 @@ async function makeBookingSuggestion(start, { availability, length }, knex) {
 }
 
 async function buildPackageFromMultipleAvailabilities(availabilities, startDate, endDate, knex) {
-  const { start, end } = getRange(startDate, endDate)
+  const { start, end } = getUnixDates(startDate, endDate)
   // day -> availabilities open that day
   const bestDaysOfAllAvailabilities = {}
   // For each availability, have a ranges of open dates
   // Each range has head. That head knows its length
   // Each date in the tail knows the head (and therefore knows its own length)
   for (const availability of Object.values(availabilities)) {
-    const { start: aStart, end: aEnd } = getRange(availability.startDate, availability.endDate)
+    const { start: aStart, end: aEnd } = getUnixDates(availability.startDate, availability.endDate)
     const unavailable = {}
     for (const booking of availability.bookings) {
-      const { start: bStart, end: bEnd } = getRange(booking.startDate, booking.endDate)
+      const { start: bStart, end: bEnd } = getUnixDates(booking.startDate, booking.endDate)
       for (let i = bStart; i <= bEnd; ++i) {
         unavailable[i] = true
       }
@@ -239,6 +238,8 @@ async function buildPackageFromMultipleAvailabilities(availabilities, startDate,
       i += day.length
     }
   }
+  // modify the last booking suggestion to have end date exactly match requested end date
+  package[package.length - 1].endDate = endDate;
   return package
 }
 

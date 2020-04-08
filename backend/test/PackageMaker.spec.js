@@ -201,4 +201,30 @@ describe('makePackages, from multiple availabilities', function () {
     expect(suggestion4.startDate).to.equal("2020-04-29")
     expect(suggestion4.endDate).to.equal("2020-04-30")
   })
+
+  it('returns 1 package correctly with the correct end date on its last booking suggestion', async function () {
+    const workspaceId = "Test408"
+    await Ins.insertWorkspace(workspaceId, 1, 1)
+    const aid1 = 30 // AvailabilityId
+    const aid2 = 31
+    await Ins.insertAvailability(aid1, "2020-07-07", "2020-07-07", workspaceId)
+    await Ins.insertAvailability(aid2, "2020-07-08", "2020-07-09", workspaceId)
+
+    // Package: 07-07 to 07-08
+    const packages = await makePackages({ startDate: "2020-07-07", endDate: "2020-07-08" }, knex);
+    expect(packages).to.have.length(1);
+    const pkg = packages[0];
+    expect(pkg).to.have.length(2);
+    const bs1 = pkg[0]; // booking suggestion: expect 07-07 @ aid1
+    const bs2 = pkg[1]; // booking suggestion: expect 08-08 @ aid2
+
+    expect(bs1.availabilityId).to.equal(aid1);
+    expect(bs2.availabilityId).to.equal(aid2);
+    const date1 = "2020-07-07"
+    const date2 = "2020-07-08"
+    expect(bs1.startDate).to.equal(date1);
+    expect(bs1.endDate).to.equal(date1);
+    expect(bs2.startDate).to.equal(date2);
+    expect(bs2.endDate).to.equal(date2);
+  })
 })

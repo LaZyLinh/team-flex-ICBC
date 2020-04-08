@@ -25,7 +25,7 @@ async function insertFeature(featureId, featureName) {
 }
 
 async function insertWorkspaceFeature(workspaceId, featureId) {
-  await knex.raw(`INSERT INTO workspacefeature VALUES ('${workspaceId}', ${featureId})`)
+  await knex.raw(`INSERT INTO workspaceFeature VALUES ('${workspaceId}', ${featureId})`)
 }
 
 async function insertUser(staffId, icbcEmployeeId, email) {
