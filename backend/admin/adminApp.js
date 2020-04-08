@@ -107,11 +107,11 @@ router.post('/user', (req, res) => {
   })
 })
 
-router.get('/locations/withaddress', async (req, res) => {
+router.get('/locations2', async (req, res) => {
   try {
-    const query = `SELECT (Location, Address, DateOfBirth) FROM location`
+    const query = `SELECT (Location, DateOfBirth, ID) FROM location`
     const locations = await knexHelper(query)
-    res.json(locations.map(row => { return { city: row.Location, address: row.Address, dob: row.DateOfBirth } }))
+    res.json(locations.map(row => { return { city: row.Location, dob: row.DateOfBirth, locationId: row.ID } }))
   } catch (err) {
     res.status(err.status || 500).json(err);
   }
