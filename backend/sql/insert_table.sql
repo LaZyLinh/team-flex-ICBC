@@ -68,6 +68,14 @@ CREATE TABLE `archivedAvailability` (
   `WorkspaceId` varchar(10)
 );
 
+CREATE TABLE `location` (
+  `Location` varchar(50) NOT NULL,
+  `DateOfBirth` date DEFAULT '2020-04-08',
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`Location`),
+  UNIQUE KEY `ID_UNIQUE` (`ID`)
+);
+
 ALTER TABLE `workspace` ADD FOREIGN KEY (`StaffId`) REFERENCES `user` (`StaffId`);
 
 ALTER TABLE `workspace` ADD FOREIGN KEY (`FloorId`) REFERENCES `floor` (`FloorId`);
