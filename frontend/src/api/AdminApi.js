@@ -65,7 +65,9 @@ async function api(verb, path, body = undefined) {
     throw new Error(`There is no admin jwt set`)
   }
   if (jwtExpiresMillis < Date.now()) {
-    // TODO: handle expired token after opening admin page
+    localStorage.removeItem("admin_jwt")
+    localStorage.removeItem("admin_jwt_expires_millis")
+    window.location.href = "/"
   }
   const config = {
     headers: {
