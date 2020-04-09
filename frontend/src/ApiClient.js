@@ -14,6 +14,7 @@
 
 import superagent from "superagent";
 import querystring from "querystring";
+import { BASE_URL } from "./api/BaseUrl";
 
 /**
 * @module ApiClient
@@ -32,9 +33,8 @@ class ApiClient {
         /**
          * The base URL against which to resolve every API call's (relative) path.
          * @type {String}
-         * @default https://34.224.250.122:8080 or https://icbcflexwork.me:8080
          */
-        this.basePath = 'https://icbcflexwork.me:8080'.replace(/\/+$/, '');
+        this.basePath = BASE_URL.replace(/\/+$/, '');
 
         /**
          * The authentication methods to be included for all API calls.

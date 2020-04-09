@@ -1,12 +1,5 @@
-/*
-  Todo:
-    1. Login
-*/
-
-// https://www.npmjs.com/package/axios
-
 import Axios from 'axios'
-import { func } from 'prop-types';
+import { BASE_URL_ADMIN } from './BaseUrl';
 
 const MILLIS_ADMIN_JWT_EXPIRY_TIME = 1000 * 60 * 60 * 24 * 3 // 3 days
 
@@ -17,7 +10,7 @@ if (!jwtExpiresMillis) {
 }
 
 const axios = Axios.create({
-  baseURL: 'https://icbcflexwork.me:8080/admin'
+  baseURL: BASE_URL_ADMIN
 });
 
 export async function login(passwordStr) {

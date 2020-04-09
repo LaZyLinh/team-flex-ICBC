@@ -1,7 +1,8 @@
 import Axios from "axios";
+import { BASE_URL } from "./BaseUrl";
 
 const axios = Axios.create({
-  baseURL: 'https://icbcflexwork.me:8080/'
+  baseURL: BASE_URL
 });
 
 const MILLIS_IN_DAY = 1000 * 60 * 60 * 24
