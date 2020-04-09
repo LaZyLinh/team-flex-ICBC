@@ -18,9 +18,10 @@ import Link from "@material-ui/core/Link";
 import ApiClient from "../ApiClient";
 
 import Axios from "axios";
+import { BASE_URL } from "../api/BaseUrl";
 
 const axios = Axios.create({
-  baseURL: "https://icbcflexwork.me:8080/"
+  baseURL: BASE_URL
 });
 
 class Withdraw extends React.Component {
