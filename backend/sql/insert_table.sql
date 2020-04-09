@@ -50,7 +50,8 @@ CREATE TABLE `booking` (
   `EndDate` date NOT NULL,
   `StaffId` int,
   `AvailabilityId` int,
-  `WorkspaceId` varchar(10)
+  `WorkspaceId` varchar(10),
+  `Timestamp` datetime,
 );
 
 CREATE TABLE `archivedBooking` (
