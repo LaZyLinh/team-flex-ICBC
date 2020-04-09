@@ -13,7 +13,7 @@
 - `npm install` to install all dependencies
 - `npm start` to start the React app
 - `npm run win-start` to start the React app locally at http://localhost:3000 hooked up to AWS backend https://icbcflexwork.me
-- `npm run local-start` to start the React app locally at http://localhost:3000 hooked up to local backend https://localhost:8080`
+- `npm run local-start` to start the React app locally at http://localhost:3000 hooked up to local backend https://localhost:8080
 
 ### Backend
 - `npm install` to install all dependencies
