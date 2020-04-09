@@ -107,6 +107,26 @@ export async function getLocationNames() {
   }
 }
 
+export async function getLocations2() {
+  try {
+    return (await api('get', '/locations2')).data
+  } catch (err) {
+    localStorage.setItem("admin_error", JSON.stringify(err))
+    console.log(err)
+    throw err
+  }
+}
+
+export async function createLocation2(cityName) {
+  try {
+    await api('post', '/locations2', { city: cityName });
+  } catch (err) {
+    localStorage.setItem("admin_error", JSON.stringify(err))
+    console.log(err)
+    throw err
+  }
+}
+
 export async function deleteLocationName(name) {
   try {
     await api('delete', `/locations?locationName=${name.trim()}`)

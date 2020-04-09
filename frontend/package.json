@@ -20,6 +20,7 @@
     "express": "^4.17.1",
     "file-saver": "^2.0.2",
     "flexwork-common": "latest",
+    "material-table": "^1.57.2",
     "msal": "^1.2.2",
     "path": "^0.12.7",
     "prettier": "^1.19.1",

@@ -56,6 +56,9 @@ router.post('/login', async (req, res, next) => {
 })
 
 function handleErr(res, err) {
+  if (err == null) {
+    res.status(500).send("Literally null error... adminApp::handleErr was called with a null error")
+  }
   lastAdminError = JSON.stringify(err, null, '    ');
   res.status(err.status || 500).json(err);
 }
@@ -109,11 +112,28 @@ router.post('/user', (req, res) => {
 
 router.get('/locations2', async (req, res) => {
   try {
-    const query = `SELECT (Location, DateOfBirth, ID) FROM location`
+    const query = `SELECT Location, DateOfBirth, ID FROM location`
     const locations = await knexHelper(query)
     res.json(locations.map(row => { return { city: row.Location, dob: row.DateOfBirth, locationId: row.ID } }))
   } catch (err) {
-    res.status(err.status || 500).json(err);
+    handleErr(res, err)
+  }
+})
+
+function err(messageToClient) {
+  return { error: messageToClient, status: 400 }
+}
+
+router.post('/locations2', async (req, res) => {
+  try {
+    const city = req.body.city;
+    if (city == null) {
+      throw err("city is missing")
+    }
+    await knexHelper(`INSERT INTO location (Location, DateOfBirth) VALUES ('${city}', '${new Date().toISOString().substr(0, 10)}')`)
+    res.send("OK")
+  } catch (err) {
+    handleErr(res, err)
   }
 })
 

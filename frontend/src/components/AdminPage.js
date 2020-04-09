@@ -9,7 +9,7 @@ import Box from "@material-ui/core/Box";
 
 import { getLocationNames } from "../api/AdminApi";
 import featureMap from "../api/FeatureMap";
-
+import ManageLocations from "./admin/locations/ManageLocations";
 import AddLocation from "./admin/AddLocation";
 import AddFeature from "./admin/AddFeature";
 import EditFeatures from "./admin/EditFeatures";
@@ -79,13 +79,9 @@ class AdminPage extends React.Component {
         <Grid item style={{ height: "20px" }} />
 
         {/* Add Location */}
-        <AddLocation getLocations={this.getLocations} updateLocations={this.updateLocations} />
-
-        {/* Spacing */}
-        <Grid item style={{ height: "20px" }} />
-
-        {/* Location Blocks */}
-        <Display_Square locations={this.state.locations} updateLocations={this.updateLocations} />
+        <Grid item style={{ width: "60%" }}>
+          <ManageLocations />
+        </Grid>
 
         {/* Spacing */}
         <Grid item style={{ height: "30px" }} />
