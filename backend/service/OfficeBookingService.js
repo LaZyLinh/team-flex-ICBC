@@ -52,6 +52,10 @@ exports.getBookingsByUserID = function (staffId) {
   return OfficeBookingService.getBookingsByUserID({ staffId })
 }
 
+exports.getBookingsSimple = function (staffId) {
+  return OfficeBookingService.getBookingsSimple({ staffId })
+}
+
 
 /**
  * Get features by availabilityId, workspaceId, or all features if no params

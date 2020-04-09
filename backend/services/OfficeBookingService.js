@@ -6,6 +6,7 @@ const { makePackages } = require("./PackageMaker");
 
 // Added for direct usage of knex
 const knex = require("../db/mysqlDB");
+// Returns the raw rows
 const knexHelper = async (query) => (await knex.raw(query))[0];
 // flexwork-common helper functions
 const FWC = require("flexwork-common");
@@ -202,6 +203,44 @@ class OfficeBookingService {
         }
       },
     );
+  }
+
+  static createBookingSimple({ BookingId, StartDate, EndDate, City, WorkspaceId, StaffId, FirstName, LastName, Email, FloorId, Building }) {
+    return {
+      bookingId: BookingId,
+      workspaceId: WorkspaceId,
+      floorId: FloorId,
+      startDate: StartDate.toISOString().substr(0, 10),
+      endDate: EndDate.toISOString().substr(0, 10),
+      city: City,
+      building: Building,
+      ownerStaffId: StaffId,
+      ownerFirstName: FirstName,
+      ownerLastName: LastName,
+      ownerEmail: Email
+    }
+  }
+
+  static async getBookingsSimple({ staffId }) {
+    try {
+      const query = `SELECT b.BookingId, b.StartDate, b.EndDate, f.City, w.WorkspaceId, lender.StaffId, lender.FirstName, lender.LastName, lender.Email, f.FloorId, f.Building
+                     FROM booking b
+                     INNER JOIN user borrower
+                     ON b.StaffId = borrower.StaffId
+                     INNER JOIN availability a
+                     ON b.AvailabilityId = a.AvailabilityId
+                     INNER JOIN workspace w
+                     ON w.WorkspaceId = a.WorkspaceId
+                     INNER JOIN floor f
+                     ON w.FloorId = f.FloorId
+                     LEFT JOIN user lender
+                     ON w.StaffId = lender.StaffId
+                     WHERE b.StaffId = ${staffId}`
+      const rows = await knexHelper(query)
+      return rows.map(this.createBookingSimple);
+    } catch (e) {
+      return { error: e.message, status: 500 }
+    }
   }
 
   /**

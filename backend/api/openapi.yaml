@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: ICBC Flex Work, by Team Flex
   description: ICBC Flex Work REST Back End, End Points for Employee and Admin Use Cases
-  version: 1.0.0
+  version: 1.0.1
 servers:
   - url: https://icbcflexwork.me:8080/
 tags:
@@ -790,6 +790,36 @@ paths:
           description: Bad Request
           content: {}
       x-swagger-router-controller: OfficeBooking
+  /bookings/simple:
+    get:
+      tags:
+        - OfficeBooking
+      summary: Finds Bookings By User ID
+      operationId: getBookingsSimple
+      parameters:
+        - name: staffId
+          in: query
+          description: The ID of the User
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+          example: 1234
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BookingSimple"
+                x-content-type: application/json
+        "500":
+          description: Server Error
+          content: {}
+      x-swagger-router-controller: OfficeBooking
   /bookings:
     get:
       tags:
@@ -977,6 +1007,44 @@ components:
           email: employee@icbc.com
         bookingId: 8
         startDate: 2000-01-23
+    BookingSimple:
+      type: object
+      properties:
+        bookingId:
+          type: integer
+          example: 20
+        workspaceId:
+          type: string
+          example: "NV4-04A"
+        floorId:
+          type: string
+          example: 7
+        startDate:
+          type: string
+          format: date
+          example: "2020-04-08"
+        endDate:
+          type: string
+          format: date
+          example: "2020-04-10"
+        city:
+          type: string
+          example: "Vancouver"
+        building:
+          type: string
+          example: "Lower Mall"
+        ownerStaffId:
+          type: integer
+          example: 2408
+        ownerFirstName:
+          type: string
+          example: "Kobe"
+        ownerLastName:
+          type: string
+          example: "Bryant"
+        ownerEmail:
+          type: string
+          example: "kobebryant8@icbc.com"
     Booking:
       type: object
       properties:

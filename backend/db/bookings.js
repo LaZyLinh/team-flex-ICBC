@@ -10,6 +10,7 @@ module.exports = {
   },
 
   getByStaffId: function (staffId) {
+    // (does not return booking if it's on a workspace owned by no one)
     return knex.raw("select b.Confirmed as Confirmed, b.BookingId as BookingId, b.StartDate as BookingStartDate, b.EndDate as BookingEndDate, b.StaffId as BookingStaffId, b.AvailabilityId as AvailabilityId,"
       + " w.WorkspaceId as OwnerWorksapceId, w.WorkspaceName as OwnerWorkspaceName, w.StaffId as OwnerStaffId, f.FloorId as FloorId, f.FloorNo as FloorNo, "
       + " f.Location as Location, f.City as City, f.Building as Building, f.FloorPlanUrl as FloorPlanUrl, u.Email as OwnerEmail, u.FirstName as OwnerFirstName, u.LastName as OwnerLastName,"

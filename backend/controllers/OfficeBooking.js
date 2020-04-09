@@ -53,6 +53,16 @@ module.exports.getBookingsByUserID = function getBookingsByUserID(req, res, next
     });
 };
 
+module.exports.getBookingsSimple = function getBookingsSimple(req, res, next, staffId) {
+  OfficeBooking.getBookingsSimple(staffId)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.getFeatures = function getFeatures(req, res, next, availabilityId, workspaceId) {
   OfficeBooking.getFeatures(availabilityId, workspaceId)
     .then(function (response) {
