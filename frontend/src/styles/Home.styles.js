@@ -72,9 +72,10 @@ export default {
     transition: "transform 0.5s ease-in-out",
     "&:hover": {
       transform: "translateY(-3vh);",
+      "-ms-transform": "none",
       color: "#F4F7FC"
     },
-    boxShadow: "0px 6px 4px rgba(0, 0, 0, 0.2)"
+    boxShadow: "0px 6px 4px rgba(0, 0, 0, 0.2)",
   },
   icon: {
     fontSize: "6em"
