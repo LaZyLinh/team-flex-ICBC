@@ -124,10 +124,23 @@ class Booking extends React.Component {
   };
 
   handleDateChange = async dateRange => {
+    const incomingStartDateMillis = dateRange.selection.startDate.valueOf();
+    const incomingEndDateMillis = dateRange.selection.endDate.valueOf();
+    const currentStartDateMillis = this.state.startDate.valueOf();
+    const currentEndDateMillis = this.state.endDate.valueOf();
+    let endDateMillis = incomingEndDateMillis;
+    let startDateMillis = incomingStartDateMillis;
+    if (incomingStartDateMillis === currentStartDateMillis) {
+      // limit end date to 5 days from start date
+      endDateMillis = Math.min(endDateMillis, currentStartDateMillis + 1000 * 60 * 60 * 24 * 4);
+    }
+    if (incomingEndDateMillis === currentEndDateMillis) {
+      startDateMillis = Math.max(startDateMillis, currentEndDateMillis - 1000 * 60 * 60 * 24 * 4);
+    }
     this.setState(
       {
-        startDate: dateRange.selection.startDate,
-        endDate: dateRange.selection.endDate
+        startDate: new Date(startDateMillis),
+        endDate: new Date(endDateMillis)
       },
       async () => {
         await this.updatePackages();
