@@ -13,7 +13,7 @@ function dateStrToUnixDay(dateStr) {
 }
 
 function unixDayToDate(day) {
-  return new Date(day * MILLIS_IN_DAY - PST_OFFSET_MILLIS)
+  return new Date(day * MILLIS_IN_DAY - PST_OFFSET_MILLIS + MILLIS_IN_DAY)
 }
 
 function addDateRangeToDatesArrs(datesArr, unixDaysArr, startDateStr, endDateStr) {
