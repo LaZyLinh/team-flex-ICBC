@@ -74,6 +74,8 @@ class Booking extends React.Component {
       updateTime: new Date()
     };
     this.timer = 0;
+    const today = new Date();
+    this.maxDate = new Date(today.setMonth(today.getMonth() + 6));
   }
 
   componentDidMount = async () => {
@@ -351,6 +353,7 @@ class Booking extends React.Component {
               onChange={this.handleDateChange}
               moveRangeOnFirstSelection={false}
               minDate={new Date()}
+              maxDate={this.maxDate}
               disabledDates={this.state.disabledDates}
               ranges={[
                 {

@@ -43,6 +43,8 @@ class Lending extends React.Component {
       error: false,
       warning: false
     };
+    const today = new Date();
+    this.maxDate = new Date(today.setMonth(today.getMonth() + 6));
   }
 
   componentDidMount = async () => {
@@ -156,6 +158,7 @@ class Lending extends React.Component {
           onChange={this.handleDateChange}
           moveRangeOnFirstSelection={false}
           minDate={new Date()}
+          maxDate={this.maxDate}
           ranges={[
             {
               startDate: this.state.startDate,
