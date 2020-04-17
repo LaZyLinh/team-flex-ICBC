@@ -4,6 +4,7 @@
 - React
 - Node.js
 - MySQL
+- Flutter (Mobile)
 
 ## [REST API](https://gitlab.com/cpsc319-2019w2/icbc/team-flex/team-flex/-/blob/master/shared/api/openapi.yaml)
 
