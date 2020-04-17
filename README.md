@@ -4,6 +4,7 @@
 - React
 - Node.js
 - MySQL
+- Flutter (Mobile)
 
 ## [REST API](https://gitlab.com/cpsc319-2019w2/icbc/team-flex/team-flex/-/blob/master/shared/api/openapi.yaml)
 
@@ -25,6 +26,9 @@
 - documentation file is statically at X:8080/api.html
 - X:8080/version tells you what version is deployed
 - X:8080/admin/latest-error tells you what the single most recent HTTP status 400/500 response was
+
+### Mobile
+- Follow instructions at (https://gitlab.com/cpsc319-2019w2/icbc/team-flex/team-flex/-/blob/master/mobile/README.md)
 
 ### Shared
 - shared/api contains the latest openapi.yaml specification along with info on how to update it
